@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# enable color support of ls and also add handy aliases
+if [ "$TERM" != "dumb" ]; then
+    eval "`dircolors -b`"
+    alias ls='ls --color=auto'
+    alias dir='ls --color=auto --format=vertical'
+    alias vdir='ls --color=auto --format=long'
+fi
+
+# vi = gvim when running graphical.
+if [ -n "$DISPLAY" ]; then
+	alias vi=gvim
+	alias v=gvim
+else
+	alias vi=vim
+	alias v=vim
+fi
+
+alias nautilus="nautilus --no-desktop --browser"
+alias smbclient="smbclient -A .smb/auth"
+alias svngvimdiff="svn diff --diff-cmd gvimdiff-svn-wrapper"
+
+# some more ls aliases
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias grep="grep --color"

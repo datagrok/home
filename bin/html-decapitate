@@ -1,0 +1,11 @@
+#!/bin/sed -f
+
+# Keep only the content between <body>...</body>
+# 
+# Structure:
+# 1. delete lines up to and including <body>
+# 2. emit lines
+# 3. When </body> is found, emit only the text on that line preceeding it, then exit.
+
+1,/<body/d
+/<\/body/{s/^\(.*\)<\/body/\1/; q;}

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Given a backup file containing '~' in the filename, and assuming a non-backup
+# copy exists, delete the backup if the two files are identical.
+#
+# I forgot what tool produces files like this. fdupes -d works just as well for
+# this task.
+
+old=`echo "$1" | tr -d '~'`
+if diff -q "$old" "$1"; then 
+	echo mv "$1" to "$old"
+	mv "$1" "$old"
+fi
+

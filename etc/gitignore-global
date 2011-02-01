@@ -1,0 +1,8 @@
+CVS
+Thumbs.db
+.DS_Store
+*.pyc
+*.pyo
+*.swp
+.svn
+*.class

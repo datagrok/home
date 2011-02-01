@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# manage the symlinking of dotfiles in $HOME to their appropriate targets in
+# $HOME/etc/dotfiles, and do the right thing if something already exists.
+
+cd ~
+dotfilepath=etc/dotfiles
+
+case "$1" in 
+	status)
+		for versioned in "$dotfilepath"/*; do
+			filename="`basename "$versioned"`"
+			[ "$2" ] && [ "$2" != ".$filename" ] && continue
+			target=~/.$filename
+			if [ -L "$target" ]; then
+				if [ -r "$target" ]; then
+					echo " ok .$filename"; else echo "bad .$filename"
+				fi
+			elif [ -e "$target" ]; then
+				echo "mrg .$filename"
+			else 
+				echo "new .$filename"
+			fi
+		done
+		;;
+	link)
+		for versioned in "$dotfilepath"/*; do
+			filename="`basename "$versioned"`"
+			[ "$2" ] && [ "$2" != ".$filename" ] && continue
+			target=~/.$filename
+			if [ -L "$target" ]; then
+				if [ -r "$target" ]; then # exists properly
+					continue
+				else # broken link; delete it
+					echo " rm .$filename"
+					rm "$target"
+				fi
+			elif [ -e "$target" ]; then
+				# not a link; initial setup; need to merge
+				echo "mrg .$filename"
+				tmp=`mktemp -d`
+				mv "$target" "$tmp/$filename"
+				tar -C "$tmp" -c "$filename" | tar -C "$HOME/etc/dotfiles" -x
+				rm -rf "$tmp"
+			fi
+			# no link in the way now; create link
+			echo "lnk .$filename -> $versioned"
+			ln -s "$versioned" "$target"
+		done
+		;;
+	*)
+		echo "Usage: $0 {status|link}"
+		exit 1
+		;;
+esac
+
+exit 0

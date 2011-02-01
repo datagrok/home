@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# I found this pipeline online somewhere; only keeping it around for learning.
+# 'Thoggen' is a GUI program that accomplishes this task easily.
+
+# FIXME: Do the ! characters need to be escaped from the shell?
+
+gst-launch-0.8 oggmux name=mux max-delay=1 max-page-delay=1 ! filesink location=/tmp/file.ogg { dvdreadsrc location=/dev/cdrom title=1 ! dvddemux name=demux .audio_00 ! { queue name=audio-in max-size-buffers=0 max-size-time=10000000 ! a52dec ! audioconvert ! audioscale ! audio/x-raw-int,rate=44100,channels=2 ! audioconvert ! rawvorbisenc managed=true quality=0.20 ! queue name=audio-out ! mux. } { demux.video_00 ! queue name=video-in max-size-buffers=0 max-size-time=10000000 ! mpeg2dec ! videorate ! deinterlace ! ffmpegcolorspace ! gdkpixbufscale method=2 ! ffmpegcolorspace ! video/x-raw-yuv,width=384,height=288 ! tee name=t ! { queue max-size-buffers=0 max-size-time=10000000 ! theoraenc quality=40 ! queue name=video-out max-size-buffers=0 max-size-time=50000000 ! mux. } } }

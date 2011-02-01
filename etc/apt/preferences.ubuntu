@@ -1,0 +1,7 @@
+Package: *
+Pin: release v=7.*,o=Ubuntu
+Pin-Priority: 50
+
+Package: *
+Pin: release v=6.*,o=Ubuntu
+Pin-Priority: 990

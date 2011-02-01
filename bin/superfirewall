@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# Michael Lamb http://datagrok.org
+# Tue Nov 22 07:33:45 EST 2005
+#
+# This is a facade pattern to the various dynamic hook scripts involved in
+# networking on a Debian linux box. The hook system is a good one but I prefer
+# to keep all my firewalling rules in one file. This script currently carries
+# no actual rules or calls out to iptables, but instead serves as a model of
+# how to determine what's going on based on the environment. 
+#
+# This script can be symlinked to:
+#   /etc/network/if-<option>.d/<whatever>
+#   /etc/dhclient-exit-hooks
+# Planned:
+#   /etc/init.d/<whatever>
+# 
+
+DEBUG="1"
+[ "$DEBUG" ] || exit 0
+
+if [ -x /usr/sbin/firestarter ] && [ -s /etc/firestarter/configuration ]; then
+    echo "'firestarter' configured; ignoring firewall rules in $0."
+    exit 0
+fi
+
+[ $DEBUG ] && echo "$0 (Superfirewall) called; variables follow..."
+
+if [ "$reason" ]
+then # This is dhclient-exit-hooks.
+    [ $DEBUG ] && echo reason=$reason
+    case $reason in
+        (MEDIUM)   [ $DEBUG ] && set | grep -E "^(interface|medium)="
+        ;;
+        (PREINIT)  [ $DEBUG ] && set | grep -E "^(interface|medium|alias_ip_address)="
+        ;;
+        (ARPCHECK) [ $DEBUG ] && set | grep -E "^(interface|new_ip_address)="
+        ;;
+        (ARPSEND)  [ $DEBUG ] && set | grep -E "^(interface|new_ip_address)="
+        ;;
+        (BOUND)    [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|new_.*)="
+        ;;
+        (RENEW)    [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|new_.*|old_.*)="
+        ;;
+        (REBIND)   [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|new_.*|old_.*)="
+        ;;
+        (REBOOT)   [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|new_.*)="
+        ;;
+        (EXPIRE)   [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|new_.*|old_.*)="
+        ;;
+        (FAIL)     [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|new_.*|old_.*)="
+        ;;
+        (TIMEOUT)  [ $DEBUG ] && set | grep -E "^(interface|new_ip_address|routers|new_.*)="
+        ;;
+        (*)         echo "Unknown reason!"; exit 1
+        ;;
+    esac
+else # This is if-<option>.d
+    [ $DEBUG ] && set | grep -E "^(IFACE|LOGICAL|ADDRFAM|METHOD|MODE|PHASE|VERBOSITY)="
+fi
+
+[ $DEBUG ] && echo "$0 (Superfirewall) completed successfully."
+exit 0
+
+# vim: ts=4 expandtab :

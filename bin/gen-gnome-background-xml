@@ -1,0 +1,61 @@
+#!/usr/bin/python
+
+'''Generate a background.xml file for use with the gnome background chooser thingy.
+
+gengnomebackgroundxml.py /mnt/Library/Graphics/wallpapers/* > ~/.gnome/mywalls.xml
+
+Then drag  ~/.gnome/mywalls.xml into the wallpaper selection dialog.
+
+Works in Ubuntu 10.10.
+
+'''
+
+import os
+
+# TODO: move into library
+
+def backgroundxml(files, duration=1795., transitiontime=2.):
+	return template_1 % '\n'.join(_backgroundxml(files, duration, transitiontime))
+
+def _backgroundxml(files, duration, transitiontime):
+	for thisfile, nextfile in zip(files, files[1:] + files[:1]):
+		yield file_template % {
+				'duration': duration,
+				'transition': transitiontime,
+				'this': thisfile,
+				'next': nextfile,
+			}
+
+def main(args):
+	print backgroundxml(args[1:], duration=60.)
+
+template_1 = '''
+	<background>
+	<starttime>
+		<year>2009</year>
+		<month>08</month>
+		<day>04</day>
+		<hour>00</hour>
+		<minute>00</minute>
+		<second>00</second>
+	</starttime>
+	<!-- This animation will start at midnight. -->
+	%s
+	</background>'''.strip()
+
+file_template = '''
+  <static>
+    <duration>%(duration)s</duration>
+    <file>%(this)s</file>
+  </static>
+  <transition>
+    <duration>%(transition)s</duration>
+    <from>%(this)s</from>
+    <to>%(next)s</to>
+  </transition>
+  '''.strip()
+
+if __name__=='__main__':
+	from sys import argv
+	raise SystemExit(main(argv))
+

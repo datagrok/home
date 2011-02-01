@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Compile the java file given as an argument only if it is newer than its
+# associated output .class file. Then, execute that class as main.
+
+filename=$1
+shift
+class=`basename "$filename" .java`
+
+if [ "$filename" -nt "$class.class" ]; then
+	echo -------------------------------------
+	echo Source changed, recompiling.
+	echo -------------------------------------
+	javac $filename
+else
+	echo Source unchanged, skipping compile.
+fi
+echo -------------------------------------
+echo Executing.
+echo -------------------------------------
+java $class $@

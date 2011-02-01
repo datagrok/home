@@ -1,0 +1,23 @@
+#!/bin/false # This file is sourced, not executed, by /etc/gdm/Xsession.
+echo "Sourcing ~/.xprofile"
+
+# Ubuntu sources .profile for us; debian gdm does as well; debian xdm does not.
+# What's the best way to navigate this?
+if [ -z "$EDITOR" ]; then
+	. ~/.profile
+fi
+
+# Browsers in order of preference; launch with sensible-browser
+for b in google-chrome epiphany iceweasel firefox dillo; do
+	BROWSER=`which $b`
+	if [ "$BROWSER" ]; then
+		break
+	fi
+done
+
+export BROWSER
+export EDITOR="gvim -f"
+# export AWT_TOOLKIT=MToolkit # this is needed until java 7
+export OOO_FORCE_DESKTOP=gnome
+xsetroot -fg "#111111" -bg "black" -mod 16 16
+xset b 2 1900 # quieter nicer bell

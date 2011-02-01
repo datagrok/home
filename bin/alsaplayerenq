@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Some stupid web browsers do not provide a way to launch a helper program with
+# an argument, nor do they recognize shell aliases. So we get to create
+# anoyying one-line scripts like this to compensate.
+
+exec alsaplayer -E "$@"

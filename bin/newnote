@@ -1,0 +1,71 @@
+#!/bin/sh
+
+ME=`basename "$0"`
+case "$ME" in
+	newnote)
+		LOCATION="/home/share/$USER/doc/Notes"
+		TYPE="Note"
+		;;
+	newentry)
+		LOCATION="/home/share/$USER/doc/Journal"
+		TYPE="Journal Entry"
+		;;
+	newidea)
+		LOCATION="/home/share/$USER/doc/Ideas"
+		TYPE="Idea"
+		;;
+	*)
+		LOCATION="$HOME/tmp"
+		TYPE=""
+		;;
+esac
+
+ISODATE=`date -Iseconds`
+RFCDATE=`date -R`
+MYDATE=`date "+%Y%m%d-%H%M%S"`
+if [ "$1" = "-nd" ]; then
+	shift
+	FILENAME=""
+else
+	FILENAME="$MYDATE "
+fi
+TITLE="$*"
+TMPFILE=`mktemp` || exit 1
+
+if [ ! -z "$TITLE" ]; then
+	FILENAME="$FILENAME`echo "$TITLE" | cut -c -20`"
+fi
+
+FILENAME="$FILENAME.txt"
+
+if [ -z "$EDITOR" ]; then
+	EDITOR="gvim -f"
+fi
+
+case "$EDITOR" in
+	vi*|vim*|gvim*) EDITOR="$EDITOR +3 +star!";;
+esac
+
+if [ -f "$FILENAME" ]; then
+	echo "$FILENAME exists, refusing to overwrite."
+	exit 1
+fi
+
+if [ ! -d "$LOCATION" ]; then
+	echo "$LOCATION does not exist, please configure directories."
+	exit 1
+fi
+
+echo "Creating $LOCATION/$FILENAME"
+cat << __TEMPLATE__ > $TMPFILE
+Created: $RFCDATE
+Keywords: $TYPE
+Title: $TITLE
+__TEMPLATE__
+cp $TMPFILE "$LOCATION/$FILENAME"
+$EDITOR "$LOCATION/$FILENAME"
+if diff -q "$TMPFILE" "$LOCATION/$FILENAME" > /dev/null; then
+	rm -f "$LOCATION/$FILENAME"
+	echo "Unmodified file deleted."
+fi
+rm -f "$TMPFILE"

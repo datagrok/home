@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Meh, I have yet to find an organizational style that suits me. Maybe I'll try
+# to get into 'remind' again.
+
+tail ~/net/doc/Notes/todo.txt

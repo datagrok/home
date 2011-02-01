@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+'''Colon-join the arguments.
+
+This is useful for constructing a CLASSPATH environment variables or arguments
+for Java using shell wildcards. Example:
+
+    javac -cp `classpaths ./lib/*.jar` blah.java
+
+See also 'debjars' for a Debian- and Ubuntu-specific way to refer to
+system-level shared Jar files installed by way of the package manager.
+
+'''
+from sys import argv
+print ':'.join(argv[1:])

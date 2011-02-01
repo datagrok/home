@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Establish SSH tunnels to my mailservers, then run the command given as
+# argument. If no arguments are given, pop a zenity countdown box so I know
+# when to expect the tunnel to close if I fail to stick something in it.
+
+SSHCMD="ssh datagrok@datagrok.org \
+			-L 2255:mail.datagrok.org:25 \
+			-L 5222:datagrok.org:5222"
+if [ -z "$1" ]; then
+	($SSHCMD '
+	x=0
+	while sleep 1; do 
+		if [ $x -ge 100 ]; then break; fi
+		echo $x
+		x=$(($x+7))
+	done' ; echo 100 ) | \
+	zenity --progress --text="Tunnel Established..." --auto-close 
+else
+	$SSHCMD "$@"
+fi

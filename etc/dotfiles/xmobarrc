@@ -1,0 +1,19 @@
+Config { font = "xft:Bitstream Vera Sans Mono-7.5"
+       , bgColor = "black"
+       , fgColor = "grey"
+       , position = Bottom
+       , commands = [ Run Weather "KATL" ["-t","<tempF>F rh<rh>%","-L","50","-H","75","--normal","green","--high","red","--low","lightblue"] 36000
+                    , Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Network "eth1" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run Swap [] 10
+					, Run Battery [] 10
+					, Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%cpu% . %memory% %swap% . %eth0% %eth1%}{%KATL% . %battery% . %date%"
+       }
+-- "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
+-- DECATUR CW7927 KATL

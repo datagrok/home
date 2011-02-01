@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# TODO: Old script. Necessary? What was I using xnest for? Cull if no longer
+# useful.
+
+if [ -z "$1" ]; then
+	echo "Specify a new display number."
+	exit 1
+fi
+
+MCOOKIE=$(mcookie)
+xauth add $(hostname)/unix$1 . $MCOOKIE
+xauth add localhost/unix$1 . $MCOOKIE
+Xnest "$@"
+xauth remove $(hostname)/unix$1 localhost/unix$1
+
+exit 0

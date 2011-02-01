@@ -1,0 +1,57 @@
+#!/bin/sh
+
+#TODO: implement in python instead.
+
+#TODO: I have a similar script specific to Makefiles called 'rmake'; cull or refactor common functionality
+
+[ -z "$1" ] && cat << USAGE >&2 && exit 0
+Simple Shell Acquisition v.20050330
+Michael Lamb - http://datagrok.org
+
+Usage: $0 [-c] filename [filename ...]
+
+Looks for 'filename' in the current and parent directories,
+and returns the full path(s) of the closest match on
+standard output.
+
+Example:
+
+	Run 'make' from deep within your source heiarchy, like 'ant -find':
+		make -f \`acquire Makefile\`
+	
+	Execute shell scripts containing environment settings
+	to set up your local context.
+		for file in \`acquire -c .context\`; do . \$file; done
+	Might source, in order:
+		$HOME/.context
+		$HOME/Projects/Proj1/.context
+		$HOME/Projects/Proj1/src/org/blah/.context
+USAGE
+
+origdir=`pwd`
+onlyone=true
+found=false
+if [ "$1" == "-c" ]; then
+	onlyone=false
+	shift
+fi
+
+while true; do
+	cwd=`pwd`
+	if [ -e "$1" ]; then
+		found=true
+		[ "$cwd" == "/" ] && echo "/$1" || echo "$cwd/$1"
+		$onlyone && break
+	fi
+	[ ! .. -ef . ] || break
+	cd ..
+done
+
+cd $origdir
+
+if ! $found; then
+	#echo 1>&2 `basename "$0"`: "$1": File not found in heiarchy.
+	exit 1
+fi
+
+exit 0

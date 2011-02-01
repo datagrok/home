@@ -1,0 +1,45 @@
+#!/usr/bin/python
+
+"""Attempt to pack a collection of files onto a minimal number of DVDs. Given a
+list of sizes and files/directories, builds a set of directories containing
+symlinks to the source files such that no directory exceeds the amount of data
+that would fit on a DVD.
+
+"""
+
+# TODO: Aparrently I hand't heard of the knapsack problem before doing this, or
+# I was just in a hurry. Implement a (or find an existing) dynamic knapsack
+# solving algorithm instead.
+
+# TODO: add command line argument parser to allow one algorithm that packs into
+# any of several well-known media sizes, or a custom size.
+
+import sys, os
+
+dvddir='/home/mike/dvds'
+dvds = ["%04d" % x for x in range(200)]
+dvdsize = 2295104 # blocks of 2048b
+
+for d in os.listdir(dvddir):
+	if d in dvds:
+		dvds.remove(d)
+
+curtotal = 0
+dvd = dvds.pop(0)
+print 'mkdir "%s/%s"' % (dvddir, dvd)
+os.mkdir('%s/%s' % (dvddir, dvd))
+for line in sys.stdin:
+	size, filename = line.strip().split(None, 1)
+	size = int(size)
+	if size > dvdsize:
+		print "# ERROR: %s does not fit." % filename
+		continue
+	if size + curtotal > dvdsize:
+		curtotal = size
+		dvd = dvds.pop(0)
+		print 'mkdir "%s/%s"' % (dvddir, dvd)
+		os.mkdir('%s/%s' % (dvddir, dvd))
+	else:
+		curtotal += size
+	print 'ln -s "%s" "%s/%s"' % (filename, dvddir, dvd)
+	os.symlink(filename, '%s/%s/%s' % (dvddir, dvd, os.path.basename(filename)))

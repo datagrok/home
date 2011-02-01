@@ -1,0 +1,234 @@
+# WSPse's MP3-Creator (Configfile)
+# automaticly created, but you may edit this file manually.
+# [11.02.2008 09:39] - program version: 0.29
+# {pp3c-0.29 (NLS) - ENGLISH (Sep 14 2004) Default:OGG}
+
+# version number (to detect updates and inform about news)
+mp3c_version = "0.29"
+
+# cdrom-device
+cd_dev = "/dev/cdrw"
+
+# CDDB-server [host:port] (more servers maybe seperated by commas)
+# use "0" to disable server-access
+# note: cddb.cddb.com:8880 is not longer usable
+cddb_serv = "freedb.freedb.org:8880"
+
+# local CDDB database
+cddb_loc = "~/.cddb"
+
+# if remote CDDB access is allowed
+rem_cddb = 1
+
+# mailaddress to which CDDB should be sent (more addresses maybe seperated
+# by commas)
+cddb_email = "xmcd-cddb@amb.org"
+
+# relaying smtp-server who handle my emails [host:port]
+smtp_serv = "mail.datagrok.org"
+
+# my email address for authorizing [user@host]
+my_email = "mike@datagrok.org"
+
+# directory for mp3-files
+mp3_dir = "~/Music"
+
+# program for ripping cd-tracks (to file)
+#  %1 = cdrom device
+#  %2 = track (numeric)
+#  %3 = outputfile
+rip_nf_prg = "cdparanoia -d "%1" %2 "%3""
+
+# program for ripping cd-tracks (to stdout)
+#  %1 = cdrom device
+#  %2 = track (numeric)
+rip_of_prg = "cdparanoia -Z -d "%1" %2 -"
+
+# program for encoding wav->mp3 (from file to file)
+#   %1 = inputfile
+#   %2 = outputfile
+#   %3 = albumname
+#   %4 = MP3 genre by number
+#   %5 = year
+#   %6 = comment
+#   %7 = filename
+#   %8 = MP3 genre by name
+#   %a = tracknumber
+#   %b = tracknumber (with leading zeros)
+#   %c = artistname
+#   %d = title
+enc_nf_prg = "oggenc -q 6 -l "%3" -d "%5" -c "CDDBINFO=%6" -N "%a" -a "%c" -t "%d" -o "%2" "%1""
+
+# program for encoding wav->mp3 (from stdin to file)
+#  %1 = outputfile
+#  %3 = albumname
+#  %4 = MP3 genre by number
+#  %5 = year
+#  %6 = comment
+#  %7 = filename
+#  %8 = MP3 genre by name
+#  %a = tracknumber
+#  %b = tracknumber (with leading zeros)
+#  %c = artistname
+#  %d = title
+enc_of_prg = "oggenc -q 6 -l "%3" -d "%5" -c "CDDBINFO=%6" -N "%a" -a "%c" -t "%d" -o "%1" -"
+
+# program for creating mp3 info
+#  use mp3_info_prg = "0" to disable usage of tagprogram
+#  %1 = artistname
+#  %2 = title
+#  %3 = albumname
+#  %4 = genre (by number)
+#  %5 = year
+#  %6 = comment
+#  %7 = filename
+#  %8 = genre (by name)
+#  %a = tracknumber
+#  %b = tracknumber (with leading zeros)
+mp3_info_prg = "0"
+
+# string which replaced %8 in mp3_info_prg, if genre is unknown
+unknown_genre = "Unknown"
+
+# size of fifo-buffer for on the fly encoding (KB)
+of_fifo = 5120
+
+# pattern for mp3-filename-creation
+#  %1 = artistname
+#  %2 = title
+#  %3 = albumname
+#  %4 = genrestring
+#  %5 = year
+#  %6 = tracknumber
+#  %7 = tracknumber (with leading zeros)
+#  %8 = cddb-id
+mp3_pattern = "%1/%3/%7 %2.ogg"
+
+# pattern fro mp3-filename-creation for sampler cds
+#  same pattern like in mp3_pattern
+mp3_pattern_mix = "%3/%7 %1-%2.ogg"
+
+# mode for handling spaces in filenames
+#  0: spaces allowed, 1: spaces will be converted to specified replace character
+#  2: spaces will be killed
+pat_mode = 0
+space_rep_char = "_"
+
+# appereance of filename case
+#  0: as it is in CDDB entry
+#  1: convert to lowercase (first letter will be uppercase if pat_upc = 1
+#  2: convert to uppercase
+case_chg = 0
+
+# convert first letter of filename to uppercase
+#  0: no, 1: yes
+pat_upc = 1
+
+# illegal characters which aren't allowed in filenames
+# (converted to '_' if mode != 2, else killed
+ill_chars = "~[]()!*?"'"
+
+# what to do with illegal characters, should they be removed?
+# (otherwise convert to '_' or space, depending on pat_mode)
+#  0: no, use pat_mode, 1: yes, remove
+rem_ill_char = 1
+
+# protect pattern from substitution operations?
+#  0: no, 1: yes
+pattern_protect = 1
+
+# character which should replace slashes in album, artist, title
+# (only one character allowed, use "0" to accept slashes in these
+   fields, which causes strange directory creation)
+slash_rep_char = "-"
+
+# non-strict character handling
+# 0: only printable chars allowed, 1: eased allowed chars
+eased_char_hand = 1
+
+# default comment for mp3-files
+#  %1 = artistname
+#  %2 = title
+#  %3 = albumname
+#  %4 = genrestring
+#  %5 = year
+#  %6 = tracknumber
+#  %7 = tracknumber (with leading zeros)
+#  %8 = version-string of MP3c
+#  %9 = cddb-id
+#  %a = actual day (is set when encoding starts, or batchfile created)
+#  %b = actual month
+#  %c = actual year (2 digits)
+#  %d = actual year (4 digits)
+#  %e = weekday (3 letters)
+#  %f = month (3 letters)
+#  %g = actual hour
+#  %h = actual minute
+#  %i = minute-part of track-length
+#  %j = second-part of track-length
+mp3_comment = "%7-%9"
+
+# fancy color for windows (0: never, 1: sometimes, 2: ever)
+fancy_color = 0
+
+# autosave configuration on exit (0: no, 1: yes)
+auto_save = 1
+
+# default flag (0: default non-fly, 1: default on-fly)
+def_on_fly = 1
+
+# rip-encode order (0: rip one track, then encode; 1: rip all tracks,
+#                   then encode)
+rip_enc_ord = 1
+
+# open tray after encoding (0: no, 1:yes)
+open_tray = 1
+
+# tmpfile (for non-on-the-fly convert)
+tmp_file = "~/tmp/mp3c.wav"
+
+# what to do with tempfiles on exits
+# 0: nothing, 1: delete marked, 2: delete all
+del_tmp_on_exit = 1
+
+# default exportfile for ripped tracks
+def_exp_file = "./.mp3c-exported"
+
+# if deleteflag should cleared on export (0: no, 1: yes)
+clear_del_on_exp = 1
+
+# framemultiplikator (to calculate size)
+frame_mult = 214
+
+# pattern for m3u-playlist, use "0" to disable
+#  %1 = artistname
+#  %2 = title
+#  %3 = albumname
+#  %4 = genrestring
+#  %5 = year
+#  %6 = tracknumber
+#  %7 = tracknumber (with leading zeros)
+#  %8 = cddb-id
+m3u_pattern = "0"
+
+# pattern for m3u-playlist for sampler cds, use "0" to disable
+#  same pattern like in m3u_pattern
+m3u_patmix = "%3.m3u"
+
+# directory for m3u-playlist, or "0" to use mp3-dir
+m3u_dir = "0"
+
+# how to build the filename for m3u-list
+#  0 = full path
+#  1 = relative to m3u-maindir
+#  2 = relative to m3u-file
+m3u_rel_name_type = 2
+
+# existing CDDB genres, do not change manually
+cddb_genre_list = "blues,classical,country,data,folk,jazz,misc,newage,reggae,rock,soundtrack"
+
+# allow parallel running sessions of MP3c
+para_sessions_allowed = 1
+
+# use internal directory requester
+use_dir_request = 1

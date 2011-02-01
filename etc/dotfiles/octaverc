@@ -1,0 +1,2 @@
+LOADPATH = [ "~/lib/octave//:~/usr/share/octave-forge/oct:~/usr/share/octave-forge//:", LOADPATH ];
+EXEC_PATH = [ "~/usr/share/octave-forge/bin:", EXEC_PATH ];

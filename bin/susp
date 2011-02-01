@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# suspend-to-ram : Sends the machine to S3, 
+# performing some tasks before and after wakeup.
+
+# Gnome GUI-based suspend/resume tools are working well enough these days that
+# I dont need this so much anymore. Maybe delete in the near future?
+
+PATH=/bin:/usr/bin:/usr/sbin:/sbin:/usr/local/sbin
+
+echo -e "1;31mInitiating suspend-to-ram 0m"
+
+# Empty logfile
+echo > /tmp/suspend.log
+
+/etc/init.d/hotplug stop >> /tmp/suspend.log 2>&1
+/etc/init.d/acpid stop >> /tmp/suspend.log 2>&1
+
+# Flush disk buffers, so we won't lose to much data in case it fails
+sync
+
+# Go, sleep!
+echo 3 > /proc/acpi/sleep
+
+echo -e "3[1;32m... back 3[0m"
+
+# http://bugme.osdl.org/show_bug.cgi?id=3609
+setpci -s 00:1f.0 f2.b=1
+
+/etc/init.d/acpid start >> /tmp/suspend.log 2>&1 &
+/etc/init.d/hotplug start >> /tmp/suspend.log 2>&1 &
+

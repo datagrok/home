@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Convert an .ogg file to .mp3. 
+# Usage: $0 IN.ogg [OUT.mp3]
+#
+# OUT defaults to 'IN.ogg.mp3'
+#
+# There's a nice gui program that does this task now called SoundConverter.
+
+[ -x /usr/bin/lame ] || {
+	echo "This script depends on the lame mp3 encoder."
+	exit 1
+}
+[ -x /usr/bin/oggdec ] || {
+	echo "This script depends on the oggdec vorbis decoder."
+	exit 1
+}
+[ "$TEMP" ] || {
+	echo "Please set the TEMP environment variable."
+	exit 1
+}
+
+ogg=$1
+mp3=$2
+
+if [ -z "$mp3" ]; then
+	mp3="`basename "$ogg" .ogg`.mp3"
+fi
+oggdec "$ogg" -o "$TEMP/convert.wav"
+lame "$TEMP/convert.wav" "$mp3"
+rm "$TEMP/convert.wav"

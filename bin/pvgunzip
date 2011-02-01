@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Like gunzip, but display a nice progress meter of the output data. Requires
+# 'pv' and 'gunzip'.  Can't take input from a pipe.
+
+SIZE=`gunzip -l "$1" | tail -1 | ( read compressed uncompressed ratio name; echo $uncompressed)`
+gunzip -c "$1" | pv -s $SIZE

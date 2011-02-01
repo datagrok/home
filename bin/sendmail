@@ -1,0 +1,225 @@
+#!/usr/bin/python -O
+
+"""A filter for outgoing mail, for use with Mutt (or possibly other MUAs), and
+a replacement/frontend for sendmail to avoid a complex MUA configuration.
+
+Mutt lets me read and organize new mail well enough, but it won't let me
+customize how my outgoing mail looks. Example: A previous employer used to
+require that I send HTML mail with a signature that includes the company logo.
+This was the only thing keeping me from using Mutt at work. Mutt forces me to
+send mail as text/plain, I can't auto-attach a signature, I can't filter the
+result, etc., etc.
+
+Also, as of the time of writing, Evolution's HTML format is incompatible with
+the latest version of Outlook so it is a poor remedy. Where I see and send
+quoted messages, Outlook-using recipients see a confusing mix of my text and
+others'. If my plain text to rich text conversion mechanism produces something
+Outlook can't handle, I can transform that here as well.
+
+Also, Outlook users often "hilight" (insert background color span tags) which,
+likewise, Evolution refuses to render.
+
+This script works like a wrapper or replacement for /usr/sbin/sendmail.
+Configure mutt like:
+
+    set sendmail='~/bin/sendmail' # this script
+
+It takes as arguments switches (which it completely ignores) and destination
+addresses. A single message is fed to standard input.
+
+So that we don't have to set up a complex pipeline in the mutt configuration,
+this script also acts as sendmail, in that it will contact the configured
+mailserver to get the mail out. But that functionality is separate from the
+filter. See main().
+
+Other ideas for future improvements:
+    - Expand, normalize, sanitize, verify recipient list against some db
+    - Interactive pop-ups to verify new recipients and add them to db
+    - Auto BCC to self, then keep this copy until we get the sent one back from
+    the mailserver.
+
+"""
+import sys
+import os
+import re
+# from email.generator import Generator
+# from email.message import Message
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.utils import parseaddr
+#from datagrok.pandoc import pandoc
+from markdown import markdown
+from datagrok.misc.email import TunneledSMTP
+from smtplib import SMTP
+from hashlib import md5
+
+# TODO: move as much of this functionality as possible into appropriate
+# libraries.
+
+
+def sendmail(from_addr, to_addrs, msg):
+    server = None
+
+    if 'datagrok.org' in from_addr:
+        mailpassword = re.match(
+            r'account-hook.*datagrok\.org.*imap_pass=\'([^\']*)\'',
+            open('/home/mike/.mutt/imap-secrets').read(),
+            re.M).group(1).replace('\$','$')
+        server = TunneledSMTP('datagrok.org', 'mail.datagrok.org')
+        server.starttls()
+        server.ehlo()
+        server.login('mike@datagrok.org', mailpassword)
+
+    else:
+        server = SMTP('localhost')
+
+    server.sendmail(from_addr, list(to_addrs), msg.as_string())
+    return server.quit()
+
+
+def replace_imagerefs(txt, regex=re.compile(r'file://([^"\')\s]*)')):
+    images = {}
+
+    def replacer(mo):
+        path = mo.group(1)
+        images[path] = md5(open(path).read()).hexdigest()
+        return 'cid:%s' % images[path]
+
+    txt = regex.sub(replacer, txt)
+    return txt, images
+
+
+def text_to_multipart(msg, ispreview=False):
+    """Convert a text/plain message to multipart alternative text/plain plus
+    html. Idempotent for other types.
+
+    """
+
+    assert msg.get_content_type() == 'text/plain'
+
+    txt = msg.get_payload()
+    msg.set_payload(None)
+    msg.set_type('multipart/alternative')
+
+    # images marked file://path should be found and attached, replaced by cid:id
+    txt, images = replace_imagerefs(txt)
+
+    richpart = MIMEText(email_markdown(markdown(markdown_html(txt.decode('latin1')))), 'html')
+    msg.attach(MIMEText(txt, 'plain', 'utf-8'))
+
+    if images:
+        holder = MIMEMultipart('related')
+        holder.attach(richpart)
+        richpart = holder
+
+        # attach all the images, only to the html side.
+        for path, cid in images.items():
+            image = MIMEImage(open(path).read())
+            image['Content-ID'] = '<%s>' % cid
+            image['Content-Disposition'] = ('attachment; filename=%s' %
+                                            os.path.basename(path))
+            richpart.attach(image)
+
+    msg.attach(richpart)
+
+    return msg
+
+
+def email_markdown(text,
+        _attr_re=re.compile(r'^[> ]*(.*wrote:)\n([> ]+)', re.M),
+        _mailto_re=re.compile(r'<([^@]*@[^>]*)>')):
+    """Perform some transformations to a markdown-formatted text message
+    intended for e-mail before passing it onto markdown.
+    """
+    # Signature marker would normally be converted to mdash with no line break,
+    # so get rid of it.
+    text = text.replace('\n-- \n', '\n\n')
+
+    # # Replace e-mail address with explicit markup to avoid pandoc's email
+    # # obfuscation logic (pandoc will have a command line option to avoid this in
+    # # the future)
+    # text = _mailto_re.sub(r'<a href="mailto:\1">\1</a>', text)
+
+    # quoted email doesn't pandoc so well, pre-mark it a bit.
+    text = _attr_re.sub(r'\2<cite>\1</cite>  \n\2', text)
+
+    return text
+
+
+def markdown_html(text):
+    """Perform some more transformations to the resultant HTML after markdown
+    does its work.
+
+    """
+    # I think this was an MS Outlook-ism, not sure why I put it here.
+    text = text.replace('<blockquote\n','<blockquote type="cite"\n')
+    return text
+
+
+def modify(msg):
+    if not (msg['User-Agent'] and msg['User-Agent'].startswith('Mutt')):
+        return msg
+    #text/plain
+
+    #Becomes
+
+    #multipart/alternative
+    #    text/plain
+    #    multipart/related
+    #        text/html
+    #        image/png
+    #        etc.
+
+    #multipart/related
+    #    text/plain
+    #    image/png
+    #    application/binary
+
+
+    if msg.is_multipart():
+        assert msg.get_content_type() == 'multipart/mixed'
+        new_payload = []
+        seen = False
+        for p in msg.get_payload():
+            if not seen and p.get_content_type() == 'text/plain':
+                p = text_to_multipart(p)
+                seen = True
+            new_payload.append(p)
+        msg.set_payload(new_payload)
+    else:
+        assert msg.get_content_type() == 'text/plain'
+        msg = text_to_multipart(msg)
+
+    msg['X-dg-filtered'] = '; '.join(['markdown'])
+
+    return msg
+
+
+if __name__=="__main__":
+    from email import message_from_file
+    from optparse import OptionParser
+    parser = OptionParser(usage="usage: %prog [options] address [address ...]")
+    parser.add_option("-f", "--from", help="set sender address", dest='from_addr')
+
+    (options, recipients) = parser.parse_args()
+
+    if not recipients:
+        parser.error('No recipients were specified.')
+
+    msg = message_from_file(sys.stdin)
+    msg = modify(msg)
+
+    if options.from_addr is None:
+        options.from_addr = parseaddr(msg['From'])[1]
+
+    if __debug__:
+        print "calling server.sendmail(%s, %s, msg.as_string())" % (msg['From'], list(recipients))
+        print ""
+        print "msg:"
+        print msg.as_string()
+        raise SystemExit(1)
+
+    sendmail(options.from_addr, recipients, msg)
+
+# vim: set ft=python et :

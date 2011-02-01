@@ -1,0 +1,17 @@
+escape `\040
+setenv TERM screen
+hardstatus alwayslastline
+# good for remote servers..
+# hardstatus string "%H %l  %C%a  %-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
+hardstatus string '%{=}bt %H%10=%{=r} %-Lw%{=b} %n%f%t %{-}%+Lw %=%{-} %l %m-%d %C%a' # good mono
+hardstatus string '%{= km}bt %H%10=%{=r} %-Lw%{=b} %n%f%t %{-}%+Lw %=%{-} %l %m-%d %C%a' # good mono
+
+
+shelltitle bash
+screen
+screen
+startup_message off
+defc1 off
+defutf8 on
+multiuser on
+acladd yu

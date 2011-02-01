@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# wrapper to make gvimdiff compatible with svn diff by way of
+# --diff-cmd; strips "-u -L name -L name" from options.
+
+shift 5; /usr/bin/gvimdiff -f "$@"

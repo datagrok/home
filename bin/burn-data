@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Burn a CD of data on-the-fly.
+
+GENISOIMAGEOPTS="-J -r -quiet -f ~/To-Burn"
+CDRECOPTS="-eject -v -dao -data"
+cdblocks=`mkisofs -print-size $GENISOIMAGEOPTS`
+genisoimage $GENISOIMAGEOPTS | wodim $CDRECOPTS tsize=${cdblocks}s -

@@ -1,0 +1,37 @@
+audio/mpeg; alsaplayer -E '%s'; nametemplate=%s.mp3
+audio/x-scpls; alsaplayer -E '%s'; nametemplate=%s.pls
+audio/mpegurl; alsaplayer -E '%s'; nametemplate=%s.m3u
+audio/x-mpegurl; alsaplayer -E '%s'; nametemplate=%s.m3u
+text/html; sensible-browser '%s'; nametemplate=%s.html
+application/x-java-jnlp-file; /usr/lib/jvm/java-6-openjdk/jre/bin/javaws -viewer '%s'
+application/vnd.sun.xml.writer;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.writer.global;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.writer;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.writer-global;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-starwriter;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.writer.template;/home/mike/.openoffice/1.1.1/soffice %s
+application/msword;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.calc;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.calc;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-starcalc;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.calc.template;/home/mike/.openoffice/1.1.1/soffice %s
+application/excel;/home/mike/.openoffice/1.1.1/soffice %s
+application/msexcel;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.ms-excel;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-msexcel;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.impress;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.impress;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.impress-packed;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-starimpress;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.impress.template;/home/mike/.openoffice/1.1.1/soffice %s
+application/powerpoint;/home/mike/.openoffice/1.1.1/soffice %s
+application/mspowerpoint;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.ms-powerpoint;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-mspowerpoint;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.draw;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.draw;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-stardraw;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.draw.template;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.sun.xml.math;/home/mike/.openoffice/1.1.1/soffice %s
+application/vnd.stardivision.math;/home/mike/.openoffice/1.1.1/soffice %s
+application/x-starmath;/home/mike/.openoffice/1.1.1/soffice %s

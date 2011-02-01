@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# When I use ssh+svn: to this box, use my subversion repository folder as the
+# "root" to shorten subversion repository URLs.
+#
+# For this to work, this script must be discoverable in the path before
+# /usr/bin/svnserve. For example, in .bashrc: export PATH=~/bin:$PATH
+#
+/usr/bin/svnserve -r ~/var/svn/ "$@"

@@ -1,0 +1,14 @@
+#!/usr/bin/python
+
+'''I was quite burnt out approaching the end of my degree.'''
+
+import datetime
+
+days = (datetime.date(2008,5,20) - datetime.date.today()).days
+
+if days > 0:
+       print "Hang in there trooper! Only %d weeks and %d days until you're free of this hell-hole!" % divmod(days, 7)
+elif days == 0:
+       print "Today's the day! Make it through alive and it's all over!"
+else:
+       print "Congratulations! You're done!"

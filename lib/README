@@ -1,0 +1,6 @@
+Standalone or in-development support files
+
+I tend to keep ~/lib/python on my $PYTHONPATH, ~/lib/java in my $CLASSPATH, and
+~/lib/latex2e in my $TEXINPUTS. Then I can throw any support files that are
+universally useful into those paths and avoid copying them around from project
+to project.

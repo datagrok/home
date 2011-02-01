@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Find the nearest Makefile in the ancestor directories and run 'make' from there.
+
+#TODO: I have a similar script not specific to Makefiles called 'acquire'; cull or refactor common functionality
+
+while echo -n "."; do
+	if [ "`pwd`" == "/" ]; then
+		echo "No makefile found."
+		exit 1
+	elif [ -f "Makefile" ]; then
+		echo "Makefile found."
+		make $@
+		exit 0
+	else
+		cd ..
+	fi
+done

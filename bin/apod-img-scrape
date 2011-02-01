@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Retrieve the Astronomy Picture of the Day into ~/.apod/ and set it as the
+# desktop background.
+
+[ -d ~/.apod ] || mkdir ~/.apod
+APOD='http://antwrp.gsfc.nasa.gov/apod/'
+wget -p -nd -P ~/.apod -A.jpg -A.gif "$APOD"
+ls -1 ~/.apod | head -1 | while read IMG; do
+	xsetbg -border black -fullscreen ~/.apod/"$IMG"
+done
+

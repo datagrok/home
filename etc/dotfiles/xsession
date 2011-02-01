@@ -1,0 +1,29 @@
+#!/bin/sh
+echo "Executing ~/.xsession"
+set +x
+
+if [ "$WINDOW_MANAGER" ]; then
+	echo Warning: ~/.xsession overriding previous WINDOW_MANAGER="$WINDOW_MANAGER"
+else
+	WINDOW_MANAGER=xmonad
+fi
+
+xrandr -s 1680x1050
+#xmobar &
+#urxvtd -q -o -f &
+#xsetroot -cursor_name left_ptr
+#gnome-settings-daemon &
+#PATH=$PATH:/usr/lib/gnome-volume-manager gnome-volume-manager
+#xscreensaver &
+#nm-applet &
+#ssh-add &
+#(sleep 3; trayer --widthtype request --height 16 --edge bottom --align center --transparent true --alpha 255 --SetPartialStrut true) &
+#pidgin &
+
+if [ -z "$WINDOW_MANAGER" ]; then
+	xmessage -timeout 5 "Window manager specified in .xsession not found." &
+	exec xterm
+else
+	#exec "$WINDOW_MANAGER"
+	exec gnome-session
+fi

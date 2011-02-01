@@ -1,0 +1,54 @@
+[begin] (datagrok)
+		[exec] (xterm)       {xterm}
+	[exec] (roxfiler)         {rox-filer}
+	[exec] (gvim)	{gvim}
+	[exec] (xmms)         {beep-media-player}
+	
+	[nop]
+	[exec] (firefox)   {firefox}
+	[exec] (thunderbird)   {mozilla-thunderbird}
+	[exec] (gaim)      {gaim}
+	[exec] (xchat)     {xchat}
+	[nop]
+   [submenu] (debian)
+   	[include] (/etc/X11/fluxbox/fluxbox-menu)
+   [end]
+   [exec] (synaptic) {gksudo synaptic}
+	[submenu] (office)
+	[exec] (lyx)          {lyx}
+	[exec] (xfig)         {xfig}
+	[exec] (ooffice)      {ooffice}
+	[exec] (gimp)      {gimp}
+	[exec] (xcalc)        {xcalc}
+	[end]
+   [submenu] (toys)
+		[exec] (doom legacy sdl) {lsdldoom}
+		[exec] (quake II) {quake2}
+	[end]
+   [submenu] (terms) {whee fun terms...}
+		[exec] (xterm  8)       {xterm -fa "Bitstream Vera Sans Mono" -fs 8 -bg "#0a0b0e" -fg "#decdc2"}
+	[exec] (xterm 11)       {xterm -fa "Bitstream Vera Sans Mono" -fs 11 -bg "#0a0b0e" -fg "#decdc2"}
+		[exec] (xterm 24)       {xterm -fa "Bitstream Vera Sans Mono" -fs 24 -bg "#0a0b0e" -fg "#decdc2" -geometry 67x10}
+		[exec] (phosphor)       {/usr/lib/xscreensaver/phosphor -delay 10 -scale 2 -program /bin/bash}
+		[exec] (apple2)         {/usr/lib/xscreensaver/apple2 -fast -text -program /bin/bash}
+#	[exec] (aterm)        {aterm -tr -trsb -tint blue -rv -fade 50 -fn -artwiz-lime-*}
+	[end]
+	[nop]
+   [submenu] (config)
+      [submenu] (Default Themes)
+         [stylesdir] (/usr/share/fluxbox/styles)
+      [end]
+      [submenu] (0.9.9 Themes)
+         [stylesdir] (/usr/local/share/fluxbox/styles)
+      [end]
+      [submenu] (My Themes)
+         [stylesdir] (/home/mike/.fluxbox/styles)
+      [end]
+      [config] (settings)
+      [reconfig] (reconf)
+      [exec] (Edit Menu) {gvim /home/mike/.fluxbox/menu}
+   [end]
+   [restart] (fluxbox-0.1.14) {/usr/bin/fluxbox}
+   [restart] (fluxbox-0.9.9) {/usr/local/bin/fluxbox}
+   [exit] (Exit)
+[end]

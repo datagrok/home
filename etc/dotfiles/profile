@@ -1,0 +1,81 @@
+#!/bin/false # This file is sourced by bash(1) for login shells.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
+# Useful for debugging startup execution path.
+echo "Sourcing ~/.profile"
+
+# the default umask is set in /etc/login.defs
+#umask 022
+
+# prepend private bin(s) and man(s) if they exist to PATH
+for P in ~/usr ~; do
+	if [ -d "${P}/bin" ]; then
+		PATH="${P}/bin:${PATH}"
+	fi
+	if [ -d "${P}/man" ]; then
+		MANPATH="${P}/man:${MANPATH}"
+	fi
+	if [ -d "${P}/share/man" ]; then
+		MANPATH="${P}/share/man:${MANPATH}"
+	fi
+done
+
+# Sun Java install for versions less than 6 on debian is a bit stupid
+# Java 6 deb is non-stupid; maybe I can soon remove this block
+if [ -d /usr/lib/j2sdk*/bin ] ; then
+	for P in /usr/lib/j2sdk*/jre/bin /usr/lib/j2sdk*/bin; do
+    	PATH="${PATH}:${P}"
+	done
+fi
+
+# Who keeps creating these stupid empty directories? Nautilus, I think.
+for d in ~/{Desktop,Documents,Music,Videos,Pictures,Public,Templates}; do
+	[ -d "$d" ] && rmdir --ignore-fail-on-non-empty "$d"
+done
+
+# Manage ~/tmp. If this is the only login,
+if [ "$(who | grep ^$USER | wc -l)" = "1" ]; then
+	echo "Flushing ~/tmp"
+	rm -rf "$HOME/.old-tmp"
+	mv "$HOME/tmp" "$HOME/.old-tmp"
+	mkdir "$HOME/tmp"
+else
+	echo "Already logged in; not flushing ~/tmp"
+fi
+
+if [ -d "$HOME/tmp" ]; then
+	export TMPDIR=$HOME/tmp
+	export TEMP=$HOME/tmp
+fi
+
+# By default mail spool on ubuntu is nonexistent, if so start mutt looking
+# somewhere else.
+if [ ! -d "$MAIL" ]; then
+	# XXX don't really know the best thing to do here
+	MAIL=~/var/mail/inbox/
+fi
+
+if [ "$MANPATH" ]; then
+	export MANPATH
+fi
+export GIT_PAGER=
+export TEXINPUTS=$HOME/lib/latex2e/:
+export PYTHONPATH=$HOME/lib/python/:lib
+export PYTHONSTARTUP=$HOME/.pythonrc.py
+export PYTHONDOCS=/usr/share/doc/python-doc/html
+export CLASSPATH=.:$HOME/lib/java
+export EDITOR=vim
+export PAGER=less
+export LESS=-R
+#export HISTCONTROL=erasedups
+export HISTCONTROL=ignoreboth
+export TZ=America/New_York
+# This is no good with new gnome's im-switch...
+#export GTK_IM_MODULE="scim"
+#export XMODIFIERS="@im=SCIM"
+
+# include .bashrc if it exists
+if [ -f ~/.bashrc ]; then
+   . ~/.bashrc
+fi

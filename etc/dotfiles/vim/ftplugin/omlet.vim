@@ -1,0 +1,1 @@
+/usr/share/ocaml-tools/omlet/ftplugin/omlet.vim

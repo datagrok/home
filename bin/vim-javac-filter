@@ -1,0 +1,12 @@
+#!/bin/sed -f
+#
+# Filter 'javac' output for vim's errorformat system, and obviously a bit of
+# sed golf as well.
+#
+# Equivalent:
+#
+# /\^$/           s/\t/\ /g
+# /:[0-9]\+:/     {h; d}
+# /^[ \t]*\^/     G;
+#
+/\^$/s/\t/\ /g;/:[0-9]\+:/{h;d};/^[ \t]*\^/G;

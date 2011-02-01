@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# This is a flaky hack intended to dynamically set up an NFS export on another
+# machine and mount it from this one, through an SSH tunnel. No idea if it
+# still works. I think this depends on the user-space nfsv3 server 'unfs3'.
+
+remote=fiona
+mount=~/Projects
+mountpoint=/mnt/notebook
+rpcport=12049
+mountport=12050
+
+# connect and fwd
+ssh -L $rpcport:localhost:$rpcport -L $mountport:localhost:$mountport $remote \
+"
+uid=\`id -u\`
+gid=\`id -g\`
+exports=\`mktemp\`
+echo $mount localhost\(rw,all_squash,anonuid=\$uid,anongid=\$gid\) > \$exports
+/usr/sbin/rpc.nfsd -f \$exports -F -n -P $rpcport &
+/usr/sbin/rpc.mountd -f \$exports -F -n -P $mountport &
+sleep 6; rm \$exports
+" &
+sleep 1
+
+# mount -t nfs -o tcp,port=$rpcport,mountport=$mountport localhost:$mount $mountpoint
+mount /mnt/notebook

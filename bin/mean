@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+'''Sum the numeric data on stdin.'''
+
+if __name__=='__main__':
+    import sys
+    sum = 0
+    total = 0
+    for line in sys.stdin:
+        sum += float(line)
+        total += 1
+    print sum / total

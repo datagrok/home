@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# There's a nice gui program that does this task now called SoundConverter.
+
+oggdir=$1
+mp3dir=$2
+
+if [ -z "$oggdir" ]; then
+	echo "First argument must be a directory."
+	exit
+fi
+
+if [ ! -d "$oggdir" ]; then
+	echo "First argument must be a directory."
+	exit
+fi
+
+if [ -z "$mp3dir" ]; then
+	mp3dir="`basename "$oggdir"`"
+fi
+
+if [ ! -e "$mp3dir" ]; then
+	mkdir "$mp3dir"
+fi
+
+for f in "$oggdir"/*; do
+	filename="`basename "$f" .ogg`"
+	if echo $filename | grep \.mp3; then
+		cp "$f" "$mp3dir"/"$filename"
+	else
+		ogg2mp3 "$f" "$mp3dir"/"$filename".mp3
+	fi
+done

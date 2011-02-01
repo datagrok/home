@@ -1,0 +1,22 @@
+[gui]
+	recentrepo = /home/mike/tmp/gittest
+	fontui = -family \"Bitstream Vera Sans\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"Bitstream Vera Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
+[user]
+	name = Michael F. Lamb
+	email = mike@datagrok.org
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[url "ssh://datagrok.org/~datagrok/var/git/"]
+	insteadOf = ssh://datagrok.org/
+[url "ssh://seiko/~mike/var/git/"]
+	insteadOf = ssh://seiko/
+[merge]
+	tool = gvimdiff
+[core]
+	excludesfile = /home/mike/etc/gitignore-global
+[alias]
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit

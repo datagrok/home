@@ -1,0 +1,94 @@
+toolbar:			flat solid
+toolbar.color:			#1d1d20
+
+toolbar.button:			flat crossdiagonal gradient bevel2
+toolbar.button.color:		#385465
+toolbar.button.colorTo:		#1d1d20
+toolbar.button.picColor:	#ebd1c8
+
+toolbar.button.pressed:		flat solid
+toolbar.button.pressed.color:	grey20
+
+toolbar.label:			flat diagonal gradient bevel2
+toolbar.label.color:		#385465
+toolbar.label.colorTo:		#1d1d20
+
+toolbar.windowLabel:		flat crossdiagonal gradient bevel2
+toolbar.windowLabel.color:	#385465
+toolbar.windowLabel.colorTo:	#1d1d20
+
+toolbar.clock:			flat crossdiagonal gradient bevel2
+toolbar.clock.color:		#1d1d20
+toolbar.clock.colorTo:		#385465
+
+toolbar.justify:		center
+
+menu.title:			flat crossdiagonal gradient
+menu.title.color:		#385465
+menu.title.colorTo:		#1d1d20
+menu.title.justify:		right
+
+menu.frame:			flat crossdiagonal gradient bevel2
+menu.frame.color:		#1d1d20
+menu.frame.colorTo:		#385465
+menu.frame.disableColor:	grey20
+menu.frame.justify:		left
+
+menu.bullet.position:		right
+menu.bullet:			round
+
+menu.hilite:			flat crossdiagonal gradient bevel1
+menu.hilite.color:		#385465
+menu.hilite.colorTo:		#1d1d20
+
+window.title.focus:		flat solid
+window.title.focus.color:	#385465
+
+window.label.focus:		flat crossdiagonal gradient bevel1
+window.label.focus.color:	#1d1d20
+window.label.focus.colorTo:	#385465
+
+window.label.unfocus.textColor:	grey60
+
+window.button.focus:		flat crossdiagonal gradient bevel2
+window.button.focus.color:	#385465
+window.button.focus.colorTo:	#1d1d20
+window.button.focus.picColor:	#ebd1c8
+
+window.button.unfocus:		flat solid
+window.button.unfocus.color:	#1d1d20
+window.button.unfocus.picColor:	#1d1d20
+window.button.pressed:		flat crossdiagonal gradient
+window.button.pressed.color:	grey40
+window.button.pressed.colorTo:	grey20
+
+window.handle.focus:		flat crossdiagonal gradient
+window.handle.focus.color:	#385465
+window.handle.focus.colorTo:	#1d1d20
+window.handle.unfocus:		flat solid
+window.handle.unfocus.color:	#1d1d20
+
+window.grip.focus:		flat crossdiagonal gradient
+window.grip.focus.color:	#385465
+window.grip.focus.colorTo:	#1d1d20
+
+window.frame.focusColor:	#385465
+
+window.justify:			center
+
+borderColor:			#1d1d20
+
+bevelWidth:			1
+borderWidth:			0
+handleWidth:			4
+
+*unfocus:			flat solid
+*unfocus.color:			#1d1d20
+*unfocusColor:			#1d1d20
+*textColor:			#ebd1c8
+#*font:				-artwiz-fkp-*
+#*font:				-artwiz-cure-medium-r-normal-*-*-100-*-*-m-*-iso646.1991-irv
+*font:				"Bitstream Vera Sans 11"
+
+#rootCommand:			bsetroot -gradient interlacedflatcrossdiagonalgradient -from rgb:00/33/99 -to rgb:1b/38/4a
+rootCommand:			display -window root /home/mike/Graphics/Backgrounds/Tneme-1024x768.jpg

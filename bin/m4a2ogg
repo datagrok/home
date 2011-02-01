@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Convert an .m4a audio file to .ogg.
+# usage: $0 source.m4a
+# Will create source.m4a.ogg
+
+which mkfifo > /dev/null  || exec /bin/sh -c 'echo "mkfifo not found"; exit 1'
+which mplayer > /dev/null || exec /bin/sh -c 'echo "mplayer not found"; exit 2'
+which oggenc > /dev/null  || exec /bin/sh -c 'echo "oggenc not found"; exit 3'
+
+src="$1"
+dst="$src".ogg
+echo "Decoding..."
+mplayer -vc null -vo null -ao pcm:waveheader "$src"
+echo "Encoding..."
+oggenc "audiodump.wav" -o "$dst"
+echo "Removing Temporary files..."
+rm -f "audiodump.wav"
+exit 0
+
+# This is on-fly but I think non onfly works faster...?
+
+echo "Decoding... (progress in $dectext)"
+mplayer -vc null -vo null -ao pcm:file="$fifo" "$src" > "$dectext" &
+echo "Encoding... (progress in $enctext)"
+oggenc "$fifo" -o "$dst" > "$enctext"

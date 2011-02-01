@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+'''debjars.py
+
+Debian-based systems (such as Ubuntu) include some java libraries in the
+standard repositories, which are installed as jar files in the path
+/usr/share/java.
+
+This is a helper for generating a CLASSPATH specification. Arguments to
+debjars.py will be converted into full paths to matching jar files in
+/usr/share/java. Example:
+
+	javac -cp lib:`debjars biojava jaxp junit` blah.java
+
+See also '2.3 Java Libraries' in the 'Debian Policy for Java':
+
+    http://www.debian.org/doc/packaging-manuals/java-policy/x104.html
+    file:///usr/share/doc/java-common/debian-java-policy/x104.html
+'''
+
+# TODO: move jar-finding algorithm into python library
+
+import sys, os
+
+def main(args):
+	print ':'.join(findlibs(args))
+
+def findlibs(args):
+	for lib in args:
+		path = findlib(lib)
+		if not path:
+			print >> sys.stderr, 'Warning: jar file for %s not found.' % lib
+		else:
+			yield path
+
+def findlib(lib):
+	for t in ['lib%s.jar', '%s.jar', '%s']:
+		f = '/usr/share/java/' + t % lib
+		if os.path.exists(f):
+			return f
+
+if __name__ == '__main__':
+	raise SystemExit(main(sys.argv[1:]))

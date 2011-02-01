@@ -1,0 +1,21 @@
+#!/usr/bin/python
+
+'''Run the text on stdin through markdown/pandoc, and hand the output to a web
+browser.
+
+'''
+
+from datagrok.misc.pandoc import pandoc
+
+def main(fin):
+	tempfile = os.path.join(os.environ['TEMP'], 'preview.html')
+	fout=open(tempfile, 'w')
+	fout.write(pandoc(fin.read()))
+	fout.close()
+	print tempfile
+	os.execlp('x-www-browser', '--verbose', 'file://' + tempfile)
+
+if __name__ == '__main__':
+	import sys, os
+	main(sys.stdin)
+# vim: set ft=python :

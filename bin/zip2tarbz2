@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Convert a .zip file to a tarbz2l.
+
+base=`basename "$1" .zip`
+zipfile="$base.zip"
+tarfile="$base.tar.bz2"
+
+mkdir "zip_convert"
+mkdir "zip_convert/$base" || exit 1
+unzip -d "zip_convert/$base" "$zipfile" || exit 1
+tar -jcvf "$tarfile" -C "zip_convert/$base" . || exit 1
+rm -rf "zip_convert/$base"
+rmdir "zip_convert"
+rm -f "$zipfile"

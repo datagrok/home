@@ -1,0 +1,5 @@
+A place for small standalone executables.
+
+Executables that are part of software packages that I have installed on a
+user-level without the system's package management system should live in
+~/usr/bin.

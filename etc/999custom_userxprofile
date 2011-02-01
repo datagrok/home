@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Place this in /etc/X11/Xsession.d/999custom_userxprofile
+
+USERPROFILE=~/.xprofile
+
+echo -n "Checking for ~/.xprofile... "
+if [ -f "$USERPROFILE" ]; then
+        echo "found. Sourcing..."
+        . "$USERPROFILE"
+        echo "~/.xprofile execution complete."else
+        echo "not found."
+fi
+

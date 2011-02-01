@@ -1,0 +1,1 @@
+/usr/share/vim/vimcurrent/syntax/java.vim

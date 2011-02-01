@@ -1,0 +1,8 @@
+26c26
+< PermitRootLogin yes
+---
+> PermitRootLogin no
+50c50
+< #PasswordAuthentication yes
+---
+> PasswordAuthentication no

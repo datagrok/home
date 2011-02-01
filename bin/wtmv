@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Employ whiptail to prompt for the destination for a file rename. I don't
+# remember why I created this. Maybe to avoid a lot of escape characters when
+# moving files containing spaces? Who knows.
+
+TMPFILE=`tempfile` || exit 1 
+whiptail --inputbox "Move $1 to:" 6 70 "$1" 2>$TMPFILE
+dest=`cat $TMPFILE`
+rm -f $TMPFILE
+exec mv "$1" "$dest"

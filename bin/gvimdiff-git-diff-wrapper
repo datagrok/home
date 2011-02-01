@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# wrapper to make gvimdiff compatible with git diff by way of
+# GIT_EXTERNAL_DIFF; strips "-u -L name -L name" from options.
+
+# TODO: examine git-difftool to see if it fills the same purpose; cull if so.
+
+/usr/bin/gvimdiff -f "$2" "$5"

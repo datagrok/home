@@ -1,0 +1,10 @@
+USERPROFILE=~/.xprofile
+
+echo -n "Checking for $USERPROFILE... "
+if [ -f "$USERPROFILE" ]; then
+        echo "found. Sourcing..."
+        . "$USERPROFILE"
+        echo "$USERPROFILE execution complete."
+else
+        echo "not found."
+fi

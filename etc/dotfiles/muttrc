@@ -1,0 +1,164 @@
+set realname="Michael F. Lamb"
+set from="mike@datagrok.org"
+my_hdr Bcc: mike@datagrok.org
+set sendmail="~/bin/sendmail"
+#set mbox_type="Maildir"
+set folder=~/var/mail/
+set mbox="=read"
+set record="=sent"
+set postponed="=postponed"
+#fcc-hook .* =sent
+#set editor=vi
+ignore *
+unignore From
+unignore Date
+set keep_flagged="yes"
+#set move="yes"
+set tmpdir="~/tmp"
+set simple_search="~f %s | ~s %s | ~C %s"
+set strict_threads
+
+## don't ask when appending message to an existing folder
+# unset confirmappend
+## don't ask me when deleting
+# set delete=yes
+## try this one out (for subject lines and such encoded in 8bit charsets
+# set rfc2047_parameters
+## reply quickly
+# set fast_reply # no effect with autoedit
+set autoedit
+## don't save attachments
+#unset fcc_attach
+## allow editing headers in editor
+set edit_headers
+## include message in reply
+set include=yes
+## don't mark messages as old if i haven't read them
+# unset mark_old
+## i don't like the annoying + markers at the beginning of wrapped lines
+# unset markers
+# view annoying html mail inline
+# auto_view text/html
+# if plain text and html prefer plain text
+alternative_order text/plain text/enriched text/html
+## show message index while reading messages
+set pager_index_lines=11
+
+## Debian stuff
+
+# emacs-like bindings
+bind editor    "\e<delete>"    kill-word
+bind editor    "\e<backspace>" kill-word
+
+# map delete-char to a sane value
+bind editor     <delete>  delete-char
+
+# some people actually like these settings
+#set pager_stop
+#bind pager <up> previous-line
+#bind pager <down> next-line
+
+# don't add the hostname to the From header
+unset use_domain
+# but we do need this
+set use_from
+
+# Specifies how to sort messages in the index menu.
+set sort=threads
+set sort_aux=last-date
+
+# Exim does not remove Bcc headers
+unset write_bcc
+# Postfix and qmail use Delivered-To for detecting loops
+unset bounce_delivered
+
+# weed out binary-only announcements to -devel-changes
+#macro index \CW T!~s\(.*source.*\)\nWn^T~A\n "Weed out binary-only announcements"
+
+# imitate the old search-body function
+macro index \eb '/~b ' 'search in message bodies'
+
+# simulate the old url menu
+macro index \cb |urlview\n 'call urlview to extract URLs out of a message'
+macro pager \cb |urlview\n 'call urlview to extract URLs out of a message'
+
+# Show documentation when pressing F1
+macro generic <f1> "!zcat /usr/share/doc/mutt/manual.txt.gz | sensible-pager\n" "Show Mutt documentation"
+macro index   <f1> "!zcat /usr/share/doc/mutt/manual.txt.gz | sensible-pager\n" "Show Mutt documentation"
+macro pager   <f1> "!zcat /usr/share/doc/mutt/manual.txt.gz | sensible-pager\n" "Show Mutt documentation"
+
+# Use folders which match on \\.gz$ as gzipped folders:
+open-hook \\.gz$ "gzip -cd %f > %t"
+close-hook \\.gz$ "gzip -c %t > %f"
+append-hook \\.gz$ "gzip -c %t >> %f"
+
+# If Mutt is unable to determine your site's domain name correctly, you can
+# set the default here.
+#
+# set hostname=cs.hmc.edu
+
+# If your sendmail supports the -B8BITMIME flag, enable the following
+#
+# set use_8bitmime
+
+# colors
+color normal	white default
+color attachment brightyellow default
+color hdrdefault cyan default
+color indicator black cyan
+color markers	brightred default
+color quoted	green default
+color signature cyan default
+color status	brightgreen blue
+color tilde	blue default
+color tree	red default
+#color header	brightgreen black ^From:
+#color header	brightcyan black ^To:
+#color header	brightcyan black ^Reply-To:
+#color header	brightcyan black ^Cc:
+#color header	brightblue black ^Subject:
+#color body	brightred black [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
+#color body	brightblue black (https?|ftp)://[\-\.\,/%~_:?\#a-zA-Z0-9]+
+
+# aliases for broken MUAs
+charset-hook windows-1250 CP1250
+charset-hook windows-1251 CP1251
+charset-hook windows-1252 CP1252
+charset-hook windows-1253 CP1253
+charset-hook windows-1254 CP1254
+charset-hook windows-1255 CP1255
+charset-hook windows-1256 CP1256
+charset-hook windows-1257 CP1257
+charset-hook windows-1258 CP1258
+
+##
+## More settings
+##
+set ispell=ispell
+
+# GnuPG configuration
+set pgp_decode_command="/usr/bin/gpg   --status-fd=2 %?p?--passphrase-fd 0? --no-verbose --quiet  --batch  --output - %f"
+set pgp_verify_command="/usr/bin/gpg   --status-fd=2 --no-verbose --quiet  --batch  --output - --verify %s %f"
+set pgp_decrypt_command="/usr/bin/gpg   --status-fd=2 --passphrase-fd 0 --no-verbose --quiet  --batch  --output - %f"
+set pgp_sign_command="/usr/bin/gpg    --no-verbose --batch --quiet   --output - --passphrase-fd 0 --armor --detach-sign --textmode %?a?-u %a? %f"
+set pgp_clearsign_command="/usr/bin/gpg   --no-verbose --batch --quiet   --output - --passphrase-fd 0 --armor --textmode --clearsign %?a?-u %a? %f"
+set pgp_encrypt_only_command="/usr/lib/mutt/pgpewrap /usr/bin/gpg    --batch  --quiet  --no-verbose --output - --encrypt --textmode --armor --always-trust -- -r %r -- %f"
+set pgp_encrypt_sign_command="/usr/lib/mutt/pgpewrap /usr/bin/gpg  --passphrase-fd 0  --batch --quiet  --no-verbose  --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r %r -- %f"
+set pgp_import_command="/usr/bin/gpg  --no-verbose --import -v %f"
+set pgp_export_command="/usr/bin/gpg   --no-verbose --export --armor %r"
+set pgp_verify_key_command="/usr/bin/gpg   --verbose --batch  --fingerprint --check-sigs %r"
+set pgp_list_pubring_command="/usr/bin/gpg   --no-verbose --batch --quiet   --with-colons --list-keys %r" 
+set pgp_list_secring_command="/usr/bin/gpg   --no-verbose --batch --quiet   --with-colons --list-secret-keys %r" 
+set pgp_good_sign="^\\[GNUPG:\\] VALIDSIG"
+
+source $HOME/.mutt/aliases
+source $HOME/.mutt/mailboxes
+source $HOME/.mutt/macros
+source $HOME/.mutt/save-hooks
+
+# IMAP
+set imap_keepalive=240
+account-hook . 'unset imap_user; unset imap_pass; unset tunnel'
+set header_cache="$HOME/var/mail/.imap_header_cache/"
+set message_cachedir="$HOME/var/mail/.imap_message_cache/"
+source $HOME/.mutt/imap-secrets

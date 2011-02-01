@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Interrupt myself after an hour
+
+[ -x /usr/bin/ssh-askpass-fullscreen ] || \
+	echo `basename "$0"`": error: this script depends on ssh-askpass-fullscreen." &&
+	exit 1
+while sleep $((60*60)); do
+	ssh-askpass-fullscreen "`date +%r` -- TAKE A BREAK"
+done

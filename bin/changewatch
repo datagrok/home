@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Watch a directory for changes (files being written to) and take action.
+# Basically, a frontend to inotifywait appropriate for what I most frequently
+# use it for.
+#
+# Usage: changewatch targetdir command
+# :set nowritebackup in vim to wake up less.
+
+TARGETDIR="$1"
+shift
+
+inotifywait \
+	--exclude '\.sw..\?$' \
+	--exclude '\.git/' \
+	--exclude '\.svn/' \
+	-rme close_write "$TARGETDIR" \
+	| while read dir event filename
+	do
+		[ -e "$dir$filename" ] || continue
+		[ "$DEBUG" ] && echo "$0": "$@" "$dir$filename"
+		"$@" "$dir$filename"
+	done

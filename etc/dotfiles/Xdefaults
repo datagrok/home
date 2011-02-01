@@ -1,0 +1,66 @@
+*inputMethod: xim
+*faceName: Bitstream Vera Sans Mono
+*faceSize: 8
+*renderFont: true
+URxvt.termName: rxvt
+URxvt.font: \
+	xft:Bitstream Vera Sans Mono:pixelsize=11.5,\
+	xft:Monospace
+URxvt.preeditType:Root
+URxvt.reverseVideo:False
+!*.vt100.scrollBar: true
+*fading: 40
+*jumpScroll: true
+*multiScroll: true
+*scrollBar: true
+*scrollBarBorder: 2 
+*scrollbar.thickness: 4
+*scrollstyle: plain
+Leo*font:clean
+
+! saw this on the web somewhere, dont know if it does anything.
+Xft.hinting: true
+
+! Kill the bell
+*visualBell: true
+
+*color1: #d70751
+*color9: #fc9abd
+*color3: #d78d07
+*color11: #fcd99a
+*color2: #51d707
+*color10: #bdfc9a
+*color6: #07d78d
+*color14: #9afcd9
+*color4: #0751d7
+*color12: #9abdfc
+*color5: #8d07d7
+*color13: #d99afc
+*color0:  #191919
+*color7:  #cbcbcb
+*color8:  #6f6f6f
+*color15: #e6e6e6
+*.background: #191919
+*.foreground: #cbcbcb
+! looks like crap for xdvi though...
+xdvi.background: #eeeeee
+xdvi.foreground: #111111
+
+*VT100*color1: #d70751
+*VT100*color9: #fc9abd
+*VT100*color3: #d78d07
+*VT100*color11: #fcd99a
+*VT100*color2: #51d707
+*VT100*color10: #bdfc9a
+*VT100*color6: #07d78d
+*VT100*color14: #9afcd9
+*VT100*color4: #0751d7
+*VT100*color12: #9abdfc
+*VT100*color5: #8d07d7
+*VT100*color13: #d99afc
+*VT100*color0:  #191919
+*VT100*color7:  #cbcbcb
+*VT100*color8:  #6f6f6f
+*VT100*color15: #e6e6e6
+*VT100*background: #191919
+*VT100*foreground: #cbcbcb
