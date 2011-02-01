@@ -75,6 +75,16 @@ export TZ=America/New_York
 #export GTK_IM_MODULE="scim"
 #export XMODIFIERS="@im=SCIM"
 
+# Settings for virtualenvwrapper and pip
+export WORKON_HOME="$HOME/var/virtualenvs"
+export PIP_VIRTUALENV_BASE="$WORKON_HOME"
+export PIP_RESPECT_VIRTUALENV=true
+
+# Ensure virtualenvwrapper directory exists
+if [ -x /usr/bin/virtualenv -a ! -d "$WORKON_HOME" ]; then
+	mkdir "$WORKON_HOME"
+fi
+
 # include .bashrc if it exists
 if [ -f ~/.bashrc ]; then
    . ~/.bashrc
