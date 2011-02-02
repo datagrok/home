@@ -1,4 +1,4 @@
-#!/bin/false # This file is sourced by bash(1) for non-login shells.
+#!/bin/false # This file is *sourced* by bash(1) for non-login shells.
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -6,19 +6,30 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
+HISTCONTROL=ignoredups:ignorespace
 
-# notice when the window has changed size after a foreground application exits.
-shopt -s checkwinsize
+if [ "$BASH_VERSION" ]; then
+	# append to the history file, don't overwrite it
+	shopt -s histappend
+
+	# check the window size after each command and, if necessary,
+	# update the values of LINES and COLUMNS.
+	shopt -s checkwinsize
+fi
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # We have color support; assume it's compliant with Ecma-48
-    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    # a case would tend to support setf rather than setaf.)
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
@@ -27,7 +38,7 @@ fi
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1="\[\e]0;\u@\h: \w\a\]$PS1"
     #PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
 *)
@@ -35,6 +46,12 @@ xterm*|rxvt*)
 esac
 
 # Alias definitions.
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ "$BASH_VERSION" ]; then
+	if [ -f ~/.bash_aliases ]; then
+		. ~/.bash_aliases
+	fi
+
+	if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+		. /etc/bash_completion
+	fi
 fi
