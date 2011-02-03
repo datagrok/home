@@ -8,4 +8,8 @@
 t=$(tempfile -p'giveto')
 cat > "$t"
 "$@" "$t"
+# For commands that do not wait, like spawning a new window in a running
+# browser. FIXME: this may be annoyying for commands that DO wait; find an
+# elegant solution.
+sleep 3
 rm -f -- "$t"
