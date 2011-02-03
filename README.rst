@@ -65,7 +65,8 @@ lib/            Standalone or in-development support files
                 universally useful into those paths and avoid copying them
                 around from project to project.
 
-mnt/            Working-copy checkouts of various VCS repositories
+mnt/            Checkouts of VCS repositories required by symlinks from my
+                environment.
 
 usr/            User-level software package installations; set as prefix when
                 doing a ``make install``.
@@ -81,6 +82,7 @@ var/download/   Incoming unorganized download bucket for web browser, wget, etc.
 var/local/      Locally cached copies of stuff otherwise easily available
                 with a strong network connection. Assume it's no worse than
                 slightly inconveinient to delete this whole folder at any time.
+                (Similar to var/working; merge?)
 
 var/log/        If a user-level script needs a logfile, keep it here.
 
@@ -97,13 +99,18 @@ var/git/        Bare git repositories hosted here, if any.
 
 var/tmp/        Temporary files to be preserved between reboots.
 
-var/working/    Deprecated, use ~/mnt.
+var/working/    Working-copy checkouts of various VCS repositories.
 
 var/www/        Files to serve from this machine's webserver.
 =============== ==============================================================
 
-According to the `Filesystem Hierarchy Standard`_, ``/tmp`` is usually cleared every boot, programs should not expect files to persist across invocations.  ``/var/tmp`` does not clear at boot time, but may have files removed based on some policy like last-access. These same expectations will apply to ``~/tmp`` and ``~/var/tmp``.
+``tmp/`` vs. ``var/tmp/``: According to the `Filesystem Hierarchy Standard`_, ``/tmp`` is usually cleared every boot, programs should not expect files to persist across invocations.  ``/var/tmp`` does not clear at boot time, but may have files removed based on some policy like last-access. These same expectations will apply to ``~/tmp`` and ``~/var/tmp``.
 
+``mnt/`` vs. ``var/working/``: I expect my environment to be up-to-date and working at all times. Keeping checkouts in ``mnt/`` makes it convenient to track changes when I make them, and adapt my directory structure to that of several disparate repositories. However, it is often unpleasant to do branching and merging in these same areas since checkout of different commits immediately affects (and can break) my environment. I suspect that it would be good to adopt this convention:
+
+- track exactly one branch in all repos within ``mnt/``
+- if needed, use a checkout of the same repo in ``var/working/`` to do branching and merging
+- repos which I don't need to rely on as part of my environment (i.e. I make no symlinks into it) should go in ``var/working/``.
 
 Initial setup
 ------------------------------------
