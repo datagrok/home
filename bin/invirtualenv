@@ -1,0 +1,19 @@
+#/bin/sh
+
+# I don't like that after I 'activate' a virtualenv, I can't jump into a screen
+# session and have all the subshells also 'active.' I don't like that I can't
+# just exit my current shell to 'deactivate'. I wish virtualenv "environments"
+# worked more like the ssh-agent script, and that using a 'virtualenv' felt
+# more like ssh-ing into a virtual server.
+#
+# TODO: create a script which accomplishes the same purpose as virtualenv's
+# "activate", but launches the command passed as its argument with the new
+# environment. Ending the command 'deactivates' the environment.
+#
+# This enables useage like: 
+#
+# 	invirtualenv ~/var/virtualenvs/test1 screen
+#
+
+echo "Not yet implemented."
+exit 1
