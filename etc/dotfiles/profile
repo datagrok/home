@@ -61,7 +61,7 @@ if [ "$MANPATH" ]; then
 fi
 export GIT_PAGER=
 export TEXINPUTS=$HOME/lib/latex2e/:
-export PYTHONPATH=$HOME/lib/python/:lib
+export PYTHONPATH=lib:$HOME/lib/python
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 export PYTHONDOCS=/usr/share/doc/python-doc/html
 export CLASSPATH=.:$HOME/lib/java
