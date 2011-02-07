@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+import sys
+import os
+import shutil
+
+# Facebook: 720x720
+
+def command(cmd):
+    print cmd
+    os.system(cmd)
+
+def main(argv, width=720, tiles=3, border=1):
+    destdir = os.path.expanduser('~/tmp/safemontage')
+    destfile = "%s.jpg" % destdir
+
+    borders = border * tiles * 2
+    twidth = (width - borders) / tiles
+    theight = twidth * 2 / 3
+
+    #if os.path.exists(destdir):
+    #    raise IOError('Working directory %s exists.' % destdir)
+
+    #os.mkdir(destdir)
+
+    #converted = []
+    #for sourcepath in argv:
+    #    path, filename = os.path.split(sourcepath)
+    #    destpath = os.path.join(destdir, filename)
+    #    converted.append('"%s"' % destpath)
+    #    command('convert -scale 120x80 -adaptive-sharpen 2 "%s" "%s"' % (sourcepath, destpath))
+
+    command('montage -define jpeg:size=%dx%d -thumbnail %dx%d -geometry +%d+%d -tile %dx %s "%s"' % (
+        twidth, theight,
+        twidth, theight,
+        border, border,
+        tiles,
+        ' '.join(['"%s"' % x for x in argv]), destfile))
+
+    #shutil.rmtree(destdir)
+
+if __name__=='__main__':
+    main(sys.argv[1:])

@@ -8,22 +8,31 @@ else
 	WINDOW_MANAGER=xmonad
 fi
 
-xrandr -s 1680x1050
-#xmobar &
-#urxvtd -q -o -f &
-#xsetroot -cursor_name left_ptr
-#gnome-settings-daemon &
-#PATH=$PATH:/usr/lib/gnome-volume-manager gnome-volume-manager
-#xscreensaver &
-#nm-applet &
-#ssh-add &
-#(sleep 3; trayer --widthtype request --height 16 --edge bottom --align center --transparent true --alpha 255 --SetPartialStrut true) &
-#pidgin &
+case "$HOSTNAME" in
+	io)
+		#xmobar &
+		#urxvtd -q -o -f &
+		#xscreensaver &
+		xsetroot -cursor_name left_ptr
+		gnome-settings-daemon
+		PATH=$PATH:/usr/lib/gnome-volume-manager gnome-volume-manager
+		nm-applet &
+		ssh-add &
+		(sleep 3; trayer --widthtype request --height 16 --edge bottom --align center --transparent true --alpha 255 --SetPartialStrut true) &
+		pidgin &
+		[ -x /usr/bin/gsynaptics-init ] && gsynaptics-init &
+		;;
+	kino)
+		xrandr -s 1680x1050
+		;;
+	*)
+		;;
+esac
 
 if [ -z "$WINDOW_MANAGER" ]; then
 	xmessage -timeout 5 "Window manager specified in .xsession not found." &
 	exec xterm
 else
-	#exec "$WINDOW_MANAGER"
-	exec gnome-session
+	exec "$WINDOW_MANAGER"
+	#exec gnome-session
 fi
