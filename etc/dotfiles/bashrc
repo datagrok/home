@@ -1,62 +1,61 @@
-#!/bin/false # This file is *sourced* by bash(1) for non-login shells.
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+#!/bin/false # ~/.bashrc is *sourced* by bash(1) for non-login shells.
+# Also sourced by login shells per instruction in .profile.
 
-# If not running interactively, don't do anything
-#
-# The previous test is broken; something has set PS1 when logging in via
-# GDM. Test shell invocation options instead.
-# [ -z "$PS1" ] && return
+# See /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for
+# examples
+
+# If not running interactively, don't do anything.
+[ -z "$PS1" ] && return
+# Above is unreliable; also check invocation options
 [[ "$-" =~ i ]] || return
 
-# don't put duplicate lines in the history. See bash(1) for more options
-# ... or force ignoredups and ignorespace
-HISTCONTROL=ignoredups:ignorespace
+[ "$_BASHRC_APPLIED" ] && return
+echo "Sourcing ~/.bashrc"
+# Nothing here (Aliases, functions, and completions) exports to subshells, and
+# /etc/bash.bashrc clobbers whatever was in PS1; we always have to set it. So
+# don't offer this guard to subshells.
+# export _BASHRC_APPLIED=1
+_BASHRC_APPLIED=1
 
-if [ "$BASH_VERSION" ]; then
-	# append to the history file, don't overwrite it
-	shopt -s histappend
+# Always set the prompt, since /etc/bash.bashrc and /etc/profile set it
+# regardless of what's in the environment (I think that is a bug!) :(
 
-	# check the window size after each command and, if necessary,
-	# update the values of LINES and COLUMNS.
-	shopt -s checkwinsize
-fi
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
+function ps1_context {
+	# For any of these bits of context that exist, display them and append a
+	# space.
+	virtualenv=`basename "$VIRTUAL_ENV"`
+	for v in "$debian_chroot" "$virtualenv" "$PS1_CONTEXT"; do
+		echo -n "${v:+$v }"
+	done
+}
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
-    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	PS1='\[\033[01;31m\]$(ps1_context)\[\033[00m\]\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='\u@\h:\w\$ '
+	PS1="$(ps1_context)"'\u@\h:\w\$ '
 fi
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;\u@\h: \w\a\]$PS1"
-    #PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
-    ;;
-*)
-    ;;
-esac
-
-# Alias definitions.
-if [ "$BASH_VERSION" ]; then
-	if [ -f ~/.bash_aliases ]; then
-		. ~/.bash_aliases
-	fi
-
-	if [ -z "$BASH_COMPLETION" -a -f /etc/bash_completion ] && ! shopt -oq posix; then
-		. /etc/bash_completion
-	fi
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
 fi
+
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+	# Ugh! Can't export completion rules to subshells, so we're forced to
+	# source bash_completion every single time a shell is spawned! I wish I
+	# could spawn a 'completion daemon' that sits in the background for bash to
+	# talk to, rather than crap up my environment and wait a half second every
+	# time I invoke a shell to re-load completion rules that haven't changed.
+	echo -n "Sourcing /etc/bash_completion..."
+	. /etc/bash_completion
+	echo
+fi
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# check the window size after each command and, if necessary, update the values
+# of LINES and COLUMNS.
+shopt -s checkwinsize

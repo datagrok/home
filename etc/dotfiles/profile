@@ -4,6 +4,7 @@
 
 # Useful for debugging startup execution path.
 echo "Sourcing ~/.profile"
+export _PROFILE_APPLIED=1
 
 # the default umask is set in /etc/login.defs
 #umask 022
@@ -68,8 +69,13 @@ export CLASSPATH=.:$HOME/lib/java
 export EDITOR=vim
 export PAGER=less
 export LESS=-R
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
 #export HISTCONTROL=erasedups
-export HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoredups:ignorespace
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+export HISTSIZE=1000
+export HISTFILESIZE=2000
 export TZ=America/New_York
 # This is no good with new gnome's im-switch...
 #export GTK_IM_MODULE="scim"
@@ -80,12 +86,17 @@ export WORKON_HOME="$HOME/var/virtualenvs"
 export PIP_VIRTUALENV_BASE="$WORKON_HOME"
 export PIP_RESPECT_VIRTUALENV=true
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
 # Ensure virtualenvwrapper directory exists
 if [ -x /usr/bin/virtualenv -a ! -d "$WORKON_HOME" ]; then
 	mkdir "$WORKON_HOME"
 fi
 
-# include .bashrc if it exists
-if [ -f ~/.bashrc ]; then
+# if this is bash, include .bashrc if it exists.
+if [ "$BASH_VERSION" -a -f ~/.bashrc ]; then
    . ~/.bashrc
 fi
+
+# vim: set ft=sh :

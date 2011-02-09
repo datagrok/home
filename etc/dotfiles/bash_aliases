@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Sourcing ~/.bash_aliases"
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -22,6 +23,9 @@ else
 fi
 
 alias nautilus="nautilus --no-desktop --browser"
+# Can also be achieved with:
+# 	gconftool --set /apps/nautilus/preferences/show_desktop false --type boolean
+# 	gconftool --set /apps/nautilus/preferences/always_use_browser true --type boolean
 alias smbclient="smbclient -A .smb/auth"
 alias svngvimdiff="svn diff --diff-cmd gvimdiff-svn-wrapper"
 alias gitgvimdiff="GIT_EXTERNAL_DIFF=gvimdiff-git-diff-wrapper git diff"

@@ -1,10 +1,9 @@
 #/bin/sh
 
-# I don't like that after I 'activate' a virtualenv, I can't jump into a screen
-# session and have all the subshells also 'active.' I don't like that I can't
-# just exit my current shell to 'deactivate'. I wish virtualenv "environments"
-# worked more like the ssh-agent script, and that using a 'virtualenv' felt
-# more like ssh-ing into a virtual server.
+# I don't like virtualenv's 'activate' because it tries to mess with the
+# current environment. I wish virtualenv "environments" worked more like the
+# ssh-agent script, and that using a 'virtualenv' felt more like ssh-ing into a
+# virtual server.
 #
 # TODO: create a script which accomplishes the same purpose as virtualenv's
 # "activate", but launches the command passed as its argument with the new
@@ -15,5 +14,45 @@
 # 	invirtualenv ~/var/virtualenvs/test1 screen
 #
 
-echo "Not yet implemented."
-exit 1
+VIRTUAL_ENV="$1"
+shift
+
+# If the directory is invalid try again with virtualenvwrapper's $WORKON_HOME
+[ -d "$VIRTUAL_ENV" -a -x "$VIRTUAL_ENV/bin/python" ] || {
+	VIRTUAL_ENV="$WORKON_HOME/$VIRTUAL_ENV"
+}
+
+# If the directory is still invalid, list virtualenvwrapper's known directories
+# and bail.
+[ -d "$VIRTUAL_ENV" -a -x "$VIRTUAL_ENV/bin/python" ] || {
+	echo "Error: First argument must be a valid virtualenv directory."
+	echo "Known virtualenv directories:"
+	for d in "$WORKON_HOME"/*; do
+		if [ -e "$d/bin/activate" ]; then
+			echo "    "`basename "$d"`
+		fi
+	done
+	exit 1
+}
+
+PATH="$VIRTUAL_ENV/bin:$PATH"
+export PATH
+export VIRTUAL_ENV
+
+if [ "$@" ]; then
+	# Forget locations of previously-executed binaries from $PATH
+	hash -r
+	unset PYTHONHOME
+	exec "$@"
+else
+	echo
+	echo "# Recommended usage:"
+	echo "# 	eval \`$0 $VIRTUAL_ENV\`"
+	echo "# or"
+	echo "# 	$0 $VIRTUAL_ENV (command) (arguments)"
+	echo
+	export -p | grep ' \(PATH\|VIRTUAL_ENV\)='
+	echo 'hash -r'
+	echo 'unset PYTHONHOME'
+fi
+# vim: set ft=sh :
