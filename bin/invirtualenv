@@ -1,17 +1,17 @@
 #/bin/sh
 
-# I don't like virtualenv's 'activate' because it tries to mess with the
-# current environment. I wish virtualenv "environments" worked more like the
-# ssh-agent script, and that using a 'virtualenv' felt more like ssh-ing into a
-# virtual server.
-#
-# TODO: create a script which accomplishes the same purpose as virtualenv's
+# This is a script which accomplishes the same purpose as virtualenv's
 # "activate", but launches the command passed as its argument with the new
 # environment. Ending the command 'deactivates' the environment.
 #
 # This enables useage like: 
 #
 # 	invirtualenv ~/var/virtualenvs/test1 screen
+#
+# I don't like virtualenv's 'activate' because it tries to mess with the
+# current environment. I wish virtualenv "environments" worked more like the
+# ssh-agent script, and that using a 'virtualenv' felt more like ssh-ing into a
+# virtual server.
 #
 
 VIRTUAL_ENV="$1"
@@ -45,6 +45,8 @@ if [ "$@" ]; then
 	unset PYTHONHOME
 	exec "$@"
 else
+	# Enable the same sort of usecase that ssh-agent does when called without a
+	# subcommand.
 	echo
 	echo "# Recommended usage:"
 	echo "# 	eval \`$0 $VIRTUAL_ENV\`"
