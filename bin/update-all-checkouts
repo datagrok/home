@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Find alllllll the repositories within my homedir and note their status.
+#
+# Technically, we only find the svn checkouts in my standard checkout areas
+# because it's more work to identify the "root" of any particular svn
+# checkout.
+
+# TODO: add nice colors to svn status, maybe from
+# http://snipplr.com/view/28748/colorcoded-svn-status-v3/
+
+# Unset this to avoid connecting to upstream servers.
+online=1
+
+find ~/mnt/ ~/var/ -name '*.git' | while read dir
+do (
+	cd "$dir"
+	cd ..
+	echo "\033[1m`pwd`\033[m"
+	git status -s
+	if [ "$online" ]; then
+		git fetch
+	fi
+	echo
+	)
+done
+
+for dir in ~/var/working/* ~/var/local/*
+do [ -d "$dir/.svn" ] || continue
+	(
+	cd "$dir"
+	echo "\033[1m`pwd`\033[m"
+	if [ "$online" ]; then
+		svn status -u
+	else
+		svn status
+	fi
+	echo
+	)
+done
