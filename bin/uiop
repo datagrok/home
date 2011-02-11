@@ -8,10 +8,10 @@
 # an easy toggle. Not sure if this is as useful now that Gnome's input method
 # switcher thingy is shaping up.
 
-if [ "`basename "$0"`" == "uiop" ]; then
+if [ "`basename "$0"`" = "uiop" ]; then
 	# switch to dvorak
 	xmodmap ~/etc/dvorak.xmodmap
-elif [ "`basename "$0"`" == "gcrl" ]; then
+elif [ "`basename "$0"`" = "gcrl" ]; then
 	# switch to qwerty
 	xmodmap ~/etc/qwerty.xmodmap
 else

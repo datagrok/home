@@ -5,7 +5,7 @@
 #TODO: I have a similar script not specific to Makefiles called 'acquire'; cull or refactor common functionality
 
 while echo -n "."; do
-	if [ "`pwd`" == "/" ]; then
+	if [ "`pwd`" = "/" ]; then
 		echo "No makefile found."
 		exit 1
 	elif [ -f "Makefile" ]; then

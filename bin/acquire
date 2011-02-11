@@ -31,7 +31,7 @@ USAGE
 origdir=`pwd`
 onlyone=true
 found=false
-if [ "$1" == "-c" ]; then
+if [ "$1" = "-c" ]; then
 	onlyone=false
 	shift
 fi
@@ -40,7 +40,7 @@ while true; do
 	cwd=`pwd`
 	if [ -e "$1" ]; then
 		found=true
-		[ "$cwd" == "/" ] && echo "/$1" || echo "$cwd/$1"
+		[ "$cwd" = "/" ] && echo "/$1" || echo "$cwd/$1"
 		$onlyone && break
 	fi
 	[ ! .. -ef . ] || break

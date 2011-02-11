@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$IFACE" == "eth0" ] || [ "$IFACE" == "eth1" ] || exit 1
+[ "$IFACE" = "eth0" ] || [ "$IFACE" = "eth1" ] || exit 1
 
 # Firewall
 ipt="iptables"
