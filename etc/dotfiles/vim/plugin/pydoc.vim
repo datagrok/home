@@ -1,1 +1,1 @@
-/home/mike/mnt/pydoc.vim/pydoc.vim
+/home/mike/mnt/pydoc.vim/plugin/pydoc.vim
