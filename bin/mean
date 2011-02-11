@@ -2,7 +2,7 @@
 
 '''Sum the numeric data on stdin.'''
 
-if __name__=='__main__':
+if __name__ == '__main__':
     import sys
     sum = 0
     total = 0

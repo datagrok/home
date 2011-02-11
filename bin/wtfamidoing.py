@@ -48,7 +48,7 @@ def showstats(signum, stackframe):
         )
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, showstats)
 
     display = Xlib.display.Display()

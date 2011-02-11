@@ -196,7 +196,7 @@ def modify(msg):
     return msg
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     from email import message_from_file
     from optparse import OptionParser
     parser = OptionParser(usage="usage: %prog [options] address [address ...]")

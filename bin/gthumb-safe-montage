@@ -39,5 +39,5 @@ def main(argv, width=720, tiles=3, border=1):
 
     #shutil.rmtree(destdir)
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main(sys.argv[1:])
