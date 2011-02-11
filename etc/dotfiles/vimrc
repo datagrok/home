@@ -12,6 +12,8 @@ endif
 set modeline            " God damn it debian! I want modelines
 "set fileencodings=ucs-bom,utf-8,sjis,euc-jp,default,latin1
 set showcmd		" Show (partial) command in status line.
+" Include vim-fugitive data in statusline.
+set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
 set showmatch		" Show matching brackets.
 set ignorecase		" Do case insensitive matching
 set incsearch		" Incremental search
