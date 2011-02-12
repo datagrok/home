@@ -8,7 +8,8 @@ echo -n "Checking for ~/.xprofile... "
 if [ -f "$USERPROFILE" ]; then
         echo "found. Sourcing..."
         . "$USERPROFILE"
-        echo "~/.xprofile execution complete."else
+        echo "~/.xprofile sourcing complete."
+else
         echo "not found."
 fi
 
