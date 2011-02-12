@@ -1,17 +1,39 @@
-escape `\040
+# Configuration now relies on environment variables; this makes it easy to
+# configure many hosts using a case switch in .profile. Variables used here:
+#
+# SCREEN_CK: screen command key (2 characters); see 'escape' configuration
+# option in 'man screen'. Default screen behavior is '^Aa' where ^A is ctrl-v
+# ctrl-a
+# SCREEN_CKR: screen command key reminder: readable version of SCREEN_CK
+# SCREEN_CL: screen color: choose from 'kr kg ky kb km kc kw' or leave blank
+
+# Change the default command char on my workstations to allow screen to run in
+# connections to remote servers as well.
+escape $SCREEN_CK
+
+# Status line: command char - hostname - status - window list - load - date - time
+# The status (aka XTerm title) is set with echo -e '\033]0;message\007'
+hardstatus string "%{= $SCREEN_CL}$SCREEN_CKR %H %h%15=%{=r} %-Lw%{=b} %n%f%t %{-}%+Lw %=%{-} %l %m-%d %C%a"
+
 setenv TERM screen
 hardstatus alwayslastline
-# good for remote servers..
-# hardstatus string "%H %l  %C%a  %-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
-hardstatus string '%{=}bt %H%10=%{=r} %-Lw%{=b} %n%f%t %{-}%+Lw %=%{-} %l %m-%d %C%a' # good mono
-hardstatus string '%{= km}bt %H%10=%{=r} %-Lw%{=b} %n%f%t %{-}%+Lw %=%{-} %l %m-%d %C%a' # good mono
 
+# If we're connecting to other servers through screen terms, keep ssh-agent
+# working between reconnections. I forgot from where I got the idea for this
+# technique, and I can't find anyone who uses it. TODO: investigate and
+# document. Possibly, change to one of these techniques (better?):
+#
+# 	http://www.jukie.net/bart/blog/screen-ssh-agent
+# 	http://screen.frogcircus.org/ssh-agent
+#
+# setenv SSH_AUTH_SOCK $HOME/.screen-ssh-agent
+# screen 0 ssh-agent -a $SSH_AUTH_SOCK $SHELL
 
-shelltitle bash
-screen
-screen
+shelltitle ''
 startup_message off
 defc1 off
 defutf8 on
 multiuser on
 acladd yu
+
+# vim: set nowrap :

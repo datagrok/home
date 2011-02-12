@@ -50,6 +50,26 @@ if [ -d "$HOME/tmp" ]; then
 	export TEMP=$HOME/tmp
 fi
 
+# I can't specify a nice switch in screen's configuration files, but it does
+# interpret environment variables, so I can specify host-specific changes here.
+# See etc/dotfiles/screenrc for details.
+case "$HOSTNAME" in
+	io|kino|fiona)
+		SCREEN_CK='` '
+		SCREEN_CKR='bt'
+		;;
+	*)
+		# Default screen behavior
+		SCREEN_CK=`/bin/echo -e '\01a'`
+		SCREEN_CKR='^A'
+		;;
+esac
+case "$HOSTNAME" in
+	io)		SCREEN_CL='kg'; PS1_HOSTCOLOR='32';;
+	kino)	SCREEN_CL='km'; PS1_HOSTCOLOR='35';;
+	seiko)	SCREEN_CL='kr'; PS1_HOSTCOLOR='31';;
+esac
+
 # By default mail spool on ubuntu is nonexistent, if so start mutt looking
 # somewhere else.
 if [ ! -d "$MAIL" ]; then
@@ -60,6 +80,10 @@ fi
 if [ "$MANPATH" ]; then
 	export MANPATH
 fi
+export SCREEN_CK
+export SCREEN_CKR
+export SCREEN_CL
+export PS1_HOSTCOLOR
 export GIT_PAGER=
 export TEXINPUTS=$HOME/lib/latex2e/:
 export PYTHONPATH=lib:$HOME/lib/python
