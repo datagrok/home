@@ -1,18 +1,20 @@
 #!/bin/sh
 
-# Find the nearest Makefile in the ancestor directories and run 'make' from there.
+# Find the nearest Makefile in the ancestor directories and run 'make' from
+# there.
+#
+# I enjoy the way git and 'ant -find' do this; I wish it were the default for
+# GNU Make.
 
-#TODO: I have a similar script not specific to Makefiles called 'acquire'; cull or refactor common functionality
+# TODO: I have a similar script not specific to Makefiles called 'acquire';
+# cull or refactor common functionality.
 
-while echo -n "."; do
-	if [ "`pwd`" = "/" ]; then
-		echo "No makefile found."
-		exit 1
-	elif [ -f "Makefile" ]; then
-		echo "Makefile found."
-		make $@
-		exit 0
-	else
-		cd ..
-	fi
+# TODO: Make this more robust when used as a wrapper for GNU Make: also check
+# for makefile and GNUmakefile, perform search only if '--find' is specified
+# (as our functionality conflicts with '-f Makefile'.)
+
+while [ ! -f "Makefile" ]; do
+	cd ..
+	[ "`pwd`" = "/" ] && break
 done
+exec make "$@"
