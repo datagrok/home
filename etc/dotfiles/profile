@@ -1,4 +1,4 @@
-#!/bin/false # This file is sourced by bash(1) for login shells.
+#!/bin/false # This file is sourced by the command interpreter for login shells.
 # see /usr/share/doc/bash/examples/startup-files for examples.
 # the files are located in the bash-doc package.
 
@@ -54,7 +54,7 @@ fi
 # interpret environment variables, so I can specify host-specific changes here.
 # See etc/dotfiles/screenrc for details.
 case "`hostname`" in
-	io|kino|fiona)
+	io|kino|fiona|vm)
 		SCREEN_CK='` '
 		SCREEN_CKR='bt'
 		;;
@@ -68,6 +68,7 @@ case "`hostname`" in
 	io)		SCREEN_CL='kg'; PS1_HOSTCOLOR='32';;
 	kino)	SCREEN_CL='km'; PS1_HOSTCOLOR='35';;
 	seiko)	SCREEN_CL='kr'; PS1_HOSTCOLOR='31';;
+	vm)		SCREEN_CL='kg'; PS1_HOSTCOLOR='32';;
 esac
 
 # By default mail spool on ubuntu is nonexistent, if so start mutt looking
