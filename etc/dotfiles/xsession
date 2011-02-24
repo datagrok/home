@@ -18,6 +18,7 @@ case "`hostname`" in
 		#xscreensaver &
 		xsetroot -cursor_name left_ptr
 		gnome-settings-daemon
+		gnome-power-manager
 		nm-applet &
 		ssh-add &
 		(sleep 3; trayer --widthtype request --height 16 --edge bottom --align center --transparent true --alpha 255 --SetPartialStrut true) &
