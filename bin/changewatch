@@ -1,14 +1,20 @@
 #!/bin/sh
 
-# Watch a directory for changes (files being written to) and take action.
-# Basically, a frontend to inotifywait appropriate for what I most frequently
-# use it for.
+# changewatch
 #
-# Usage: changewatch targetdir command
+# usage: changewatch TARGETDIR COMMAND ARGS
+#
+# Watch a directory for changes (files being written to) and take action. Calls
+# COMMAND with ARGS and the path to the modified file as the final argument.
+#
+# Basically, this is a simple wrapper to inotifywait with defaults appropriate
+# for my most common uses.
+#
 # :set nowritebackup in vim to wake up less.
 
 TARGETDIR="$1"
-shift
+COMMAND="$2"
+shift 2
 
 inotifywait \
 	--exclude '\.sw..\?$' \
@@ -18,6 +24,6 @@ inotifywait \
 	| while read dir event filename
 	do
 		[ -e "$dir$filename" ] || continue
-		[ "$DEBUG" ] && echo "$0": "$@" "$dir$filename"
-		"$@" "$dir$filename"
+		[ "$DEBUG" ] && echo "$0": "$COMMAND" "$@" "$dir$filename"
+		"$COMMAND" "$@" "$dir$filename"
 	done
