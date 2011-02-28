@@ -108,8 +108,10 @@ export TZ=America/New_York
 
 # Settings for virtualenvwrapper and pip
 export WORKON_HOME="$HOME/var/virtualenvs"
+export DEVELDIR="$WORKON_HOME"
 export PIP_VIRTUALENV_BASE="$WORKON_HOME"
 export PIP_RESPECT_VIRTUALENV=true
+export DJANGO_COLORS=light
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

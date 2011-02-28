@@ -28,6 +28,11 @@ case "`hostname`" in
 	kino)
 		xrandr -s 1680x1050
 		;;
+	vm)
+		xsetroot -cursor_name left_ptr
+		gnome-settings-daemon
+		ssh-add &
+		;;
 esac
 
 if [ -z "$WINDOW_MANAGER" ]; then
