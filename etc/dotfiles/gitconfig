@@ -13,6 +13,8 @@
 	insteadOf = ssh://datagrok.org/
 [url "ssh://seiko/~mike/var/git/"]
 	insteadOf = ssh://seiko/
+[url "ssh://home.datagrok.org/~mike/var/git/"]
+	insteadOf = ssh://home.datagrok.org/
 [merge]
 	tool = gvimdiff
 [core]
@@ -20,3 +22,5 @@
 [alias]
     lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
     lol = log --graph --decorate --pretty=oneline --abbrev-commit
+[push]
+	default = tracking

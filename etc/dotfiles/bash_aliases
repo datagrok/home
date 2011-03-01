@@ -34,3 +34,5 @@ alias gitgvimdiff="GIT_EXTERNAL_DIFF=gvimdiff-git-diff-wrapper git diff"
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+
+alias dad='django-admin.py'
