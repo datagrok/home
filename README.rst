@@ -1,7 +1,39 @@
-~datagrok/
+/home/datagrok
 ====================================
 
 I keep several things in my home directory under version control. I used to do this with CVS, then with Subversion, now with git.
+
+
+Highlights
+------------------------------------
+
+- ``bin/acquire``: Walks up the parent heiarchy looking for a file.
+
+- ``bin/subcommander``: A framework for collections of executables, like git.
+
+- ``bin/changewatch``: Take some action when files change. A simple wrapper around inotify.
+
+- ``bin/classpaths``: stupidly simple but I tear my hair without it when hacking Java. Colon-joins its arguments. ``bin/debjars`` is similar: a Debian-specific way to build a ``$CLASSPATH`` string out of system-installed .jar files.
+
+- ``bin/{gcrl,uiop}``: a clever way to switch between keyboard layouts in a terminal.
+
+- ``bin/giveto``: terminate a pipeline with this to dump stdin to a temporary file and hand that off to another program.
+
+- ``bin/invirtualenv``: I like what ``virtualenv`` does, but I don't like how it does it. This is an attempt to do the same with a bit more Unix flavor. Works a bit like ``ssh-agent``.
+
+- ``screen`` colors: ``etc/dotfiles/profile`` works with ``etc/dotfiles/screenrc`` to give each of my machines a differently-colored statusbar in ``screen``, and changes the command character on workstations to enable easy screen-inside-screen sessions.
+
+- My prompt (``etc/dotfiles/bashrc``) will notice context information from several different places; running a subshell in an active virtualenv doesn't break.
+
+- ``bin/pvgunzip`` smooshes together ``pv`` and ``gunzip`` to display a nice progress bar, showing statistics for the *uncompressed* data, when gunzipping a huge file.
+
+- ``bin/renameall`` a poor-man's 'dired'; dumps all the filenames in the current directory into your text editor. Make your changes, save and exit, it does the work.
+
+- ``bin/rmake`` run make, but look up the directory heiarchy for the Makefile the way ``ant -find`` does.
+
+- ``bin/svnserve`` a technique to enable nice short, memorizable URLs for your subversion repositories.
+
+- ``bin/update-dotfiles-svn`` if you adopt my directory structure, this handles the linking of dotfiles to their appropriate places in etc/dotfiles.
 
 
 Directory Structure
@@ -9,9 +41,9 @@ Directory Structure
 
 I don't wish to keep *everything* under my home directory in git. only my scripts in ``bin/``, various support files in ``lib/``, dotfiles, and other configuration in ``etc/``.
 
-Rationale: were I to make ``~`` itself a git repository, I would need to craft tricky ``.gitignore`` settings to avoid pulling in lots of stuff that I don't want in version control. Also, there is a danger of using something like ``git clean`` in the wrong part of your directory tree and blowing away all one's unversioned files.
+Rationale: were I to make ``~`` itself a git repository, I would need to craft tricky ``.gitignore`` settings to avoid pulling in lots of stuff that I don't want in version control. Also, there is a danger of using something like ``git clean`` in the wrong part of your directory tree and blowing away all your unversioned files.
 
-To accomplish this, I will create a ``~/mnt`` directory and keep within it all of my repository checkouts. Similar to a filesystem, ``git`` does not allow one to "checkout" (clone) only a subdirectory of a repository. So, I put all my working copies in one familiar place and then create convenient symlinks. Example::
+To accomplish this, I keep a ``~/mnt`` directory, and within it all of my repository checkouts. Similar to a filesystem, ``git`` does not allow one to "checkout" (clone) only a subdirectory of a repository. So, I put all my working copies in one familiar place and then create convenient symlinks. Example::
 
     bin -> mnt/home/bin
     etc -> mnt/home/etc
@@ -104,7 +136,7 @@ var/working/    Working-copy checkouts of various VCS repositories.
 var/www/        Files to serve from this machine's webserver.
 =============== ==============================================================
 
-``tmp/`` vs. ``var/tmp/``: According to the `Filesystem Hierarchy Standard`_, ``/tmp`` is usually cleared every boot, programs should not expect files to persist across invocations.  ``/var/tmp`` does not clear at boot time, but may have files removed based on some policy like last-access. These same expectations will apply to ``~/tmp`` and ``~/var/tmp``.
+``tmp/`` vs. ``var/tmp/``: According to the `Filesystem Hierarchy Standard`_, ``/tmp/`` is usually cleared every boot, programs should not expect files to persist across invocations.  ``/var/tmp/`` does not clear at boot time, but may have files removed based on some policy like last-access. These same expectations will apply to ``~/tmp/`` and ``~/var/tmp/``.
 
 ``mnt/`` vs. ``var/working/``: I expect my environment to be up-to-date and working at all times. Keeping checkouts in ``mnt/`` makes it convenient to track changes when I make them, and adapt my directory structure to that of several disparate repositories. However, it is often unpleasant to do branching and merging in these same areas since checkout of different commits immediately affects (and can break) my environment. I suspect that it would be good to adopt this convention:
 
