@@ -9,7 +9,25 @@
 # This script attempts to encapsulate this pattern. It first walks up the
 # directory tree looking for a .$0.context file to source. Then it looks for an
 # executable named $0.d/$1 or $0.d/$1.* to execute.
-#
+
+basename="${0##*/}"
+context_envname="`echo $basename|tr 'a-z ' 'A-Z_'`_CONTEXT"
+
+usage () { fmt <<-EOF
+	usage: $basename COMMAND [OPTION...] [ARG]...
+		
+	OPTION may be one of:
+
+	 -f Abort if the current context does not match \$$context_envname
+
+	 -q Be quiet	
+
+	 -s Do not perform context discovery
+
+	 -v Be more verbose
+	EOF
+}
+
 # Setup:
 #
 # bin/
@@ -35,26 +53,32 @@
 #
 # TODO: Integrate with prompt and/or window title?
 
-verbose=
-basename="`basename $0`"
+# Reminders:
+# 	${var##*/} is like `basename $var`
+#	${var%/.*} is like `dirname $var`
+#   ${var%.*} removes one level of filename extension
+#   ${var%%.*} removes all filename extensions **
+#	** This will fail if you don't ensure there are no '.' in the path!
 
 subcommandsdir="$0.d"
-
-# Find the nearest context file in the directory hierarchy.
-[ "$skip_context_discovery" ] || {
-	discovered_contextfile=`acquire ".$basename.context"`
-	discovered_context=`dirname "$discovered_contextfile"`
-}
-
-# This names the environment variable in which to save contexts.
-[ "$context_envname" ] || \
-	context_envname="`echo $basename|tr 'a-z ' 'A-Z_'`_CONTEXT"
-
+context_mismatch_action='warn'
+verbose=
 eval "environment_context=\$$context_envname"
 
-# Choose "warn", "ignore", or "abort"
-[ "$context_mismatch_action" ] || \
-	context_mismatch_action="warn"
+while getopts sfqv f
+do
+	case "$f" in
+		s)	skip_context_discovery=1
+			;;
+		f)	context_mismatch_action='abort'
+			;;
+		q)	context_mismatch_action='ignore'
+			verbose=
+			;;
+		v)	verbose=1
+	esac
+done
+shift $(($OPTIND - 1))
 
 list_subcommands () {
 	local seen
@@ -82,12 +106,6 @@ list_subcommands () {
 	fi
 }
 
-usage () {
-	echo "usage: $basename COMMAND [ARGS]"
-	echo
-	list_subcommands
-}
-
 # Functions which take messages as standard input
 warn () {
 	fmt >&2
@@ -101,6 +119,8 @@ abort () {
 usage_abort () {
 	usage
 	echo
+	list_subcommands
+	echo
 	abort $1
 }
 
@@ -112,6 +132,12 @@ usage_abort () {
 subcommandbase="$1"
 subcommand="$subcommandsdir/$1"
 shift; subcommandargs="$@"
+
+# Find the nearest context file in the directory hierarchy.
+[ "$skip_context_discovery" ] || {
+	discovered_contextfile=`acquire ".$basename.context"`
+	discovered_context="${discovered_contextfile%/*}"
+}
 
 # If context is manually set, ensure it exists.
 if [ "$environment_context" ]; then
