@@ -18,8 +18,15 @@ do (
 	cd ..
 	echo "\033[1m`pwd`\033[m"
 	git status -s
-	if [ "$online" ]; then
-		git fetch
+	if [ "$online" -a -e .git/refs/remotes/origin ]; then
+		if [ "`cat .git/HEAD`" = 'ref: refs/heads/master' ]; then
+			git pull --ff-only
+		else
+			echo 'Not on master; fetching.'
+			git fetch
+		fi
+	else
+		echo 'No repo to update from.'
 	fi
 	echo
 	)
