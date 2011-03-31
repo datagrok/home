@@ -29,12 +29,17 @@ case "`hostname`" in
 		xrandr -s 1680x1050
 		;;
 	mio)
+		stalonetray &
+		nm-applet &
 		xsetroot -cursor_name left_ptr
 		gnome-settings-daemon
+		gnome-power-manager &
 		ssh-add &
 		xchat-gnome &
 		google-chrome &
 		urxvt -e screen &
+		pidgin &
+		evolution &
 		;;
 esac
 
