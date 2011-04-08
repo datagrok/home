@@ -13,19 +13,15 @@
 basename="${0##*/}"
 context_envname="`echo $basename|tr 'a-z ' 'A-Z_'`_CONTEXT"
 
-usage () { fmt <<-EOF
-	usage: $basename COMMAND [OPTION...] [ARG]...
+usage () { cat <<-END
+		usage: $basename COMMAND [OPTION...] [ARG]...
 		
-	OPTION may be one of:
-
-	 -f Abort if the current context does not match \$$context_envname
-
-	 -q Be quiet	
-
-	 -s Do not perform context discovery
-
-	 -v Be more verbose
-	EOF
+		OPTION may be one of:
+		    -f Abort if the current context does not match \$$context_envname
+		    -q Be quiet
+		    -s Do not perform context discovery
+		    -v Be more verbose
+	END
 }
 
 # Setup:
@@ -94,15 +90,15 @@ list_subcommands () {
 				"`basename \"$f\"`" \
 				"`sed -n '1,10s/^.\{0,4\}desc\(ription\)\?\s*[:=]\s*//Ip' \"$f\"`"
 		done
-		[ $seen ] || fmt <<-EOF
-		Subcommands directory $subcommandsdir contains no executables. Place
-		executable files here to enable them as sub-commands of '$basename'.
-		EOF
+		[ $seen ] || fmt <<-END
+			Subcommands directory $subcommandsdir contains no executables. Place
+			executable files here to enable them as sub-commands of '$basename'.
+		END
 	else
-		fmt <<-EOF
-		Subcommands directory $subcommandsdir does not exist. Place executable
-		files there to enable them as sub-commands of '$basename'.
-		EOF
+		fmt <<-END
+			Subcommands directory $subcommandsdir does not exist. Place executable
+			files there to enable them as sub-commands of '$basename'.
+		END
 	fi
 }
 
@@ -125,9 +121,9 @@ usage_abort () {
 }
 
 # Were we called with any arguments at all?
-[ $# -gt 0 ] || usage_abort 2 <<-EOF
-	No COMMAND specified.
-	EOF
+[ $# -gt 0 ] || usage_abort 2 <<-END
+		No COMMAND specified.
+	END
 
 subcommandbase="$1"
 subcommand="$subcommandsdir/$1"
@@ -143,20 +139,20 @@ shift; subcommandargs="$@"
 if [ "$environment_context" ]; then
 	environment_contextfile="$environment_context/.$basename.context"
 
-	[ -f "$environment_contextfile" ] || abort 3 <<-EOF
-	The context specified by $context_envname does not exist:
-	$environment_contextfile not found.
-	EOF
+	[ -f "$environment_contextfile" ] || abort 3 <<-END
+		The context specified by $context_envname does not exist:
+		$environment_contextfile not found.
+	END
 fi
 
 # If both are set, see if one differs from the other. (Possibly confused user.)
 if [ "$environment_contextfile" -a "$discovered_contextfile" ]; then
 	if [ ! "$environment_contextfile" -ef "$discovered_contextfile" ]; then
-		$context_mismatch_action <<-EOF
-		Warning: Context specified by $context_envname=$environment_context
-		differs from and overrides context discovered at $discovered_context.
-		Be sure that this is what you intend.
-		EOF
+		$warn <<-END
+			Warning: Context specified by $context_envname=$environment_context
+			differs from and overrides context discovered at $discovered_context.
+			Be sure that this is what you intend.
+		END
 	fi
 fi
 
@@ -170,19 +166,19 @@ fi
 
 # Source context or mention that it is non-existent.
 if [ "$contextfile" ]; then
-	[ "$verbose" ] && warn "Sourcing context $contextfile..."
+	[ "$verbose" ] && echo "Sourcing context $contextfile..." | warn
 	set -a
 	. "$contextfile"
 	set +a
 else
-	[ $verbose ] && warn "Note: no context was found."
+	[ "$verbose" ] && echo Note: no context was found. | warn
 fi
 
 # Check to ensure subcommand is an executable
-[ -x "$subcommand" ] || abort <<-EOF
+[ -x "$subcommand" ] || abort <<-END
 	error: unknown $basename command: $subcommandbase.
-	EOF
+END
 
 # Launch subcommand.
-export SUBCOMMANDER="$0"
+export SUBCOMMANDER="$basename"
 exec "$subcommand" "$subcommandargs"
