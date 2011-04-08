@@ -1,0 +1,26 @@
+#!/bin/sh
+# TODO: die if not root.
+set -e
+
+# The device name set up by VirtualBox for the 'host-only adapter'
+vboxdev=vboxnet0
+
+# The IP address on the 'host-only adapter' of the VirtualBox machine
+vboxip=192.168.56.2 
+
+case "$1" in
+	up)
+		# Route all traffic bound for 10.*.*.* through the virtual machine.
+		route add -net 10.0.0.0 netmask 255.0.0.0 gw $vboxip dev $vboxdev
+		# Add the VPN nameservers to the resolver
+		sed -i -e '1inameserver 10.213.65.220\nnameserver 10.213.65.222' /etc/resolv.conf
+		echo 'Configured route and DNS for VPN through VirtualBox'
+	;;
+	down)
+		# Remove the route
+		route del -net 10.0.0.0 netmask 255.0.0.0 gw $vboxip dev $vboxdev
+		# Remove the nameservers
+		sed -i -e '/nameserver 10\.213\.65\.22./d' -e '/^$/d' /etc/resolv.conf
+		echo 'Removed route and DNS for VPN through VirtualBox'
+	;;
+esac
