@@ -31,6 +31,7 @@ set shiftround
 set wildmenu    
 set visualbell		" Kill that damn bell
 "set hidden		" Let me jump around to other files without saving mine
+set diffopt+=iwhite	" Ignore whitespace in 'vimdiff'
 "
 if hostname() == 'io'	" Laptop-only settings
     " Less safe but good for saving laptop power
@@ -137,6 +138,5 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 
 " Make latexsuite find my custom latex stuff
 let g:Tex_TEXINPUTS = '~/lib/latex2e/**'
-
 
 " vim: set ts=8:
