@@ -1,5 +1,19 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, PatternGuards #-}
 
+-- TODO: always configure specific workspaces with specific layouts, send
+-- specific programs to specific workspaces:
+--      9: chat. IRC in left large area, skinny IM client and windows on right.
+--      8: mail. Evolution/thunderbird goes here by default.
+
+-- TODO: configurably lock a workspace to a screen, so e.g. the small monitor
+-- always shows 'chat'
+
+-- TODO: Deal with stalonetray sanely. Discover why 'trayer' doesn't work for
+-- me anymore.
+
+-- TODO: Find a visualization for programs-on-workspaces that behaves sanely
+-- under Xmonad's screens model. (Gnome's gets a bit confused.)
+
 module Main (main) where
 
 -- I wish Haskell imports were explicit, so I could tell which symbols are
@@ -94,7 +108,7 @@ manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <
 
 
 -- Sometimes I like dwmStyle, sometimes I like tabBar. Both have warts that I'd
--- like to fix, and I pick whichever is less anoyying.
+-- like to fix, and I pick whichever is less anoyying. TODO
 decorateWindows = id
     $ dwmStyle shrinkText myTheme
     -- $ tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
@@ -125,14 +139,17 @@ mykeys mod = fromList $
         ]
         ++
         [ ((mod .|. mask, stringToKeysym key), Just action) | (mask, key, action) <- 
-            -- with key matrix 123/qwe/asd: use mod+key to view, mod+shift+key to send
+            -- Assign workspace view/send to grid of keys 123/qwe/asd, so I can
+            -- navigate through all with my left hand. Unfortunately I haven't
+            -- got used to this because I don't have a good workspaces-in-use
+            -- visualization to go with it. Mod+key to view, mod+shift+key to
+            -- send.
             [ (m, key, windows $ f sc)
                 | (key, sc) <- zip ["1", "2", "3", "q", "w", "e", "a", "s", "d"] workspaces'
                 , (f  , m ) <- [(W.greedyView, noMask), (W.shift, shiftMask)]
             ]
             ++
-            -- with keys a, s, and d: use mod+key to view, mod+shift+key to
-            -- shift screenWorkspaces
+            -- Assign screens to keys z/x/c: use mod to view, mod+shift to send
             [ (m, key, screenWorkspace sc >>= flip whenJust (windows . f))
                 | (key, sc) <- zip ["z", "x", "c"] [0..]
                 , (f  , m ) <- [(W.view, noMask), (W.shift, shiftMask)]
@@ -159,7 +176,7 @@ mykeys mod = fromList $
 -- I want a single point of configuration for theme-related things. This
 -- creates an XPConfig (a configuration for xprompt) from a theme.
 -- Unfortunately, changing the theme 'live' with themePrompt affects only the
--- window decorations, not the prompts. Don't know how that works yet.
+-- window decorations, not the prompts. Don't know how that works yet. TODO
 themedXPConfig :: Theme -> XPConfig
 themedXPConfig t = defaultXPConfig 
         { font              = fontName t
@@ -177,11 +194,11 @@ themedXPConfig t = defaultXPConfig
 }
 
 
--- I wish I could configure events to occur while the modifier key is pressed,
--- and be undone (or have other events occur) when released. Goal: hide all
--- decorations until mod is pressed. While pressed, a clock, window names,
--- current desktop name, window list, and graphical desktop summary appear.
--- When released the information disappears.
+-- TODO: I wish I could configure events to occur while the modifier key is
+-- pressed, and be undone (or have other events occur) when released. Goal:
+-- hide all decorations until mod is pressed. While pressed, a clock, window
+-- names, current desktop name, window list, and graphical desktop summary
+-- appear. When released the information disappears.
 --
 -- Thus-far failing (so commented and stubbed) experiments to build my own
 -- low-level eventHook that will react to press and release follow.
@@ -211,9 +228,9 @@ dummyEventHook _ = return (All True)
 
 -- Assuming borders of width 1, this causes windows to expand in size by 1
 -- pixel all around. This makes borders fall off the edge of the screen, which
--- I want (why waste a pixel to indicate a window border at the edge of the
--- screen? It's not the optimal "line between, not around windws" algorithm
--- that I want, but it's close enough.
+-- I want. (Why waste a pixel to indicate a window border at the edge of the
+-- screen? Also this causes burn-in on my LCD.) It's not the optimal "line
+-- between, not around windws" algorithm that I want, but it's close enough.
 
 data MyResizeScreen a = MyResizeScreen deriving (Read, Show)
 
