@@ -1,7 +1,10 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, PatternGuards #-}
+
 module Main (main) where
 
--- import qualified Data.Map as M
+-- I wish Haskell imports were explicit, so I could tell which symbols are
+-- imported from which libraries. Am I even using all these imports?
+
 import Data.Map hiding (keys)
 import Data.Monoid
 
@@ -29,69 +32,92 @@ import XMonad.Layout.Simplest
 import XMonad.Layout.Tabbed
 import XMonad.Layout.TabBarDecoration
 import XMonad.Layout.TwoPane
--- import XMonad.Layout.Decoration
 import XMonad.Util.Themes
 import XMonad.Prompt.Theme
 
 import Control.Monad
 import Graphics.X11.Xlib
--- Once: gconftool --type boolean --set /apps/nautilus/preferences/show_desktop false
 import XMonad.Actions.UpdatePointer
 import System.IO (hPutStrLn, stderr)
 import System.Exit
 
+-- Does the use of 'where' make any difference here?
+--      main = x y z
+--          where
+--              y = foo
+--              z = bar
+-- vs.
+--      main = x y z
+--      y = foo
+--      z = bar
+
 
 main :: IO ()
 main = xmonad $ ewmh defaultConfig
-        { layoutHook         = id
+        { layoutHook         = id           -- 'id' is identity, just for pretty source code
             $ ModifiedLayout MyResizeScreen 
             $ showWName' defaultSWNConfig { swn_font = bigfont }
             -- $ layoutHints
             $ avoidStruts
+            -- For some reason I never could get 'onWorkspace' to work well.
             -- $ onWorkspace "chat/music" (IM (320/1680) (Role "buddy_list"))
             -- $ onWorkspace "chat/music" (combineTwo (TwoPane delta (320/1680)) (Mirror tiled) (Full))
-            $ dwmStyle shrinkText myTheme
-            -- $ tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
+            $ decorateWindows
             $ spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full
         , keys               = keys'
         , manageHook         = manageHook' <+> manageDocks <+> manageHook defaultConfig
         , logHook            = updatePointer (Relative 0.5 0.5)
         , terminal           = "x-terminal-emulator"
         , borderWidth        = 1
-        , normalBorderColor  = inactiveBorderColor myTheme--"#666666"
+        , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
         , focusedBorderColor = activeBorderColor myTheme --"#d78d07"
         , workspaces         = workspaces'
         , handleEventHook    = eventHook'
         , startupHook        = ewmhDesktopsStartup >> setWMName "LG3D"
         }
-myTheme       = theme $ listOfThemes!!2
-floatClasses  = ["display", "Xwud"]
+
+
+-- Configuration settings used to override the defaultConfig, above.
+myTheme       = theme $ listOfThemes!!2     -- I like the second theme in the list.
+floatClasses  = ["display", "Xwud"]         -- These windows always float by default
 ignoreClasses = ["Audacious"]
 tiled         = Tall nmaster delta ratio
 nmaster       = 1
 delta         = 64/1680              -- adjust 64 pixels at a time on my 1680px wide monitor
 ratio         = (1680-640)/1680      -- main takes all but 640 pixels on my 1680px wide monitor
-manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <+>
-                composeAll [ className =? c --> doIgnore | c <- ignoreClasses ]
 bigfont       = "-*-new century schoolbook-*-r-*-*-34-*-*-*-*-*-*-*"
 workspaces'   = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-partitioner :: Maybe a -> Either (X ()) a
-partitioner (Nothing) = Left $ return ()
-partitioner (Just y)  = Right $ y
 
--- Keybindings:
---   To replace, add a Map item to Just an X action
---   To remove, add a Map item to Nothing
+manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <+>
+                composeAll [ className =? c --> doIgnore | c <- ignoreClasses ]
+
+
+-- Sometimes I like dwmStyle, sometimes I like tabBar. Both have warts that I'd
+-- like to fix, and I pick whichever is less anoyying.
+decorateWindows = id
+    $ dwmStyle shrinkText myTheme
+    -- $ tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
+
+
+-- Keybindings: some attempts to specify keybindings in a uniform, declaritive,
+-- boilerplate-free way. To add or replace a keybinding, add a Map item to Just
+-- an X action. To remove, add a Map item to Nothing.
 keys' :: XConfig Layout -> Map (KeyMask, KeySym) (X ())
-keys' x        = union addkeys $ origkeys \\ delkeys
+keys' x = union addkeys $ origkeys \\ delkeys
     where
         origkeys = keys defaultConfig x
         (delkeys, addkeys) = mapEither partitioner $ mykeys $ modMask x
 
+-- Used by keys' to take apart the Just/Nothing dichotomy.
+partitioner :: Maybe a -> Either (X ()) a
+partitioner (Nothing) = Left $ return ()
+partitioner (Just y)  = Right $ y
 
+-- A sortakinda declarative mapping of keys to either Nothing or X Actions,
+-- consumed by keys'.
 mykeys :: KeyMask -> Map (KeyMask, KeySym) (Maybe (X ()))
-mykeys mod    = fromList $
+mykeys mod = fromList $
         -- Kill the default bindings for w, e, and r
         [ ((mod .|. mask, stringToKeysym key), Nothing)
             | key <- ["w", "e", "r"]
@@ -124,9 +150,16 @@ mykeys mod    = fromList $
             ]
         ]
     where
+        -- Actually all the places this I use 'noMask' above actually ends up
+        -- meaning "no *additional* mask besides 'mod', which is used for
+        -- everything."
         noMask = 0
 
--- Create an XPConfig (a configuration for xprompt) from a theme
+
+-- I want a single point of configuration for theme-related things. This
+-- creates an XPConfig (a configuration for xprompt) from a theme.
+-- Unfortunately, changing the theme 'live' with themePrompt affects only the
+-- window decorations, not the prompts. Don't know how that works yet.
 themedXPConfig :: Theme -> XPConfig
 themedXPConfig t = defaultXPConfig 
         { font              = fontName t
@@ -143,6 +176,16 @@ themedXPConfig t = defaultXPConfig
         , autoComplete      = Nothing
 }
 
+
+-- I wish I could configure events to occur while the modifier key is pressed,
+-- and be undone (or have other events occur) when released. Goal: hide all
+-- decorations until mod is pressed. While pressed, a clock, window names,
+-- current desktop name, window list, and graphical desktop summary appear.
+-- When released the information disappears.
+--
+-- Thus-far failing (so commented and stubbed) experiments to build my own
+-- low-level eventHook that will react to press and release follow.
+
 -- eventHook' (KeyEvent {ev_event_type = t, ev_state = m, ev_keycode = code})
 --     | t == keyRelease = withDisplay $ \dpy -> do
 --         s  <- io $ keycodeToKeysym dpy code 0
@@ -156,7 +199,6 @@ themedXPConfig t = defaultXPConfig
 eventHook' e = do
     dummyEventHook e
 
-
 --dummyEventHook :: Event -> X All
 --dummyEventHook KeyEvent {ev_event_type = t, ev_state = m, ev_keycode = code}
 --  | t == keyRelease = withDisplay $ \dpy -> do
@@ -165,6 +207,13 @@ eventHook' e = do
 --      return (All True)
 
 dummyEventHook _ = return (All True)
+
+
+-- Assuming borders of width 1, this causes windows to expand in size by 1
+-- pixel all around. This makes borders fall off the edge of the screen, which
+-- I want (why waste a pixel to indicate a window border at the edge of the
+-- screen? It's not the optimal "line between, not around windws" algorithm
+-- that I want, but it's close enough.
 
 data MyResizeScreen a = MyResizeScreen deriving (Read, Show)
 
