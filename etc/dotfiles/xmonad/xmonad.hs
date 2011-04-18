@@ -100,11 +100,16 @@ nmaster       = 1
 delta         = 64/1680              -- adjust 64 pixels at a time on my 1680px wide monitor
 ratio         = (1680-640)/1680      -- main takes all but 640 pixels on my 1680px wide monitor
 bigfont       = "-*-new century schoolbook-*-r-*-*-34-*-*-*-*-*-*-*"
-workspaces'   = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+workspaces'   = ["1", "2", "3", "4", "5", "6", "7", "Mail", "Chat"]
 
 
 manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <+>
-                composeAll [ className =? c --> doIgnore | c <- ignoreClasses ]
+                composeAll [ className =? c --> doIgnore | c <- ignoreClasses ] <+>
+                composeAll [ className =? "Pidgin" --> doShift "Chat"
+                           , className =? "Xchat-gnome" --> doShift "Chat"
+                           , className =? "Evolution" --> doShift "Mail"
+                           , className =? "stalonetray" --> doShift "Chat"
+                           ]
 
 
 -- Sometimes I like dwmStyle, sometimes I like tabBar. Both have warts that I'd
