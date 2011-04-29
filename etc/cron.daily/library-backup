@@ -1,0 +1,38 @@
+#!/bin/sh
+
+rootkey=/root/.ssh/id_rsa_rsync
+logfile=/home/mike/var/log/library-backup.log
+
+set -e
+[ -x "/usr/bin/sendmail" ] || {
+	exec >"$logfile" 2>&1
+	chown mike.mike "$logfile"
+	echo -n "$0: Pulling backup from seiko, started "
+	date
+}
+
+[ "`id -u`" -eq "0" ] || {
+	echo "$0: Error: must be root"
+	exit 1
+}
+
+# My new router serves the address up on DNS, don't need this anymore
+# grep -q seiko /etc/hosts || {
+# 	echo "$0: Error: seiko not in /etc/hosts"
+# 	exit 1
+# }
+
+grep -q /mnt/backup /etc/mtab || mount /mnt/backup || {
+	echo "$0: Error: could not mount backup partition"
+	exit 1
+}
+
+[ -f $rootkey ] || {
+	echo "$0: Error: could not find root ssh key $rootkey"
+	exit 1
+}
+
+nice -15 rsync \
+	-e "ssh -i $rootkey" \
+	-a --del -v seiko:/mnt/Shared/ /mnt/backup/
+umount /mnt/backup
