@@ -31,7 +31,7 @@ if [ -d /usr/lib/j2sdk*/bin ] ; then
 fi
 
 # Who keeps creating these stupid empty directories? Nautilus, I think.
-for d in ~/{Desktop,Documents,Music,Videos,Pictures,Public,Templates}; do
+for d in ~/{Desktop,Documents,Music,Videos,Pictures,Public,Templates,Webcam}; do
 	[ -d "$d" ] && rmdir --ignore-fail-on-non-empty "$d"
 done
 
