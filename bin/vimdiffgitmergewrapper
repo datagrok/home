@@ -1,0 +1,3 @@
+#!/bin/sh
+echo exec gvimdiff -d -c "wincmd l" -f "$@"
+exec gvimdiff -d -c "wincmd l" -f "$@"
