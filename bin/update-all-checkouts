@@ -16,10 +16,21 @@ find ~/mnt/ ~/var/ -name '*.git' | while read dir
 do (
 	cd "$dir"
 	cd ..
-	echo "\033[1m`pwd`\033[m"
+	echo "\033[1;37m`pwd`\033[m"
 	git status -s
 	if [ "$online" -a -e .git/refs/remotes/origin ]; then
-		git pull --ff-only
+		git fetch
+		curr_branch=$(git symbolic-ref -q HEAD)
+		curr_branch="${curr_branch#refs/heads/}"
+		upstream=$(git config "branch.$curr_branch.merge")
+		remote=$(git config "branch.$curr_branch.remote")
+		if [ "$upstream" -a "$remote" ]; then
+			git merge --ff-only "$remote"/"${upstream#refs/heads/}"
+		else
+			echo $upstream
+			echo $remote
+			echo 'Fetched but no tracking branch configured for local update.'
+		fi
 	else
 		echo 'No repo to update from.'
 	fi
