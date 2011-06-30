@@ -29,13 +29,23 @@ function ps1_context {
 	done
 }
 
+function ps1_curdir {
+		p="${PWD/$VIRTUAL_ENV/♬}"
+		echo "${p/$HOME/~}"
+}
+
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
-	PS1='\[\033[;1;31m\]$(ps1_context)\[\033[;1;'${PS1_HOSTCOLOR:-39}'m\]\u@\h\[\033[m\]:\[\033[1;34m\]\w\[\033[m\]\$ '
+	if [ "$VIRTUAL_ENV" ]; then
+		p='\w'
+	else
+		p=
+	fi
+	PS1='\[\033[;1;31m\]$(ps1_context)\[\033[;1;'${PS1_HOSTCOLOR:-39}'m\]\u@\h\[\033[m\]:\[\033[1;34m\]$(ps1_curdir)\[\033[m\]\$ '
 else
-	PS1="$(ps1_context)"'\u@\h:\w\$ '
+	PS1="$(ps1_context)"'\u@\h:$(ps1_curdir)\$ '
 fi
 
 if [ -f ~/.bash_aliases ]; then
