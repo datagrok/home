@@ -44,6 +44,7 @@ import XMonad.Layout.ShowWName
 import XMonad.Layout.Spiral
 import XMonad.Layout.Simplest
 import XMonad.Layout.Tabbed
+import XMonad.Layout.ResizableTile
 import XMonad.Layout.TabBarDecoration
 import XMonad.Layout.TwoPane
 import XMonad.Util.Themes
@@ -77,7 +78,7 @@ main = xmonad $ ewmh defaultConfig
             -- $ onWorkspace "chat/music" (IM (320/1680) (Role "buddy_list"))
             -- $ onWorkspace "chat/music" (combineTwo (TwoPane delta (320/1680)) (Mirror tiled) (Full))
             $ decorateWindows
-            $ spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full
+            $ spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
         , keys               = keys'
         , manageHook         = manageHook' <+> manageDocks <+> manageHook defaultConfig
         , logHook            = updatePointer (Relative 0.5 0.5)
@@ -96,10 +97,16 @@ myTheme       = theme $ listOfThemes!!2     -- I like the second theme in the li
 floatClasses  = ["display", "Xwud"]         -- These windows always float by default
 ignoreClasses = ["Audacious"]
 tiled         = Tall nmaster delta ratio
+ -- Make one of the 2 master windows 800x600 in the upper left corner of my 1440x900 display.
+projector     = ResizableTall 2 (20/1440) (800/1440) [600/(900/2)]
 nmaster       = 1
 delta         = 64/1680              -- adjust 64 pixels at a time on my 1680px wide monitor
 ratio         = (1680-640)/1680      -- main takes all but 640 pixels on my 1680px wide monitor
 bigfont       = "-*-new century schoolbook-*-r-*-*-34-*-*-*-*-*-*-*"
+
+-- TODO I wish I could lock sets of workspaces to screens. So picking workspace
+-- 1-6 would always switch to screen 1 before changing, and 7-9 would switch to
+-- screen 2 before changing.
 workspaces'   = ["1", "2", "3", "4", "5", "6", "7", "Mail", "Chat"]
 
 
@@ -169,6 +176,8 @@ mykeys mod = fromList $
             , (shiftMask   , "F10"    , io (exitWith ExitSuccess)) -- %! Quit xmonad
             , (noMask      , "F10"    , restart "xmonad" True) -- %! Restart xmonad
             , (controlMask , "k"      , kill)
+            , (shiftMask   , "h"      , sendMessage MirrorShrink)
+            , (shiftMask   , "l"      , sendMessage MirrorExpand)
             ]
         ]
     where
@@ -202,8 +211,8 @@ themedXPConfig t = defaultXPConfig
 -- TODO: I wish I could configure events to occur while the modifier key is
 -- pressed, and be undone (or have other events occur) when released. Goal:
 -- hide all decorations until mod is pressed. While pressed, a clock, window
--- names, current desktop name, window list, and graphical desktop summary
--- appear. When released the information disappears.
+-- names, current desktop name, window list, and graphical desktop summary and
+-- system tray appear. When released the information disappears.
 --
 -- Thus-far failing (so commented and stubbed) experiments to build my own
 -- low-level eventHook that will react to press and release follow.
