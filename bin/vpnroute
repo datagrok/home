@@ -13,14 +13,14 @@ case "$1" in
 		# Route all traffic bound for 10.*.*.* through the virtual machine.
 		route add -net 10.0.0.0 netmask 255.0.0.0 gw $vboxip dev $vboxdev
 		# Add the VPN nameservers to the resolver
-		sed -i -e '1inameserver 10.213.65.220\nnameserver 10.213.65.222' /etc/resolv.conf
+		sed -i -e '1inameserver 10.213.65.220\nnameserver 10.213.65.222\nsearch cei.cox.com' /etc/resolv.conf
 		echo 'Configured route and DNS for VPN through VirtualBox'
 	;;
 	down)
 		# Remove the route
 		route del -net 10.0.0.0 netmask 255.0.0.0 gw $vboxip dev $vboxdev
 		# Remove the nameservers
-		sed -i -e '/nameserver 10\.213\.65\.22./d' -e '/^$/d' /etc/resolv.conf
+		sed -i -e '/nameserver 10\.213\.65\.22.|search cei\.cox\.com/d' -e '/^$/d' /etc/resolv.conf
 		echo 'Removed route and DNS for VPN through VirtualBox'
 	;;
 esac
