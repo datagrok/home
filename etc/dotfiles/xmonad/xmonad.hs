@@ -69,7 +69,7 @@ import System.Exit
 main :: IO ()
 main = xmonad $ ewmh defaultConfig
         { layoutHook         = id           -- 'id' is identity, just for pretty source code
-            $ ModifiedLayout MyResizeScreen 
+            -- $ ModifiedLayout MyResizeScreen 
             $ showWName' defaultSWNConfig { swn_font = bigfont }
             -- $ layoutHints
             $ avoidStruts
@@ -82,7 +82,7 @@ main = xmonad $ ewmh defaultConfig
         , manageHook         = manageHook' <+> manageDocks <+> manageHook defaultConfig
         , logHook            = updatePointer (Relative 0.5 0.5)
         , terminal           = "x-terminal-emulator"
-        , borderWidth        = 1
+        , borderWidth        = 0
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
         , focusedBorderColor = activeBorderColor myTheme --"#d78d07"
         , workspaces         = workspaces'
