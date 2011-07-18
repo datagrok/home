@@ -27,6 +27,9 @@ function ps1_context {
 	for v in "$debian_chroot" "$virtualenv" "$PS1_CONTEXT"; do
 		echo -n "${v:+$v }"
 	done
+	# Take advantage of the fricken awesome tools from
+	# /etc/bash_completion.d/git
+	__git_ps1 "±%s "
 }
 
 function ps1_curdir {

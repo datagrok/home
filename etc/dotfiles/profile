@@ -107,11 +107,16 @@ export TZ=America/New_York
 #export XMODIFIERS="@im=SCIM"
 
 # Settings for virtualenvwrapper and pip
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 export WORKON_HOME="$HOME/var/virtualenvs"
 export DEVELDIR="$WORKON_HOME"
 export PIP_VIRTUALENV_BASE="$WORKON_HOME"
 export PIP_RESPECT_VIRTUALENV=true
 export DJANGO_COLORS=light
+# Take advantage of the fricken awesome tools from /etc/bash_completion.d/git
+export GIT_PS1_SHOWSTASHSTATE=1
+export GIT_PS1_SHOWUNTRACKEDFILES=1
+export GIT_PS1_SHOWUPSTREAM=1
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
