@@ -1,3 +1,24 @@
-#!/bin/sh
-echo exec gvimdiff -d -c "wincmd l" -f "$@"
-exec gvimdiff -d -c "wincmd l" -f "$@"
+#!/bin/bash
+
+cat <<-EOF
+	LOCAL=$LOCAL
+	    The contents of the file on the current branch
+	BASE=$BASE
+	    The common base for the merge, if available
+	REMOTE=$REMOTE
+	    The contents of the file to be merged
+	MERGED=$MERGED
+	    The result of the merge resolution.
+
+EOF
+
+theirchanges=${LOCAL/LOCAL/THEIRCHANGES}
+ourchanges=${LOCAL/LOCAL/OURCHANGES}
+diff -w "$BASE" "$REMOTE" > "$theirchanges"
+diff -w "$BASE" "$LOCAL" > "$ourchanges"
+
+echo gvim -f "$MERGED" "$ourchanges" "$theirchanges"
+echo
+gvim -f -O "$MERGED" "$ourchanges" "$theirchanges"
+rm "$ourchanges"
+rm "$theirchanges"
