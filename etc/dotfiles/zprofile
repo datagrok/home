@@ -1,0 +1,5 @@
+#!/bin/false # This file is sourced, not executed, by zsh for login shells.
+
+setopt nonomatch
+source ~/.profile
+setopt nomatch
