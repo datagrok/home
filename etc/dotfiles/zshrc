@@ -11,8 +11,4 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-# maybe these should be in a .profile.local?
-export JELLYDOUGHNUT=~/mnt/jellydoughnut
-export MED_EXEC_PATH=$JELLYDOUGHNUT/lib/med
-
 source ~/.bash_aliases
