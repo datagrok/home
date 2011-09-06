@@ -172,6 +172,7 @@ mykeys mod = fromList $
             , (noMask      , "r"      , shellPrompt (themedXPConfig myTheme)) -- "run"
             , (noMask      , "F11"    , sendMessage ToggleStruts) -- "border"
             , (noMask      , "Return" , dwmpromote)
+            , (controlMask , "Return" , spawn "x-terminal-emulator -e screen")
             , (controlMask , "t"      , themePrompt (themedXPConfig myTheme))
             , (shiftMask   , "F10"    , io (exitWith ExitSuccess)) -- %! Quit xmonad
             , (noMask      , "F10"    , restart "xmonad" True) -- %! Restart xmonad
