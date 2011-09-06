@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/false # This file is sourced, not executed, by ~/.bashrc and ~/.zshrc
 echo "Sourcing ~/.bash_aliases"
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
+	# This calls 'export LS_COLORS=...'
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     #alias dir='ls --color=auto --format=vertical'
