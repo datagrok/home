@@ -12,7 +12,7 @@
 # Unset this to avoid connecting to upstream servers.
 online=1
 
-find ~/mnt/ ~/var/ -name '*.git' | while read dir
+find ~/mnt/ -name '*.git' | while read dir
 do (
 	cd "$dir"
 	cd ..
