@@ -1,6 +1,9 @@
 #!/bin/false # This file is sourced by the command interpreter for login shells.
 # see /usr/share/doc/bash/examples/startup-files for examples.
 # the files are located in the bash-doc package.
+#
+# I have .zprofile sourcing this as well, so ensure all commands are dash,
+# bash, and zsh-compatible.
 
 # Useful for debugging startup execution path.
 echo "Sourcing ~/.profile"
@@ -24,6 +27,7 @@ done
 
 # Sun Java install for versions less than 6 on debian is a bit stupid
 # Java 6 deb is non-stupid; maybe I can soon remove this block
+# Next line needs 'nonomatch' or 'null_glob' in zsh.
 if [ -d /usr/lib/j2sdk*/bin ] ; then
 	for P in /usr/lib/j2sdk*/jre/bin /usr/lib/j2sdk*/bin; do
     	PATH="${PATH}:${P}"
@@ -85,15 +89,21 @@ export SCREEN_CK
 export SCREEN_CKR
 export SCREEN_CL
 export PS1_HOSTCOLOR
+# I want color output from git. I'll decide when I need a pipe to a pager.
 export GIT_PAGER=
+# Tell various languages where to find my handy libraries
 export TEXINPUTS=$HOME/lib/latex2e/:
 export PYTHONPATH=lib:$HOME/lib/python
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 export PYTHONDOCS=/usr/share/doc/python-doc/html
 export CLASSPATH=.:$HOME/lib/java
+
 export EDITOR=vim
 export PAGER=less
-export LESS=-R
+export LESS=-Ra
+
+# Bash settings
+
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
 #export HISTCONTROL=erasedups
@@ -101,18 +111,28 @@ export HISTCONTROL=ignoredups:ignorespace
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 export HISTSIZE=1000
 export HISTFILESIZE=2000
+
 export TZ=America/New_York
+
 # This is no good with new gnome's im-switch...
 #export GTK_IM_MODULE="scim"
 #export XMODIFIERS="@im=SCIM"
 
 # Settings for virtualenvwrapper and pip
+# Grr I shoulnd't even have to set this. Don't mess with my PS1.
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export WORKON_HOME="$HOME/var/virtualenvs"
 export DEVELDIR="$WORKON_HOME"
+# Not sure I need this but:
 export PIP_VIRTUALENV_BASE="$WORKON_HOME"
+# I only use pip within virtualenvs:
+export PIP_REQUIRE_VIRTUALENV=true
+# And I don't want to have to use -E every time:
 export PIP_RESPECT_VIRTUALENV=true
+# Save a little bit of bandwidth if reqs haven't changed
+export PIP_DOWNLOAD_CACHE="$HOME/var/tmp/pip-cache"
 export DJANGO_COLORS=light
+
 # Take advantage of the fricken awesome tools from /etc/bash_completion.d/git
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
@@ -130,5 +150,19 @@ fi
 if [ "$BASH_VERSION" -a -f ~/.bashrc ]; then
    . ~/.bashrc
 fi
+
+# This is a zsh-specific PS1. It is necessary to do this because dash, not
+# zsh, is the login shell when logging in graphically. /etc/gdm/Xsession is a
+# 'sh' (dash) script which sources ~/.xprofile, which sources ~/.profile.
+# 
+# It is however safe to do this because bash is configured in a stupid way on
+# Ubuntu; you're basically forced to set PS1 in .bashrc and thus it can't
+# inherit the value from the environment. (This is one of the reasons I've
+# switched to zsh.)
+# 
+# I have .zprofile set to source .profile so that in the event we log in on the
+# console it does the right thing. Just have to ensure there's nothing
+# zsh-incompatible in the commands above.
+export PS1='%B%F{green}%n@%m%f:%F{blue}%~%f%b%# '
 
 # vim: set ft=sh :
