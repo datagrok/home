@@ -139,4 +139,8 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 " Make latexsuite find my custom latex stuff
 let g:Tex_TEXINPUTS = '~/lib/latex2e/**'
 
+if $SC_CONTEXT != ""
+    set tags+=$SC_CONTEXT/tags
+endif
+
 " vim: set ts=8:
