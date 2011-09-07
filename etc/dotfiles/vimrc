@@ -10,6 +10,7 @@ if has("autocmd")
 endif
 
 set modeline            " God damn it debian! I want modelines
+set encoding=utf-8
 "set fileencodings=ucs-bom,utf-8,sjis,euc-jp,default,latin1
 set showcmd		" Show (partial) command in status line.
 " Include vim-fugitive data in statusline.
@@ -74,7 +75,8 @@ set listchars=eol:$,tab:\ -,nbsp:_,trail:.,extends:>,precedes:<
 colorscheme mike
 
 set linebreak
-set showbreak=»\ \ \ 
+" 'set showbreak' and 'let &showbreak' differ!?
+let &showbreak="\u00bb   "
 
 nnoremap <Up>		g<Up>
 nnoremap <Down>		g<Down>
@@ -139,8 +141,13 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 " Make latexsuite find my custom latex stuff
 let g:Tex_TEXINPUTS = '~/lib/latex2e/**'
 
+" Set the tags file in the root of the subcommander context, if
+" found.
 if $SC_CONTEXT != ""
     set tags+=$SC_CONTEXT/tags
 endif
+
+" Bootstrap pathogen vim-package manager
+call pathogen#infect()
 
 " vim: set ts=8:
