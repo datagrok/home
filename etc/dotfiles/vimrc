@@ -9,6 +9,7 @@ if has("autocmd")
 				\| exe "normal g'\"" | endif
 endif
 
+set tags+=tags;/home/mike " Search up until my homedir for a tags file.
 set modeline            " God damn it debian! I want modelines
 "set fileencodings=ucs-bom,utf-8,sjis,euc-jp,default,latin1
 set showcmd		" Show (partial) command in status line.
@@ -21,9 +22,10 @@ set autowrite		" Automatically save before commands like :next and :make
 set updatecount=2000	" Make swapfile write less often
 set hlsearch		" Hilight searches
 set autoindent		" Copy indent of previous line
-"set smartindent	" indentexpr > cindent > smartindent + autoindent?
-" Comments indent too. :h smartindent
-" inoremap # X<BS>#
+" smartindent is crap. Don't use it.
+" http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
+set cinkeys-=0#
+set indentkeys-=0#
 set shiftwidth=4
 set tabstop=4
 set noexpandtab
@@ -139,8 +141,5 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 " Make latexsuite find my custom latex stuff
 let g:Tex_TEXINPUTS = '~/lib/latex2e/**'
 
-if $SC_CONTEXT != ""
-    set tags+=$SC_CONTEXT/tags
-endif
 
 " vim: set ts=8:
