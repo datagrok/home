@@ -50,7 +50,9 @@ else
 fi
 
 if [ -d "$HOME/tmp" ]; then
+	# TMPDIR is the canonical standard
 	export TMPDIR=$HOME/tmp
+	# ... but some programs are crap and use their own
 	export TEMP=$HOME/tmp
 fi
 
@@ -137,6 +139,9 @@ export DJANGO_COLORS=light
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 export GIT_PS1_SHOWUPSTREAM=1
+
+# In zsh, report on all commands that take longer that 5 sec.
+export REPORTTIME=5
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
