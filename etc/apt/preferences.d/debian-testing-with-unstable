@@ -6,7 +6,8 @@ Package: *
 Pin: release o="Unofficial Multimedia Packages",a=unstable
 Pin-Priority: 200
 
-Explanation: see http://www.argon.org/~roderick/apt-pinning.html
+Explanation: http://www.argon.org/~roderick/apt-pinning.html
+Explanation: apt_preferences(5)
 Package: *
 Pin: release o=Debian,a=testing
 Pin-Priority: 900
