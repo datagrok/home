@@ -1,0 +1,51 @@
+#!/usr/bin/python
+
+'''stats -- command line utility for simple statistics.
+
+Pipe a stream of numbers to this and you will get back a short statistical summary of the data.
+
+'''
+import sys
+from datagrok.math.stats import stemleaf, dsd, fsd
+import numpy
+
+def main(args):
+    data = numpy.array([float(l) for l in sys.stdin])
+
+    max_ = numpy.max(data)
+    std = numpy.std(data)
+    count = len(data)
+
+    print '%20s %8d' % ('Items', count)
+
+    for label, result in [
+        ('Min',    numpy.min(data)),
+        #('1Q',    numpy.median(data)),
+        ('Mean',   numpy.mean(data)),
+        ('Median', numpy.median(data)),
+        #('3Q',    numpy.median(data)),
+        ('Max',    max_),
+        ('Stdev',  std),
+    ]:
+        print "%20s %8.3f" % (label, result)
+
+    rows = 40
+    bucketsize = max_/float(rows)
+    for x in range(rows):
+        bucketstart = x * bucketsize
+        bucketend = bucketstart + bucketsize
+        freq = len([x for x in data if x > bucketstart and x <= bucketend])
+        print '%7.1f - %7.1f %4d %s' % (bucketstart, bucketend, freq, freq*400/count*'#')
+
+    #rows = 20
+    #stdevs = 6
+    #bucketsize = std/(rows/stdevs)
+    #for x in range(rows):
+    #    bucketstart = (x-(rows/2)) * bucketsize + std
+    #    bucketend = bucketstart + bucketsize
+    #    print '%5.1f - %5.1f %s' % (bucketstart, bucketend, len([x for x in data if x >= bucketstart and x < bucketend]))
+
+    #stemleaf(int(x) for x in data)
+
+if __name__=='__main__':
+	main(sys.argv[1:])
