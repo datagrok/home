@@ -6,7 +6,7 @@ set -e
 vboxdev=vboxnet0
 
 # The IP address on the 'host-only adapter' of the VirtualBox machine
-vboxip=192.168.56.2 
+vboxip=192.168.56.102
 
 case "$1" in
 	up)
