@@ -9,7 +9,7 @@ if [ ! "$_PROFILE_APPLIED" ]; then
 fi
 
 # Browsers in order of preference; launch with sensible-browser
-for b in google-chrome epiphany iceweasel firefox dillo; do
+for b in google-chrome chromium epiphany iceweasel firefox dillo; do
 	BROWSER=`which $b`
 	if [ "$BROWSER" ]; then
 		break
