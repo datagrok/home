@@ -1,1 +1,0 @@
-/home/mike/mnt/vim-unimpaired/plugin/unimpaired.vim
