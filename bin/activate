@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# activate
+#
+# usage: activate [COMMAND [ARGS]]
+#
+# For use with Ian Bicking's virtualenv tool. Attempts to find the root of a
+# virtual environment. Then, executes COMMAND with ARGS in the context of the
+# activated environment. If no COMMAND is given, activate defaults to a
+# subshell.
+
+# First, locate the virtualenv
+while [ `pwd` != '/' ]; do
+	# Stop here if this the root of a virtualenv
+	if [ \
+		-x bin/python \
+		-a -e lib/python*/site.py \
+		-a -e include/python*/Python.h ]
+	then
+		break
+	fi
+	cd ..
+done
+if [ "$PWD" = "/" ]; then
+	echo "Could not activate: no virtual environment found." >&2
+	exit 1
+fi
+
+# Activate
+export VIRTUAL_ENV="$PWD"
+export PATH="$VIRTUAL_ENV/bin:$PATH"
+unset PYTHON_HOME
+exec "${@:-$SHELL}"
