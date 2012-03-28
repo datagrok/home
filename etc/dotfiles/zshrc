@@ -12,3 +12,23 @@ compinit
 # End of lines added by compinstall
 
 source ~/.bash_aliases
+
+function ps1_context {
+	# For any of these bits of context that exist, display them and append a
+	# space.
+	virtualenv=`basename "$VIRTUAL_ENV"`
+	for v in "$debian_chroot" "$virtualenv" "$PS1_CONTEXT"; do
+		echo -n "${v:+$v }"
+	done
+}
+
+function ps1_curdir {
+		if [ "$VIRTUAL_ENV" ]; then
+			p="${PWD/$VIRTUAL_ENV/♬}"
+		else
+			p="${PWD}"
+		fi
+		echo "${p/$HOME/~}"
+}
+setopt PROMPT_SUBST
+export PS1='$(ps1_context)%B%F{green}%n@%m%f:%F{blue}$(ps1_curdir)%f%b%# '
