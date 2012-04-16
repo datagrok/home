@@ -46,7 +46,7 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	else
 		p=
 	fi
-	PS1='\[\033[;1;31m\]$(ps1_context)\[\033[;1;'${PS1_HOSTCOLOR:-39}'m\]\u@\h\[\033[m\]:\[\033[1;34m\]$(ps1_curdir)\[\033[m\]\$ '
+	PS1='\[\033[;1;31m\]$(ps1_context)\[\033[;1;3'${PS1_HOSTCOLOR:-7}'m\]\u@\h\[\033[m\]:\[\033[1;34m\]$(ps1_curdir)\[\033[m\]\$ '
 else
 	PS1="$(ps1_context)"'\u@\h:$(ps1_curdir)\$ '
 fi

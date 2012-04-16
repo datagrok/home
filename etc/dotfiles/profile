@@ -71,10 +71,13 @@ case "`hostname`" in
 		;;
 esac
 case "`hostname`" in
-	io)		SCREEN_CL='kg'; PS1_HOSTCOLOR='32';;
-	kino)	SCREEN_CL='km'; PS1_HOSTCOLOR='35';;
-	seiko)	SCREEN_CL='kr'; PS1_HOSTCOLOR='31';;
-	mio)	SCREEN_CL='kg'; PS1_HOSTCOLOR='32';;
+	io)		SCREEN_CL='kg'; PS1_HOSTCOLOR='2';;
+	kino)	SCREEN_CL='km'; PS1_HOSTCOLOR='5';;
+	seiko)	SCREEN_CL='kr'; PS1_HOSTCOLOR='1';;
+	mio)	SCREEN_CL='kg'; PS1_HOSTCOLOR='2';;
+	trio)	SCREEN_CL='ky'; PS1_HOSTCOLOR='4';;
+	*)		SCREEN_CL='kw'; PS1_HOSTCOLOR='7';;
+	# 0:black 1:red 2:green 3: blue 4:yellow 5:magenta 6:teal 7:white
 esac
 
 # By default mail spool on ubuntu is nonexistent, if so start mutt looking

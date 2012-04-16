@@ -31,15 +31,19 @@ function ps1_curdir {
 		fi
 		echo "${p/$HOME/~}"
 }
-setopt PROMPT_SUBST
-export PS1='$(ps1_context)%B%F{green}%n@%m%f:%F{blue}$(ps1_curdir)%f%b%# '
 
+setopt PROMPT_SUBST
 source ~/mnt/jellydoughnut/lib/med/med.plugin.zsh
 
 # from man zsh-betaall
 autoload -Uz vcs_info
-zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
-zstyle ':vcs_info:*' formats       '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '
-zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
-# precmd () { vcs_info }
-# PS1='%F{5}[%F{2}%n%F{5}] %F{3}%3~ ${vcs_info_msg_0_}%f%# '
+zstyle ':vcs_info:*' enable git svn hg
+#zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{3}%a%F{5}]%f '
+#zstyle ':vcs_info:*' formats       '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '
+#zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{2}:%F{3}%r'
+precmd () {
+	vcs_info
+	ps1_context_v=$(ps1_context)
+	ps1_curdir_v=$(ps1_curdir)
+}
+PS1='${vcs_info_msg_0_} ${ps1_context_v}%B%F{$PS1_HOSTCOLOR}%n@%m%f:%F{blue}${ps1_curdir_v}%f%b%# '
