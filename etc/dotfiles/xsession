@@ -37,7 +37,6 @@ case "`hostname`" in
 		ssh-add &
 		xchat-gnome &
 		google-chrome &
-		urxvt -e screen &
 		pidgin &
 		evolution &
 		;;

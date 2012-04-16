@@ -44,6 +44,7 @@ import XMonad.Layout.ShowWName
 import XMonad.Layout.Spiral
 import XMonad.Layout.Simplest
 import XMonad.Layout.Tabbed
+import XMonad.Layout.ThreeColumns
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.TabBarDecoration
 import XMonad.Layout.TwoPane
@@ -66,6 +67,7 @@ import System.Exit
 --      y = foo
 --      z = bar
 
+-- I want the equivalent of showWName for the desktop layout algorithm
 
 main :: IO ()
 main = xmonad $ ewmh defaultConfig
@@ -73,21 +75,22 @@ main = xmonad $ ewmh defaultConfig
             -- $ ModifiedLayout MyResizeScreen 
             $ showWName' defaultSWNConfig { swn_font = bigfont }
             -- $ layoutHints
+            -- Stalonetray just can't decide how much of my screen it wants.
             $ avoidStruts
             -- For some reason I never could get 'onWorkspace' to work well.
             -- $ onWorkspace "chat/music" (IM (320/1680) (Role "buddy_list"))
             -- $ onWorkspace "chat/music" (combineTwo (TwoPane delta (320/1680)) (Mirror tiled) (Full))
             $ decorateWindows
-            $ spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
+            $ ThreeCol 1 (3/100) (594/2560) ||| spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
         , keys               = keys'
         , manageHook         = manageHook' <+> manageDocks <+> manageHook defaultConfig
-        , logHook            = updatePointer (Relative 0.5 0.5)
+        , logHook            = logHook defaultConfig `mappend` ewmhDesktopsLogHook `mappend` updatePointer (Relative 0.5 0.5) 
         , terminal           = "x-terminal-emulator"
         , borderWidth        = 0
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
         , focusedBorderColor = activeBorderColor myTheme --"#d78d07"
         , workspaces         = workspaces'
-        , handleEventHook    = eventHook'
+        , handleEventHook    = eventHook' `mappend` ewmhDesktopsEventHook
         , startupHook        = ewmhDesktopsStartup >> setWMName "LG3D"
         }
 

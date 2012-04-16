@@ -39,3 +39,4 @@ alias l='ls -CF'
 alias dad='django-admin.py'
 
 /bin/which lbzip2 && alias bzip2='lbzip2'
+alias django-admin.py='med d'

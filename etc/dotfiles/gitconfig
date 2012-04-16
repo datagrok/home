@@ -33,4 +33,4 @@
 [mergetool "mygvimdiff"]
 	cmd = LOCAL="$LOCAL" BASE="$BASE" REMOTE="$REMOTE" MERGED="$MERGED" /home/mike/bin/vimdiffgitmergewrapper
 [remote "origin"]
-	tagopt = --no-tags
+	#tagopt = --no-tags
