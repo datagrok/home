@@ -3,15 +3,15 @@
 ME=`basename "$0"`
 case "$ME" in
 	newnote)
-		LOCATION="/home/share/$USER/doc/Notes"
+		LOCATION="$HOME/var/working/writings/notes"
 		TYPE="Note"
 		;;
 	newentry)
-		LOCATION="/home/share/$USER/doc/Journal"
+		LOCATION="$HOME/var/working/writings/journal"
 		TYPE="Journal Entry"
 		;;
 	newidea)
-		LOCATION="/home/share/$USER/doc/Ideas"
+		LOCATION="$HOME/var/working/writings/ideas"
 		TYPE="Idea"
 		;;
 	*)
