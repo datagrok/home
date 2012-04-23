@@ -10,7 +10,7 @@
 # subshell.
 
 # First, locate the virtualenv
-while [ `pwd` != '/' ]; do
+while [ "$PWD" != "/" ]; do
 	# Stop here if this the root of a virtualenv
 	if [ \
 		-x bin/python \
