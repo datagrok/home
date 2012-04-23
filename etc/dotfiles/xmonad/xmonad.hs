@@ -97,7 +97,7 @@ main = xmonad $ ewmh defaultConfig
 
 -- Configuration settings used to override the defaultConfig, above.
 myTheme       = theme $ listOfThemes!!2     -- I like the second theme in the list.
-floatClasses  = ["display", "Xwud"]         -- These windows always float by default
+floatClasses  = ["display", "Xwud", "fontforge"] -- These windows always float by default
 ignoreClasses = ["Audacious"]
 tiled         = Tall nmaster delta ratio
  -- Make one of the 2 master windows 800x600 in the upper left corner of my 1440x900 display.
