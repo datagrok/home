@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rootkey=/root/.ssh/id_rsa_rsync
+rootkey=/home/mike/mnt/home-private/id_rsa_rsync
 logfile=/home/mike/var/log/library-backup.log
 
 set -e
