@@ -1,15 +1,14 @@
 #!/bin/sh
 
-# Collect data from a pipe in a temporary file and pass that file as an argument to the command given in arguments.
+# Collect data from a pipe in a temporary file and pass that file as an
+# argument to the command given in arguments.
 #
 # Example:
 # 	ls | giveto google-chrome
 
-t=$(tempfile -p'giveto')
+t="$(tempfile -p'giveto')"
 cat > "$t"
+sleep 3 &
 "$@" "$t"
-# For commands that do not wait, like spawning a new window in a running
-# browser. FIXME: this may be annoyying for commands that DO wait; find an
-# elegant solution.
-sleep 3
+wait
 rm -f -- "$t"
