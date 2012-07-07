@@ -97,7 +97,7 @@ export PS1_HOSTCOLOR
 # I want color output from git. I'll decide when I need a pipe to a pager.
 export GIT_PAGER=
 # Tell various languages where to find my handy libraries
-export TEXINPUTS=$HOME/lib/latex2e/:
+export TEXINPUTS=./:$HOME/lib/latex2e/:
 export PYTHONPATH=lib:$HOME/lib/python
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 export PYTHONDOCS=/usr/share/doc/python-doc/html
