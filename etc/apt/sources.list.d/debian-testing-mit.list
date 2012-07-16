@@ -1,9 +1,6 @@
 # The default distribution is "testing" (specified in /etc/apt/apt.conf), but
 # we grab some packages from "unstable" so we list that here too.
 
-# Marillat has many precompiled non-free video programs, transcode, etc.
-deb http://www.debian-multimedia.org testing main
-
 # MIT's is a good, close, reliable debian mirror
 deb http://debian.lcs.mit.edu/debian/ testing main contrib non-free
 deb http://debian.lcs.mit.edu/debian/ unstable main contrib non-free

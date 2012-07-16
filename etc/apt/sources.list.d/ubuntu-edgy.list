@@ -1,0 +1,6 @@
+deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ edgy main restricted universe multiverse
+deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ edgy-updates main restricted universe multiverse
+#deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ edgy-proposed main restricted universe multiverse
+deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ edgy-backports main restricted universe multiverse
+deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ edgy-security universe
+
