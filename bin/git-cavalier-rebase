@@ -1,0 +1,67 @@
+#!/bin/sh
+
+set -e
+
+# "Rebase me onto $1"
+
+usage() {
+	fmt <<- EOF
+		$0 [<upstream>]
+	EOF
+}
+
+upstream="$1"
+branch="`git symbolic-ref HEAD --short`"
+orig_commit="`git rev-parse HEAD`"
+
+[ "$upstream" ] || {
+	echo "First arg must be target branch."
+	exit 1
+}
+
+. /usr/lib/git-core/git-sh-setup
+
+export GIT_QUIET=1
+
+echo "Beginning cavalier-autorebase. Current structure:"
+git log --graph --decorate --oneline HEAD `git merge-base $upstream HEAD`^!
+
+git checkout -b __cavalier_rebase
+trap "git checkout -f master; git branch -D __cavalier_rebase" EXIT
+
+if git rebase "$upstream"; then
+	echo "Trivial rebase completed with no errors."
+	git checkout "$branch"
+	git reset --hard __cavalier_rebase
+	exit 0
+else
+	exitcode=$?
+fi
+
+if [ $exitcode != 1 ]; then
+	echo "git rebase exited with strange status code $exitcode; aborting."
+	exit $exitcode
+fi
+
+while test -d "$GIT_DIR/rebase-apply"; do
+	echo "Commit failed to apply, skipping."
+	git rebase --skip || true
+done
+
+echo "Rebase attempt completed. Attempting to squash-merge."
+
+git merge --commit --squash "$branch" || {
+	exitcode=$?
+	echo "Failed to merge with master. Try merging from master and resolving any conflicts first."
+	exit $exitcode
+}
+
+sed -i -e "1iCavalier-autorebase: remaining changes from branch '$branch'\\n\\n" -e "s/__cavalier_rebase/$branch/g" .git/SQUASH_MSG
+git commit -F .git/SQUASH_MSG
+git checkout "$branch"
+git reset __cavalier_rebase
+
+echo "Successful cavalier-autorebase. New structure:"
+git log --graph --decorate --oneline HEAD `git merge-base $upstream HEAD`^!
+echo "To undo:"
+echo "	git reset --hard $orig_commit"

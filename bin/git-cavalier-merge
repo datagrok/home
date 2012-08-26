@@ -1,0 +1,27 @@
+#!/bin/sh
+set -e
+
+# "Merge $1 into me"
+
+branch="$1"
+
+[ "$branch" ] || {
+	echo 'First argument to $0 must be target branch name.'
+}
+dstbranch="`git symbolic-ref HEAD --short`"
+
+echo "Cavalier-merging $branch into $dstbranch. Current structure:"
+oldbase="`git merge-base $branch HEAD`"
+git log --graph --decorate --oneline HEAD $oldbase^!
+
+git checkout "$branch"
+~mike/bin/git-cavalier-rebase "$dstbranch"
+git checkout "$dstbranch"
+git merge --no-ff $branch
+git checkout $branch
+git merge --ff-only $dstbranch
+git checkout $dstbranch
+
+echo "Successful cavalier-merge. Current structure:"
+git log --graph --decorate --oneline HEAD $oldbase^!
+echo "To revert, use 'git revert -m $branch'"
