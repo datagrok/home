@@ -36,3 +36,4 @@ nice -15 rsync \
 	-e "ssh -i $rootkey" \
 	-a --del -v seiko:/mnt/Shared/ /mnt/backup/
 umount /mnt/backup
+fsck -a /mnt/backup
