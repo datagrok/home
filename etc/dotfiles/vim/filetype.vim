@@ -10,5 +10,5 @@ augroup filetypedetect
     au! BufRead,BufNewFile	*.mako 	setfiletype mako
     au! BufRead,BufNewFile	*.pdc 	setfiletype pandoc
     au! BufRead,BufNewFile	*.pandoc 	setfiletype pandoc
-    au! BufRead,BufNewFile	*.md 	setfiletype mkd
+    au! BufRead,BufNewFile	*.md 	setfiletype markdown
 augroup END
