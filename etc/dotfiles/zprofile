@@ -19,4 +19,4 @@ function ps1_curdir {
 		p="${PWD/$VIRTUAL_ENV/♬}"
 		echo "${p/$HOME/~}"
 }
-"$(ps1_context) $(ps1_curdir) "
+# "$(ps1_context) $(ps1_curdir) "
