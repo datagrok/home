@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# When using the system's django-admin from a virtualenv, it won't find the
+# right python unless I do something like this.
+
+python /usr/bin/django-admin "$@"
