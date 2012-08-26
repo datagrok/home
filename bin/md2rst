@@ -1,0 +1,2 @@
+#!/bin/sh
+pandoc --reference-links --no-wrap -t rst "$@"
