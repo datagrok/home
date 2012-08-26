@@ -33,7 +33,7 @@ function ps1_curdir {
 }
 
 setopt PROMPT_SUBST
-source ~/mnt/jellydoughnut/lib/med/med.plugin.zsh
+[ -e  ~/mnt/jellydoughnut/lib/med/med.plugin.zsh ] && source ~/mnt/jellydoughnut/lib/med/med.plugin.zsh
 
 # from man zsh-betaall
 autoload -Uz vcs_info
