@@ -29,7 +29,7 @@ set cinkeys-=0#
 set indentkeys-=0#
 set shiftwidth=4
 set tabstop=4
-set noexpandtab
+set expandtab		" I love tab characters, but I'm never gonna win :(
 set shiftround
 set wildmenu    
 set visualbell		" Kill that damn bell
