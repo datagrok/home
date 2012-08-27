@@ -15,7 +15,7 @@ while [ "$PWD" != "/" ]; do
 	if [ \
 		-x bin/python \
 		-a -e lib/python*/site.py \
-		-a -e include/python*/Python.h ]
+		]
 	then
 		break
 	fi
