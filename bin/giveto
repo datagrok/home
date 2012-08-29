@@ -6,7 +6,9 @@
 # Example:
 # 	ls | giveto google-chrome
 
-t="$(tempfile -p'giveto')"
+# todo file extension as tempfile
+
+t=$(tempfile -p'giveto')
 cat > "$t"
 sleep 3 &
 "$@" "$t"
