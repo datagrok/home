@@ -146,4 +146,15 @@ let g:Tex_TEXINPUTS = '~/lib/latex2e/**'
 " Bootstrap pathogen vim-package manager
 call pathogen#infect()
 
+nnoremap <C-S-Up> :silent! let &guifont = substitute(
+ \ &guifont,
+ \ '\zs\d\+$',
+ \ '\=eval(submatch(0)+1)',
+ \ '')<CR>
+nnoremap <C-S-Down> :silent! let &guifont = substitute(
+ \ &guifont,
+ \ '\zs\d\+$',
+ \ '\=eval(submatch(0)-1)',
+ \ '')<CR>
+
 " vim: set ts=8:
