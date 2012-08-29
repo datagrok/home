@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Quick command line voice recorder. Requires alsa-utils for arecord, speex for speexenc
+
+LOCATION="$HOME/doc/notes/recordings"
+MYDATE=`date "+%Y%m%d-%H%M%S"`
+if [ "$1" = "-nd" ]; then
+	shift
+	FILENAME=""
+else
+	FILENAME="$MYDATE "
+fi
+TITLE="$*"
+
+if [ ! -z "$TITLE" ]; then
+	FILENAME="$FILENAME`echo "$TITLE" | cut -c -20`"
+fi
+
+FILENAME="$FILENAME.spx"
+
+if [ -f "$FILENAME" ]; then
+	echo "$FILENAME exists, refusing to overwrite."
+	exit 1
+fi
+
+if [ ! -d "$LOCATION" ]; then
+	echo "$LOCATION does not exist, please configure directories."
+	exit 1
+fi
+
+arecord -f S16_LE -c1 -r16000 -t raw | speexenc -w --rate 16000 --le --16bit --vad --denoise --agc - "$LOCATION/$FILENAME"
