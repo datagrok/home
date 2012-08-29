@@ -24,7 +24,7 @@
 [alias]
 	lola = log --graph --decorate --oneline --all --color=always
 	lol = log --graph --decorate --oneline --color=always
-	lolm = log --graph --decorate --oneline origin/master.. --color=always
+	lolm = !sh -c 'git lol HEAD `git merge-base origin/master HEAD`^!'
 	branchflakes = !git diff --raw origin/master... | cut -f 2 | grep '.py$' | xargs pyflakes
 [push]
 	default = current
@@ -34,3 +34,5 @@
 	cmd = LOCAL="$LOCAL" BASE="$BASE" REMOTE="$REMOTE" MERGED="$MERGED" /home/mike/bin/vimdiffgitmergewrapper
 [remote "origin"]
 	#tagopt = --no-tags
+[pull]
+	rebase = true
