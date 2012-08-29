@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+branch="`git symbolic-ref HEAD --short`"
+git-cavalier-rebase master
+git checkout master
+git merge --no-ff $branch
+git checkout $branch
+git merge --ff-only master
+git checkout master
+echo "Done."
+echo "To revert, use 'git revert -m $branch'"
