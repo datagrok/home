@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# Given some directory D, this script sets up a structure like:
+#
+#   D -> D.x
+#   D.stage -> D.y
+#   D.x/
+#   D.y/
+#
+# Thereafter, this script will cause the contents of D to be replaced by those
+# of D.stage. This will occur in such a way that the change to the D symlink is
+# atomic.
+# 
+
+set -e
+
+usage () {
+    echo "usage: $0 [--initial] DOCROOT"
+    echo
+    echo -n "Error: "
+    cat
+    exit 1
+}
+
+if [ "$1" = "--initial" ]; then
+    initial=1
+    shift
+fi
+
+docroot="$1"
+
+if [ ! "$docroot" ]; then
+    echo "DOCROOT not specified." | usage
+fi
+    
+if [ "$initial" ]; then
+    # Sanity checking
+    if [ ! -d ${docroot} ]; then
+        echo "DOCROOT must be a directory." | usage
+    fi
+    for f in "${docroot}.a" "${docroot}.b" "${docroot}.stage"; do
+        if [ -e "$f" ]; then
+            echo "$f already exists. Did you run --initial already?" | usage
+        fi
+    done
+
+    # Initial setup
+    mv "${docroot}" "${docroot}.a"
+    ln -s "${docroot}.a" "${docroot}"
+    cp -aH "${docroot}" "${docroot}.b"
+    ln -s "${docroot}.b" "${docroot}.stage"
+else
+    # Sanity checking
+    if [ ! -h ${docroot} ]; then
+        echo "${docroot} is not a symlink. Do you need to run with --initial?" | usage
+    fi
+    for f in "${docroot}.x" "${docroot}.y" "${docroot}.stage"; do
+        if [ ! -e "$f" ]; then
+            echo "$f does not exist. Do you need to run with --initial?" | usage
+        fi
+    done
+
+    # Swap symlinks
+    newstage="`readlink \"${docroot}\"`"
+    mv -T "${docroot}.stage" "${docroot}"
+    ln -s "${newstage}" "${docroot}.stage"
+    rm -rf "${newstage}"
+    cp -aH "${docroot}" "${newstage}"
+fi
