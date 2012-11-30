@@ -22,9 +22,9 @@
 [core]
 	excludesfile = /home/mike/etc/gitignore-global
 [alias]
-	lola = log --graph --decorate --oneline --all --color=always
-	lol = log --graph --decorate --oneline --color=always
-	lolm = !sh -c 'git lol HEAD `git merge-base origin/master HEAD`^!'
+	lol = log --graph --decorate --oneline --color=always --boundary
+	lola = log --graph --decorate --oneline --color=always --boundary --all
+	lolm = log --graph --decorate --oneline --color=always --boundary master..
 	branchflakes = !git diff --raw origin/master... | cut -f 2 | grep '.py$' | xargs pyflakes
 [push]
 	default = current
