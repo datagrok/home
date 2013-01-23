@@ -36,4 +36,7 @@ defutf8 on
 multiuser on
 acladd yu
 
+# make failed commands not auto-close, and provide an option to re-run
+zombie kl onerror
+
 # vim: set nowrap :
