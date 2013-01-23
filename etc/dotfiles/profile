@@ -72,6 +72,7 @@ case "`hostname`" in
 esac
 case "`hostname`" in
 	io)		SCREEN_CL='kg'; PS1_HOSTCOLOR='2';;
+	yuki)	SCREEN_CL='km'; PS1_HOSTCOLOR='5';;
 	kino)	SCREEN_CL='km'; PS1_HOSTCOLOR='5';;
 	seiko)	SCREEN_CL='kr'; PS1_HOSTCOLOR='1';;
 	mio)	SCREEN_CL='kg'; PS1_HOSTCOLOR='2';;
