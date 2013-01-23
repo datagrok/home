@@ -1,5 +1,7 @@
 #!/bin/bash
 
+current=`git symbolic-ref HEAD`
+
 cat <<-EOF
 	LOCAL=$LOCAL
 	    The contents of the file on the current branch
@@ -10,6 +12,10 @@ cat <<-EOF
 	MERGED=$MERGED
 	    The result of the merge resolution.
 
+    Calling gvim with:
+        1. The annotated merge conflict in the target file
+        2. The diff between the base for the merge and the current branch
+        3. The diff between the base for the merge and the merging branch
 EOF
 
 theirchanges=${LOCAL/LOCAL/THEIRCHANGES}
