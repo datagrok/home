@@ -4,6 +4,8 @@
 
 #TODO: I have a similar script specific to Makefiles called 'rmake'; cull or refactor common functionality
 
+# FIXME: this should not change PWD to do its work. employ 'readlink -f ..' # instead.
+
 [ -z "$1" ] && cat << USAGE >&2 && exit 0
 Simple Shell Acquisition v.20050330
 Michael Lamb - http://datagrok.org

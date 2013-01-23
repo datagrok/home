@@ -9,6 +9,11 @@
 # activated environment. If no COMMAND is given, activate defaults to a
 # subshell.
 
+# FIXME: this should not change PWD to do its work. employ 'readlink -f ..'
+# instead.
+
+orig_pwd="$PWD"
+
 # First, locate the virtualenv
 while [ "$PWD" != "/" ]; do
 	# Stop here if this the root of a virtualenv
@@ -28,6 +33,7 @@ fi
 
 # Activate
 export VIRTUAL_ENV="$PWD"
+cd "$orig_pwd"
 export PATH="$VIRTUAL_ENV/bin:$PATH"
 unset PYTHON_HOME
 exec "${@:-$SHELL}"
