@@ -64,7 +64,7 @@ def sendmail(from_addr, to_addrs, msg):
     if 'datagrok.org' in from_addr:
         mailpassword = re.match(
             r'account-hook.*datagrok\.org.*imap_pass=\'([^\']*)\'',
-            open('/home/mike/.mutt/imap-secrets').read(),
+            open(os.path.expanduser('~/.mutt/imap-secrets')).read(),
             re.M).group(1).replace('\$','$')
         server = TunneledSMTP('datagrok.org', 'mail.datagrok.org')
         server.starttls()

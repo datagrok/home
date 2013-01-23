@@ -11,7 +11,7 @@ from datagrok.misc import health
 
 targetweight = 160.0
 rhr = 67
-weightfile = '/home/mike/etc/weight'
+weightfile = os.path.expanduser('~/etc/weight')
 fdos = datetime.datetime(2011, 6, 21) # first day of summer
 
 now = datetime.datetime.now()
