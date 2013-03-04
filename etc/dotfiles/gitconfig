@@ -37,3 +37,5 @@
 	#tagopt = --no-tags
 [pull]
 	rebase = true
+[credential]
+	helper = cache
