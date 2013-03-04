@@ -26,6 +26,7 @@
 	lola = log --graph --decorate --oneline --color=always --boundary --all
 	lolm = log --graph --decorate --oneline --color=always --boundary master..
 	branchflakes = !git diff --raw origin/master... | cut -f 2 | grep '.py$' | xargs pyflakes
+	serve = daemon --verbose --export-all --base-path=.git --informative-errors --reuseaddr --strict-paths .git/
 [push]
 	default = current
 [branch]
