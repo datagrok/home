@@ -13,37 +13,30 @@ def main(args):
     data = numpy.array([float(l) for l in sys.stdin])
 
     max_ = numpy.max(data)
+    min_ = numpy.min(data)
+    mean = numpy.mean(data)
     std = numpy.std(data)
     count = len(data)
 
     print '%20s %8d' % ('Items', count)
 
     for label, result in [
-        ('Min',    numpy.min(data)),
+        ('Min',    min_),
         #('1Q',    numpy.median(data)),
-        ('Mean',   numpy.mean(data)),
+        ('Mean',   mean),
         ('Median', numpy.median(data)),
         #('3Q',    numpy.median(data)),
         ('Max',    max_),
         ('Stdev',  std),
     ]:
         print "%20s %8.3f" % (label, result)
-
-    rows = 40
-    bucketsize = max_/float(rows)
-    for x in range(rows):
-        bucketstart = x * bucketsize
-        bucketend = bucketstart + bucketsize
-        freq = len([x for x in data if x > bucketstart and x <= bucketend])
-        print '%7.1f - %7.1f %4d %s' % (bucketstart, bucketend, freq, freq*400/count*'#')
-
-    #rows = 20
-    #stdevs = 6
-    #bucketsize = std/(rows/stdevs)
-    #for x in range(rows):
-    #    bucketstart = (x-(rows/2)) * bucketsize + std
-    #    bucketend = bucketstart + bucketsize
-    #    print '%5.1f - %5.1f %s' % (bucketstart, bucketend, len([x for x in data if x >= bucketstart and x < bucketend]))
+    
+    width = 2
+    print "Histogram of values within %2.1f standard deviations of the mean:" % width
+    hist, bin_edges = numpy.histogram(data, bins=30, range=(max(min_, mean-(std*width)), min(max_, mean+(std*width))))
+    for l, r, y in zip(bin_edges, bin_edges[1:], hist):
+        print "%8.1f - %-8.1f: %6d %s" % (l, r, y, '#' * (y * 120 / max(hist)))
+    print "%d outliers not shown." % (len(data) - hist.sum())
 
     #stemleaf(int(x) for x in data)
 
