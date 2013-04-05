@@ -15,6 +15,7 @@ escape $SCREEN_CK
 # The status (aka XTerm title) is set with echo -e '\033]0;message\007'
 hardstatus string "%{= $SCREEN_CL}$SCREEN_CKR %H %h%15=%{=r} %-Lw%{=b} %n%f%t %{-}%+Lw %=%{-} %l %m-%d %C%a"
 
+setenv SSH_AUTH_SOCK "/tmp/ssh-agent-$USER-screen"
 setenv TERM screen
 hardstatus alwayslastline
 

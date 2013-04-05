@@ -174,4 +174,8 @@ fi
 # zsh-incompatible in the commands above.
 export PS1='%B%F{green}%n@%m%f:%F{blue}%~%f%b%# '
 
+if [ $SSH_AUTH_SOCK ]; then
+    ln -sf "$SSH_AUTH_SOCK" "/tmp/ssh-agent-$USER-screen"
+fi
+
 # vim: set ft=sh :
