@@ -3,3 +3,4 @@ let python_highlight_all = 1
 setlocal nosmartindent " Smartindent messes up indenting and shifting of #-comments.
 setlocal expandtab " Sigh, everybody conforms to this, I guess I should too.
 compiler pyunit
+nmap <leader>pt :Pytest session
