@@ -10,7 +10,7 @@ echo "Sourcing ~/.profile"
 export _PROFILE_APPLIED=1
 
 # the default umask is set in /etc/login.defs
-#umask 022
+umask 002
 
 # prepend private bin(s) and man(s) if they exist to PATH
 for P in ~/usr ~; do
