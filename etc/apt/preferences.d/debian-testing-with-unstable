@@ -1,21 +1,13 @@
-Package: *
-Pin: release o="Unofficial Multimedia Packages",a=testing
-Pin-Priority: 300
-
-Package: *
-Pin: release o="Unofficial Multimedia Packages",a=unstable
-Pin-Priority: 200
-
 Explanation: http://www.argon.org/~roderick/apt-pinning.html
 Explanation: apt_preferences(5)
 Package: *
-Pin: release o=Debian,a=testing
-Pin-Priority: 900
+Pin: release o="Unofficial Multimedia Packages",a=testing
+Pin-Priority: 110
+
+Package: *
+Pin: release o="Unofficial Multimedia Packages",a=unstable
+Pin-Priority: 91
 
 Package: *
 Pin: release o=Debian,a=unstable
-Pin-Priority: 400
-
-Package: *
-Pin: release o=Debian
-Pin-Priority: -1
+Pin-Priority: 90
