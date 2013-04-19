@@ -1,5 +1,5 @@
-deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ feisty main restricted universe multiverse
-deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ feisty-updates main restricted universe multiverse
-#deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ feisty-proposed main restricted universe multiverse
-#deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ feisty-backports main restricted universe multiverse
-deb http://mirrors.ccs.neu.edu/archive.ubuntu.com/ feisty-security universe
+deb http://www.gtlib.gatech.edu/pub/ubuntu/ feisty main restricted universe multiverse
+deb http://www.gtlib.gatech.edu/pub/ubuntu/ feisty-updates main restricted universe multiverse
+#deb http://www.gtlib.gatech.edu/pub/ubuntu/ feisty-proposed main restricted universe multiverse
+#deb http://www.gtlib.gatech.edu/pub/ubuntu/ feisty-backports main restricted universe multiverse
+deb http://www.gtlib.gatech.edu/pub/ubuntu/ feisty-security universe
