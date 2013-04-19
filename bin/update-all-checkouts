@@ -9,14 +9,16 @@
 # TODO: add nice colors to svn status, maybe from
 # http://snipplr.com/view/28748/colorcoded-svn-status-v3/
 
-# Unset this to avoid connecting to upstream servers.
-online=1
+if nm-tool | grep '^State: connected'; then
+    # Unset this to avoid connecting to upstream servers.
+    online=1
+fi
 
-find ~/mnt/ ~/var/local/ -name '*.git' | while read dir
+find ~/var/local/ ~/mnt/ -name '*.git' | while read dir
 do (
 	cd "$dir"
 	cd ..
-	echo "\033[1;37m`pwd`\033[m"
+	echo "\033[1;37m$dir\033[m"
 	git status -s
 	if [ "$online" -a -e .git/refs/remotes/origin ]; then
 		git fetch
@@ -27,8 +29,8 @@ do (
 		if [ "$upstream" -a "$remote" ]; then
 			git merge --ff-only "$remote"/"${upstream#refs/heads/}"
 		else
-			echo $upstream
-			echo $remote
+			echo "upstream="$upstream
+			echo "remote="$remote
 			echo 'Fetched but no tracking branch configured for local update.'
 		fi
 	else
