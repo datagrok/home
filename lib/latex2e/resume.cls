@@ -9,6 +9,7 @@
 \RequirePackage{amsthm}
 \RequirePackage{amssymb}
 \RequirePackage{multicol}
+% \RequirePackage{concrete}
 \LoadClass[notitlepage]{article}
 \DeclareOption{letter2nup}
    {\setlength\paperheight {5.5in}%
