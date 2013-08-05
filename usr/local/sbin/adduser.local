@@ -1,0 +1,29 @@
+#!/bin/sh
+
+username="$1"
+uid="$2"
+gid="$3"
+homedir="$4"
+
+touch $homedir/.ssh/authorized_keys
+chown $uid.$gid $homedir/.ssh/authorized_keys
+# This does not work with --disabled-password; it first prompts for the current
+# password and then loses its mind
+# sudo chage --lastday 0 $1
+passwd -de "$username"
+
+cat <<- EOF
+	You might want to do this now:
+
+    # Install their public keys from bastion1:
+	ssh bastion1 "cat ~$username/.ssh/authorized_keys" |\
+        sudo tee -a $homedir/.ssh/authorized_keys > /dev/null
+
+    # Install their public keys from github:
+	curl -O "https://github.com/$username.keys" |\
+        sudo tee -a $homedir/.ssh/authorized_keys > /dev/null
+
+    # Give the user general sudo permissions:
+    sudo adduser $username sudo
+
+EOF
