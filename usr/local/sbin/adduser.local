@@ -1,29 +1,48 @@
 #!/bin/sh
+set -e
 
 username="$1"
 uid="$2"
 gid="$3"
 homedir="$4"
 
-touch $homedir/.ssh/authorized_keys
-chown $uid.$gid $homedir/.ssh/authorized_keys
-# This does not work with --disabled-password; it first prompts for the current
-# password and then loses its mind
-# sudo chage --lastday 0 $1
-passwd -de "$username"
+if grep -qi '^\s*ChallengeResponseAuthentication\s*no' /etc/ssh/sshd_config; then
+	fmt <<- EOF
+		This host disallows password-based ssh logins; it is safe therefore to
+		preconfigure this user with a disabled/expired password. The user will
+		be able to log in with their ssh keys (provided you add their public
+		keys to $username/.ssh/authorized_keys) and will be prompted to set
+		their password upon their first login attempt.
+
+	EOF
+
+	touch $homedir/.ssh/authorized_keys
+	chown $uid.$gid $homedir/.ssh/authorized_keys
+	# This does not work with --disabled-password; it first prompts for the current
+	# password and then loses its mind
+	# sudo chage --lastday 0 $1
+	passwd -de "$username"
+else
+	fmt <<- EOF
+		WARNING: this host allows password-based ssh logins. You had better
+		make sure they pick a good one.
+
+	EOF
+
+fi
 
 cat <<- EOF
 	You might want to do this now:
 
-    # Install their public keys from bastion1:
+	# Install their public keys from bastion1:
 	ssh bastion1 "cat ~$username/.ssh/authorized_keys" |\
-        sudo tee -a $homedir/.ssh/authorized_keys > /dev/null
+		sudo tee -a $homedir/.ssh/authorized_keys > /dev/null
 
-    # Install their public keys from github:
+	# Install their public keys from github:
 	curl -O "https://github.com/$username.keys" |\
-        sudo tee -a $homedir/.ssh/authorized_keys > /dev/null
+		sudo tee -a $homedir/.ssh/authorized_keys > /dev/null
 
-    # Give the user general sudo permissions:
-    sudo adduser $username sudo
+	# Give the user general sudo permissions:
+	sudo adduser $username sudo
 
 EOF
