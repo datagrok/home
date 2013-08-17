@@ -174,8 +174,16 @@ fi
 # zsh-incompatible in the commands above.
 export PS1='%B%F{green}%n@%m%f:%F{blue}%~%f%b%# '
 
-if [ $SSH_AUTH_SOCK ]; then
-    ln -sf "$SSH_AUTH_SOCK" "/tmp/ssh-agent-$USER-screen"
+# By design, if the other connection is still active, the other socket will
+# still exist, and this won't overwrite.
+if [ "$SSH_AUTH_SOCK" ]; then
+    if [ -S "/tmp/ssh-agent-$USER-screen" ]; then
+        echo "The socket used for ssh-agent in GNU screen still exists; not overwriting."
+    else
+        # TODO: a mechanism to spawn a connection that exists only to provide an
+        # agent pipe
+        ln -sf "$SSH_AUTH_SOCK" "/tmp/ssh-agent-$USER-screen"
+    fi
 fi
 
 # vim: set ft=sh :
