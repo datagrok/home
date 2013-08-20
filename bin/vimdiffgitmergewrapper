@@ -2,7 +2,22 @@
 
 current=`git symbolic-ref HEAD`
 
+echo
+echo "The two branches we are attempting to merge, and their common ancestor:"
+git log --oneline --graph --decorate --color=always --boundary "`cat .git/MERGE_HEAD`"..."`cat .git/ORIG_HEAD`"
+echo
+
 cat <<-EOF
+	The annotated merge conflict file will contain:
+	
+	    <<<<<<< HEAD
+	        Changes already made by others after the merge base.
+	    =======
+	        The changes we are trying to integrate with the changed merge base.
+	    >>>>>>> B
+
+	Arguments passed to merge script, files created:
+
 	LOCAL=$LOCAL
 	    The contents of the file on the current branch
 	BASE=$BASE
@@ -11,11 +26,12 @@ cat <<-EOF
 	    The contents of the file to be merged
 	MERGED=$MERGED
 	    The result of the merge resolution.
+	
+	Calling gvim with:
+	    1. The annotated merge conflict in the target file
+	    2. The diff between the base for the merge and the current branch
+	    3. The diff between the base for the merge and the merging branch
 
-    Calling gvim with:
-        1. The annotated merge conflict in the target file
-        2. The diff between the base for the merge and the current branch
-        3. The diff between the base for the merge and the merging branch
 EOF
 
 theirchanges=${LOCAL/LOCAL/THEIRCHANGES}
