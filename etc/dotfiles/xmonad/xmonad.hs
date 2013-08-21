@@ -29,8 +29,8 @@ import qualified XMonad.StackSet as W
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Actions.DwmPromote
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.EwmhDesktops
+import XMonad.Config.Desktop
+import XMonad.Config.Gnome
 import XMonad.Hooks.SetWMName
 
 import XMonad.Layout.Combo
@@ -70,34 +70,32 @@ import System.Exit
 -- I want the equivalent of showWName for the desktop layout algorithm
 
 main :: IO ()
-main = xmonad $ ewmh defaultConfig
-        { layoutHook         = id           -- 'id' is identity, just for pretty source code
+main = xmonad $ gnomeConfig
+        { layoutHook         = desktopLayoutModifiers
             -- $ ModifiedLayout MyResizeScreen 
             $ showWName' defaultSWNConfig { swn_font = bigfont }
             -- $ layoutHints
             -- Stalonetray just can't decide how much of my screen it wants.
-            $ avoidStruts
             -- For some reason I never could get 'onWorkspace' to work well.
             -- $ onWorkspace "chat/music" (IM (320/1680) (Role "buddy_list"))
             -- $ onWorkspace "chat/music" (combineTwo (TwoPane delta (320/1680)) (Mirror tiled) (Full))
             $ decorateWindows
             $ ThreeCol 1 (3/100) (594/2560) ||| spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
         , keys               = keys'
-        , manageHook         = manageHook' <+> manageDocks <+> manageHook defaultConfig
-        , logHook            = logHook defaultConfig `mappend` ewmhDesktopsLogHook `mappend` updatePointer (Relative 0.5 0.5) 
+        , manageHook         = manageHook' <+> manageHook gnomeConfig
+        , logHook            = updatePointer (Relative 0.5 0.5) <+> logHook gnomeConfig
         , terminal           = "x-terminal-emulator"
         , borderWidth        = 0
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
         , focusedBorderColor = activeBorderColor myTheme --"#d78d07"
         , workspaces         = workspaces'
-        , handleEventHook    = eventHook' `mappend` ewmhDesktopsEventHook
-        , startupHook        = ewmhDesktopsStartup >> setWMName "LG3D"
+        , startupHook        = startupHook gnomeConfig >> setWMName "LG3D"
         }
 
 
 -- Configuration settings used to override the defaultConfig, above.
 myTheme       = theme $ listOfThemes!!2     -- I like the second theme in the list.
-floatClasses  = ["display", "Xwud", "fontforge"] -- These windows always float by default
+floatClasses  = ["display", "Xwud", "fontforge", "oclock", "Clock"] -- These windows always float by default
 ignoreClasses = ["Audacious"]
 tiled         = Tall nmaster delta ratio
  -- Make one of the 2 master windows 800x600 in the upper left corner of my 1440x900 display.
@@ -173,7 +171,6 @@ mykeys mod = fromList $
             -- Misc. other bindings
             [ (noMask      , "b"      , spawn "sensible-browser") -- "browser"
             , (noMask      , "r"      , shellPrompt (themedXPConfig myTheme)) -- "run"
-            , (noMask      , "F11"    , sendMessage ToggleStruts) -- "border"
             , (noMask      , "Return" , dwmpromote)
             , (controlMask , "Return" , spawn "x-terminal-emulator -e screen")
             , (controlMask , "t"      , themePrompt (themedXPConfig myTheme))
