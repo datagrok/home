@@ -159,4 +159,11 @@ nnoremap <C-S-Down> :silent! let &guifont = substitute(
  \ '\=eval(submatch(0)-1)',
  \ '')<CR>
 
+ab <leader>-> →
+inoremap <leader>airplane ✈
+ab <leader>8< ✂
+ab <leader>./ ✓
+ab <leader>--- —
+ab <leader>therefore ∴
+
 " vim: set ts=8:
