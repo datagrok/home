@@ -157,7 +157,9 @@ fi
 
 # if this is bash, include .bashrc if it exists.
 if [ "$BASH_VERSION" -a -f ~/.bashrc ]; then
-   . ~/.bashrc
+	. ~/.bashrc
+elif [ "$ZSH_VERSION" -a -f ~/.zshrc ]; then
+	. ~/.zshrc
 fi
 
 # This is a zsh-specific PS1. It is necessary to do this because dash, not
