@@ -37,6 +37,8 @@ import XMonad.Layout.Combo
 import XMonad.Layout.Decoration
 import XMonad.Layout.DwmStyle
 import XMonad.Layout.IM
+import XMonad.Layout.Fullscreen
+import XMonad.Layout.LayoutHints
 import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.PerWorkspace
@@ -83,8 +85,8 @@ main = xmonad $ gnomeConfig
             $ decorateWindows
             $ ThreeCol 1 (3/100) (594/2560) ||| spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
         , keys               = keys'
-        , manageHook         = manageHook' <+> manageHook gnomeConfig
-        , logHook            = updatePointer (Relative 0.5 0.5) <+> logHook gnomeConfig
+        , manageHook         = manageHook' <> manageHook gnomeConfig
+        , logHook            = updatePointer (Relative 0.5 0.5) <> logHook gnomeConfig
         , terminal           = "x-terminal-emulator"
         , borderWidth        = 0
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
@@ -92,6 +94,7 @@ main = xmonad $ gnomeConfig
         , workspaces         = workspaces'
         , handleEventHook    = eventHook'
         , startupHook        = startupHook gnomeConfig >> setWMName "LG3D"
+        , handleEventHook    = eventHook' <> fullscreenEventHook <> handleEventHook gnomeConfig
         }
 
 
@@ -113,8 +116,8 @@ bigfont       = "-*-new century schoolbook-*-r-*-*-34-*-*-*-*-*-*-*"
 workspaces'   = ["1", "2", "3", "4", "5", "6", "7", "Mail", "Chat"]
 
 
-manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <+>
-                composeAll [ className =? c --> doIgnore | c <- ignoreClasses ] <+>
+manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <>
+                composeAll [ className =? c --> doIgnore | c <- ignoreClasses ] <>
                 composeAll [ className =? "Pidgin" --> doShift "Chat"
                            , className =? "Xchat-gnome" --> doShift "Chat"
                            , className =? "Evolution" --> doShift "Mail"
@@ -126,6 +129,7 @@ manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <
 -- like to fix, and I pick whichever is less anoyying. TODO
 decorateWindows = dwmStyle shrinkText myTheme
 -- decorateWindows = tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
+-- $ tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
 
 
 -- Keybindings: some attempts to specify keybindings in a uniform, declaritive,
