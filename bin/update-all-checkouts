@@ -9,34 +9,53 @@
 # TODO: add nice colors to svn status, maybe from
 # http://snipplr.com/view/28748/colorcoded-svn-status-v3/
 
-if nm-tool | grep '^State: connected'; then
+if nm-tool 2>/dev/null | grep -q '^State: connected'; then
     # Unset this to avoid connecting to upstream servers.
     online=1
+    echo "Online; will fetch updates."
 fi
 
 find ~/var/local/ ~/mnt/ -name '*.git' | while read dir
 do (
+    dir_vis=$(
+        tput setaf 5
+        tput bold
+        echo -n "~${dir#$HOME}"
+        tput sgr0
+        )
+
 	cd "$dir"
 	cd ..
-	echo "\033[1;37m$dir\033[m"
-	git status -s
+	echo -n ". $dir_vis"
+    tput cr
 	if [ "$online" -a -e .git/refs/remotes/origin ]; then
-		git fetch
-		curr_branch=$(git symbolic-ref -q HEAD)
-		curr_branch="${curr_branch#refs/heads/}"
+        git fetch -q --all
+		curr_branch=$(git symbolic-ref -q --short HEAD)
 		upstream=$(git config "branch.$curr_branch.merge")
 		remote=$(git config "branch.$curr_branch.remote")
 		if [ "$upstream" -a "$remote" ]; then
-			git merge --ff-only "$remote"/"${upstream#refs/heads/}"
+			if git merge -q --ff-only '@{u}'; then
+                tput bold
+                tput setaf 2
+                echo "Y $dir_vis: In sync."
+            else
+                tput bold
+                tput setaf 1
+                echo "N $dir_vis: Needs update; can't automatically."
+            fi
 		else
-			echo "upstream="$upstream
-			echo "remote="$remote
-			echo 'Fetched but no tracking branch configured for local update.'
+            tput bold
+            tput setaf 3
+            echo "? $dir_vis: No tracking branch."
+            echo try: git branch -u `git remote | head -1`/"$curr_branch"
 		fi
 	else
-		echo 'No repo to update from.'
+        tput bold
+        tput setaf 3
+        echo "X $dir_vis: No repo to update from."
 	fi
-	echo
+
+	git status -s
 	)
 done
 
