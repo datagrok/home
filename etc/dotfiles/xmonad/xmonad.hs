@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, PatternGuards #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
 -- TODO: always configure specific workspaces with specific layouts, send
 -- specific programs to specific workspaces:
@@ -26,34 +26,35 @@ import XMonad
 import XMonad.Operations
 import qualified XMonad.StackSet as W
 
-import XMonad.Prompt
-import XMonad.Prompt.Shell
 import XMonad.Actions.DwmPromote
+import XMonad.Actions.UpdatePointer
 import XMonad.Config.Desktop
 import XMonad.Config.Gnome
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
-
 import XMonad.Layout.Combo
 import XMonad.Layout.Decoration
 import XMonad.Layout.DwmStyle
 import XMonad.Layout.IM
-import XMonad.Layout.LayoutHints
 import XMonad.Layout.LayoutCombinators hiding ((|||))
+import XMonad.Layout.LayoutHints
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.ResizableTile
 import XMonad.Layout.ShowWName
-import XMonad.Layout.Spiral
 import XMonad.Layout.Simplest
+import XMonad.Layout.Spiral
+import XMonad.Layout.TabBarDecoration
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ThreeColumns
-import XMonad.Layout.ResizableTile
-import XMonad.Layout.TabBarDecoration
 import XMonad.Layout.TwoPane
-import XMonad.Util.Themes
+import XMonad.Prompt
+import XMonad.Prompt.Shell
 import XMonad.Prompt.Theme
+import XMonad.Util.Themes
 
 import Control.Monad
 import Graphics.X11.Xlib
-import XMonad.Actions.UpdatePointer
 import System.IO (hPutStrLn, stderr)
 import System.Exit
 
@@ -89,6 +90,7 @@ main = xmonad $ gnomeConfig
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
         , focusedBorderColor = activeBorderColor myTheme --"#d78d07"
         , workspaces         = workspaces'
+        , handleEventHook    = eventHook'
         , startupHook        = startupHook gnomeConfig >> setWMName "LG3D"
         }
 
@@ -122,9 +124,8 @@ manageHook'   = composeAll [ className =? c --> doFloat  | c <- floatClasses ] <
 
 -- Sometimes I like dwmStyle, sometimes I like tabBar. Both have warts that I'd
 -- like to fix, and I pick whichever is less anoyying. TODO
-decorateWindows = id
-    $ dwmStyle shrinkText myTheme
-    -- $ tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
+decorateWindows = dwmStyle shrinkText myTheme
+-- decorateWindows = tabBar shrinkText myTheme Bottom . resizeVerticalBottom (fromIntegral (decoHeight myTheme))
 
 
 -- Keybindings: some attempts to specify keybindings in a uniform, declaritive,
@@ -139,7 +140,7 @@ keys' x = union addkeys $ origkeys \\ delkeys
 -- Used by keys' to take apart the Just/Nothing dichotomy.
 partitioner :: Maybe a -> Either (X ()) a
 partitioner (Nothing) = Left $ return ()
-partitioner (Just y)  = Right $ y
+partitioner (Just y)  = Right y
 
 -- A sortakinda declarative mapping of keys to either Nothing or X Actions,
 -- consumed by keys'.
@@ -174,7 +175,7 @@ mykeys mod = fromList $
             , (noMask      , "Return" , dwmpromote)
             , (controlMask , "Return" , spawn "x-terminal-emulator -e screen")
             , (controlMask , "t"      , themePrompt (themedXPConfig myTheme))
-            , (shiftMask   , "F10"    , io (exitWith ExitSuccess)) -- %! Quit xmonad
+            , (shiftMask   , "F10"    , io exitSuccess) -- %! Quit xmonad
             , (noMask      , "F10"    , restart "xmonad" True) -- %! Restart xmonad
             , (controlMask , "k"      , kill)
             , (shiftMask   , "h"      , sendMessage MirrorShrink)
@@ -229,6 +230,8 @@ themedXPConfig t = defaultXPConfig
 -- eventHook' _ = return (All True)
 
 eventHook' e = do
+    fullscreenEventHook e
+    handleEventHook gnomeConfig e
     dummyEventHook e
 
 --dummyEventHook :: Event -> X All
