@@ -20,7 +20,8 @@ do (
     dir_vis=$(
         tput setaf 5
         tput bold
-        echo -n "~${dir#$HOME}"
+        dir_name="$(dirname "$dir")"
+        echo -n "~${dir_name#$HOME}"
         tput sgr0
         )
 
@@ -47,7 +48,7 @@ do (
             tput bold
             tput setaf 3
             echo "? $dir_vis: No tracking branch."
-            echo try: git branch -u `git remote | head -1`/"$curr_branch"
+            echo try: git branch --set-upstream-to=`git remote | head -1`/"$curr_branch"
 		fi
 	else
         tput bold
