@@ -1,5 +1,4 @@
 [gui]
-	recentrepo = /home/mike/tmp/gittest
 	fontui = -family \"Bitstream Vera Sans\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
 	fontdiff = -family \"Bitstream Vera Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
 [user]
@@ -23,7 +22,7 @@
 [merge]
 	tool = mygvimdiff
 [core]
-	excludesfile = /home/mike/etc/gitignore-global
+	excludesfile = ~/etc/gitignore-global
 [alias]
 	lol = log --graph --decorate --oneline --color=always --boundary
 	lola = log --graph --decorate --oneline --color=always --boundary --all
@@ -35,10 +34,12 @@
 [branch]
 	autosetuprebase = remote
 [mergetool "mygvimdiff"]
-	cmd = LOCAL="$LOCAL" BASE="$BASE" REMOTE="$REMOTE" MERGED="$MERGED" /home/mike/bin/vimdiffgitmergewrapper
+	cmd = LOCAL="$LOCAL" BASE="$BASE" REMOTE="$REMOTE" MERGED="$MERGED" vimdiffgitmergewrapper
 [remote "origin"]
 	#tagopt = --no-tags
 [pull]
 	rebase = true
 [credential]
 	helper = cache
+[rerere]
+	enabled = 0
