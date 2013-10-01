@@ -18,6 +18,7 @@ hardstatus string "%{= $SCREEN_CL}$SCREEN_CKR %H %h%15=%{=r} %-Lw%{=b} %n%f%t %{
 setenv SSH_AUTH_SOCK "/tmp/ssh-agent-$USER-screen"
 setenv TERM screen
 hardstatus alwayslastline
+termcap xterm*  LP:hs@
 
 # If we're connecting to other servers through screen terms, keep ssh-agent
 # working between reconnections. I forgot from where I got the idea for this
