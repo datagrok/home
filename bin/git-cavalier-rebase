@@ -1,8 +1,23 @@
 #!/bin/sh
+set -ex
 
-set -e
+# "Rebase me onto $1 as much as possible"
 
-# "Rebase me onto $1"
+# Given a history like
+#
+#   a..b..c..d..e   master
+#    \     \
+#     f..g..h..i..j  feature
+#
+# Assume that commit g conflicts with something in master and can't be rebased
+# onto master without merge confluct resolution. But, merge commit h resolves
+# that problem and incorporates all changes from master into feature.
+#
+# This with a rebasey merge produces
+#   
+#   a..b..c..d..e.........M   master
+#                \       /
+#                 f..i..j  feature
 
 usage() {
 	fmt <<- EOF
@@ -14,22 +29,37 @@ upstream="$1"
 branch="`git symbolic-ref HEAD --short`"
 orig_commit="`git rev-parse HEAD`"
 
+
 [ "$upstream" ] || {
 	echo "First arg must be target branch."
 	exit 1
 }
 
+cd "`git rev-parse --show-toplevel`"
 . /usr/lib/git-core/git-sh-setup
 
 export GIT_QUIET=1
 
+echo "Sanity check: does a simple merge succeed?"
+git checkout -q `git rev-parse $upstream`
+if git merge -q --squash "$branch"; then
+    echo "A simple merge succeeds; a cavalier merge should be able to succeed."
+    git commit -m "Simple merge --squash of $branch and $upstream"
+    mergeresult="`git rev-parse HEAD`"
+    git checkout -q "$branch"
+else
+	exitcode=$?
+	echo "Failed to merge to $upstream. Try merging from $upstream and resolving any conflicts first."
+	exit $exitcode
+fi
+
 echo "Beginning cavalier-autorebase. Current structure:"
-git log --graph --decorate --oneline HEAD `git merge-base $upstream HEAD`^!
+git log --graph --decorate --oneline --boundary $upstream..
 
-git checkout -b __cavalier_rebase
-trap "git checkout -f master; git branch -D __cavalier_rebase" EXIT
+git checkout -q -b __cavalier_rebase
+trap "git checkout -f $branch; git branch -D __cavalier_rebase > /dev/null" EXIT
 
-if git rebase "$upstream"; then
+if git rebase "$upstream" > .git/cavalier-rebase.log; then
 	echo "Trivial rebase completed with no errors."
 	git checkout "$branch"
 	git reset --hard __cavalier_rebase
@@ -44,24 +74,39 @@ if [ $exitcode != 1 ]; then
 fi
 
 while test -d "$GIT_DIR/rebase-apply"; do
-	echo "Commit failed to apply, skipping."
-	git rebase --skip || true
+	echo "A commit failed to apply, skipping."
+	git rebase --skip >> .git/cavalier-rebase.log || true
 done
 
 echo "Rebase attempt completed. Attempting to squash-merge."
 
-git merge --commit --squash "$branch" || {
+git merge --squash "$branch" || {
 	exitcode=$?
-	echo "Failed to merge with master. Try merging from master and resolving any conflicts first."
+	echo "Failed to merge with $upstream. Try merging from $upstream and resolving any conflicts first."
 	exit $exitcode
 }
 
 sed -i -e "1iCavalier-autorebase: remaining changes from branch '$branch'\\n\\n" -e "s/__cavalier_rebase/$branch/g" .git/SQUASH_MSG
 git commit -F .git/SQUASH_MSG
+
+echo
+echo "Eliminating any remaining diffs between our state and simple merge"
+git diff HEAD "$mergeresult" --stat
+git status
+if git merge --squash "$mergeresult"; then
+    git diff "$mergeresult" | patch
+    sed -i -e "1iCavalier-autorebase: remaining diffs from simple merge\\n\\n" -e "s/__cavalier_rebase/$branch/g" .git/SQUASH_MSG
+    git commit -F .git/SQUASH_MSG
+fi
+
+echo moving orig branch
 git checkout "$branch"
+echo resetting
 git reset __cavalier_rebase
+echo removing old branch
+git branch -D __cavalier_rebase
 
 echo "Successful cavalier-autorebase. New structure:"
-git log --graph --decorate --oneline HEAD `git merge-base $upstream HEAD`^!
+git log --graph --decorate --oneline --boundary $upstream..
 echo "To undo:"
 echo "	git reset --hard $orig_commit"
