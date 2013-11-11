@@ -14,8 +14,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# vi = gvim when running graphical.
-if [ -n "$DISPLAY" ]; then
+# vi = gvim when a graphical non-remote display is available
+if [ "$DISPLAY" -a ! "$SSH_CONNECTION" ]; then
 	alias vi=gvim
 	alias v=gvim
 else
@@ -40,3 +40,5 @@ alias dad='django-admin.py'
 
 alias django-admin.py='med d'
 [ -x /usr/bin/lbzip2 ] && alias bzip2='lbzip2'
+
+alias gpg='gpg2'
