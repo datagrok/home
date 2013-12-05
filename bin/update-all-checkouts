@@ -48,7 +48,7 @@ do (
             tput bold
             tput setaf 3
             echo "? $dir_vis: No tracking branch."
-            echo try: git branch --set-upstream-to=`git remote | head -1`/"$curr_branch"
+            echo "try: (cd $dir_vis; git branch --set-upstream-to=`git remote | head -1`/$curr_branch)"
 		fi
 	else
         tput bold
