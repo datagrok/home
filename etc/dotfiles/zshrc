@@ -47,3 +47,6 @@ precmd () {
 	ps1_curdir_v=$(ps1_curdir)
 }
 PS1='${vcs_info_msg_0_} ${ps1_context_v}%B%F{$PS1_HOSTCOLOR}%n@%m%f:%F{blue}${ps1_curdir_v}%f%b%# '
+
+# Always fall back to filename completion
+zstyle ':completion:*' completer _expand _complete _files _correct #_approximate
