@@ -41,6 +41,6 @@ diff -w "$BASE" "$LOCAL" > "$ourchanges"
 
 echo gvim -f "$MERGED" "$ourchanges" "$theirchanges"
 echo
-gvim -f -O "$MERGED" "$ourchanges" "$theirchanges"
+vi -f -O "$MERGED" "$ourchanges" "$theirchanges"
 rm "$ourchanges"
 rm "$theirchanges"
