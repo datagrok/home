@@ -164,6 +164,6 @@ inoremap <leader>airplane ✈
 ab <leader>8< ✂
 ab <leader>./ ✓
 ab <leader>--- —
-ab <leader>therefore ∴
+" ab <leader>therefore ∴ " vim throws a syntax error on this for some reason
 
 " vim: set ts=8:
