@@ -7,6 +7,10 @@
 # SCREEN_CKR: screen command key reminder: readable version of SCREEN_CK
 # SCREEN_CL: screen color: choose from 'kr kg ky kb km kc kw' or leave blank
 
+# This is the default but I want to make it explicit: don't do login shells
+# unless I ask for it.
+deflogin off
+
 # Change the default command char on my workstations to allow screen to run in
 # connections to remote servers as well.
 escape $SCREEN_CK
