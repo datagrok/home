@@ -59,7 +59,7 @@ fi
 # I can't specify a nice switch in screen's configuration files, but it does
 # interpret environment variables, so I can specify host-specific changes here.
 # See etc/dotfiles/screenrc for details.
-case "`hostname`" in
+case "`hostname -s`" in
 	io|kino|fiona|mio)
 		SCREEN_CK='` '
 		SCREEN_CKR='bt'
@@ -70,7 +70,7 @@ case "`hostname`" in
 		SCREEN_CKR='^A'
 		;;
 esac
-case "`hostname`" in
+case "`hostname -s`" in
 	io)		SCREEN_CL='kg'; PS1_HOSTCOLOR='2';;
 	yuki)	SCREEN_CL='km'; PS1_HOSTCOLOR='5';;
 	kino)	SCREEN_CL='km'; PS1_HOSTCOLOR='5';;
