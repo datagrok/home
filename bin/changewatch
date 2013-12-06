@@ -10,7 +10,11 @@
 # Basically, this is a simple wrapper to inotifywait with defaults appropriate
 # for my most common uses.
 #
-# :set nowritebackup in vim to wake up less.
+# vim needs :set nowritebackup for this to work at all when called against a
+# single file. With :set writebackup, inotifywait sees on write the sequence:
+# MOVE_SELF ATTRIB DELETE_SELF, then it never wakes on this file again. (With
+# :set nowritebackup inotifywait sees: MODIFY OPEN MODIFY CLOSE_WRITE,CLOSE
+# ATTRIB OPEN CLOSE_NOWRITE,CLOSE OPEN CLOSE_NOWRITE,CLOSE)
 
 TARGETDIR="$1"
 COMMAND="$2"
@@ -24,6 +28,6 @@ inotifywait \
 	| while read dir event filename
 	do
 		[ -e "$dir$filename" ] || continue
-		[ "$DEBUG" ] && echo "$0": "$COMMAND" "$@" "$dir$filename"
+		[ "$DEBUG" ] && echo "$0": "$COMMAND" "$@" "$dir$filename" >&2
 		"$COMMAND" "$@" "$dir$filename"
 	done
