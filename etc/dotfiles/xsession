@@ -40,6 +40,13 @@ case "`hostname`" in
 		pidgin &
 		evolution &
 		;;
+    yuki)
+        google-chrome &
+        pidgin &
+        ssh-add &
+        ssh -fn -L8888:localhost:8888 -L6994:localhost:6994 home.datagrok.org "sleep 10"
+        xchat-gnome &
+        ;;
 esac
 
 if [ -z "$WINDOW_MANAGER" ]; then
