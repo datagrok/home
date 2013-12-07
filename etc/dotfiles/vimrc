@@ -166,4 +166,7 @@ ab <leader>./ ✓
 ab <leader>--- —
 " ab <leader>therefore ∴ " vim throws a syntax error on this for some reason
 
+" Words that I consistently misspell
+ab hueristic heuristic
+
 " vim: set ts=8:
