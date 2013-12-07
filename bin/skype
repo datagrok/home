@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# This fixes a recent problem with skype on debian testing/unstable.
+#
+# https://bugs.archlinux.org/task/35690
+# http://community.skype.com/t5/Linux/Sound-in-Debian-unstable-64bit-broken/td-p/1718524
+
+exec /usr/bin/env PULSE_LATENCY_MSEC=30 /usr/bin/skype "$@"
