@@ -1,0 +1,4 @@
+#!/bin/sh
+delimiter="$1"
+shift
+for f in "$@"; do echo "$f"; done | exec paste -sd"$delimiter"
