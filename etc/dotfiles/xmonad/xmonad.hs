@@ -37,7 +37,7 @@ import XMonad.Layout.Combo
 import XMonad.Layout.Decoration
 import XMonad.Layout.DwmStyle
 import XMonad.Layout.IM
-import XMonad.Layout.Fullscreen
+-- import XMonad.Layout.Fullscreen
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.LayoutHints
@@ -94,7 +94,6 @@ main = xmonad $ gnomeConfig
         , workspaces         = workspaces'
         , handleEventHook    = eventHook'
         , startupHook        = startupHook gnomeConfig >> setWMName "LG3D"
-        , handleEventHook    = eventHook' <> fullscreenEventHook <> handleEventHook gnomeConfig
         }
 
 
