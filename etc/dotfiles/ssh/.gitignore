@@ -6,3 +6,5 @@ id_rsa
 id_rsa.keystore
 id_rsa.pub
 known_hosts
+id_ecdsa
+id_ecdsa.pub
