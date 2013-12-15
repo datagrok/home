@@ -4,7 +4,7 @@
 # $HOME/etc/dotfiles, and do the right thing if something already exists.
 
 cd ~
-dotfilepath=etc/dotfiles
+dotfilepath=mnt/home/etc/dotfiles
 
 case "$1" in 
 	status)
@@ -40,7 +40,7 @@ case "$1" in
 				echo "mrg .$filename"
 				tmp=`mktemp -d`
 				mv "$target" "$tmp/$filename"
-				tar -C "$tmp" -c "$filename" | tar -C "$HOME/etc/dotfiles" -x
+				tar -C "$tmp" -c "$filename" | tar -C "$dotfilepath" -x
 				rm -rf "$tmp"
 			fi
 			# no link in the way now; create link
