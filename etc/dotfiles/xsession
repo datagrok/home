@@ -17,8 +17,7 @@ case "`hostname`" in
 		#urxvtd -q -o -f &
 		#xscreensaver &
 		xsetroot -cursor_name left_ptr
-		gnome-settings-daemon
-		gnome-power-manager &
+		gnome-settings-daemon &
 		nm-applet &
 		ssh-add &
 		(sleep 3; trayer --widthtype request --height 16 --edge bottom --align center --transparent true --alpha 255 --SetPartialStrut true) &
@@ -32,7 +31,7 @@ case "`hostname`" in
 		stalonetray &
 		nm-applet &
 		xsetroot -cursor_name left_ptr
-		gnome-settings-daemon
+		gnome-settings-daemon &
 		gnome-power-manager &
 		ssh-add &
 		xchat-gnome &
@@ -41,11 +40,16 @@ case "`hostname`" in
 		evolution &
 		;;
     yuki)
-        google-chrome &
-        pidgin &
+		# I don't know why, but key repeat is disabled by default for some keys
+		# on my Fujitsu u904 laptop.
+		xset r 113 r on
+		xset r 116 r on
+		gnome-settings-daemon &
+        # google-chrome &
+        # pidgin &
         ssh-add &
-        ssh -fn -L8888:localhost:8888 -L6994:localhost:6994 home.datagrok.org "sleep 10"
-        xchat-gnome &
+        # ssh -fn -L8888:localhost:8888 -L6994:localhost:6994 home.datagrok.org "sleep 10"
+        # xchat-gnome &
         ;;
 esac
 
