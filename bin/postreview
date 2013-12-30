@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# ~/bin/postreview
+
+if [ "$1" ]; then
+	args="-r $1"
+else
+	args="--guess-summary --guess-description"
+fi
+
+function find_parent_branch {
+    local parent n
+    parent=""
+    n=0
+    while [[ "$parent" == "" ]]
+    do
+        ((n++))
+        parent=`git branch --contains HEAD~${n} | tail -n +2 | head -1`
+    done
+    echo $parent
+}
+
+# find the current branch
+branch_name=$(git symbolic-ref -q HEAD)
+branch_name=${branch_name##refs/heads/}
+branch_name=${branch_name:-HEAD}
+
+# find the parent branch - if there *is* a master, we use it.
+# if not, we try to find the parent
+# this is really just to deal with the ops/f5-irules repo
+if git branch | grep master >/dev/null
+then
+    PARENT="master"
+else
+    PARENT=$(find_parent_branch)
+fi
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+post-review --parent=$PARENT --tracking-branch=origin/$PARENT --branch=$BRANCH --server=http://reviews.ddtc.cmgdigital.com $args
