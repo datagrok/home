@@ -16,7 +16,7 @@ if [ ! -z "$TITLE" ]; then
 	FILENAME="$FILENAME`echo "$TITLE" | cut -c -20`"
 fi
 
-FILENAME="$FILENAME.spx"
+FILENAME="$FILENAME.opus"
 
 if [ -f "$FILENAME" ]; then
 	echo "$FILENAME exists, refusing to overwrite."
@@ -28,4 +28,4 @@ if [ ! -d "$LOCATION" ]; then
 	exit 1
 fi
 
-arecord -f S16_LE -c1 -r16000 -t raw | speexenc -w --rate 16000 --le --16bit --vad --denoise --agc - "$LOCATION/$FILENAME"
+arecord -f S16_LE -c1 -r16000 -t raw | opusenc --raw --raw-rate 16000 --raw-bits 16 --raw-chan 1 --raw-endianness 0 --bitrate 16 - "$LOCATION/$FILENAME"
