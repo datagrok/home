@@ -14,7 +14,9 @@ case "$1" in
 			target=~/.$filename
 			if [ -L "$target" ]; then
 				if [ -r "$target" ]; then
-					echo " ok .$filename"; else echo "bad .$filename"
+					echo " ok .$filename"
+				else
+					echo "bad .$filename"
 				fi
 			elif [ -e "$target" ]; then
 				echo "mrg .$filename"

@@ -7,7 +7,10 @@
 # If not running interactively, don't do anything.
 [ -z "$PS1" ] && return
 # Above is unreliable; also check invocation options
-[[ "$-" =~ i ]] || return
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
 [ "$_BASHRC_APPLIED" ] && return
 echo "Sourcing ~/.bashrc"
@@ -37,6 +40,11 @@ function ps1_curdir {
 		echo "${p/$HOME/~}"
 }
 
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
@@ -62,7 +70,11 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 	# talk to, rather than crap up my environment and wait a half second every
 	# time I invoke a shell to re-load completion rules that haven't changed.
 	echo -n "Sourcing /etc/bash_completion..."
-	. /etc/bash_completion
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		. /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		. /etc/bash_completion
+	fi
 	echo
 fi
 
@@ -72,6 +84,10 @@ shopt -s histappend
 # check the window size after each command and, if necessary, update the values
 # of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
 
 # Source private/local bashrc.
 [ -f ~/.bashrc.local ] && . ~/.bashrc.local
