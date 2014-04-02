@@ -198,7 +198,7 @@ mykeys mod = fromList $
 -- window decorations, not the prompts. Don't know how that works yet. TODO
 themedXPConfig :: Theme -> XPConfig
 themedXPConfig t = defaultXPConfig 
-        { font              = fontName t
+        { font              = "xft:Ubuntu-10" -- fontName t
         , bgColor           = inactiveColor t
         , fgColor           = inactiveTextColor t
         , fgHLight          = activeTextColor t
