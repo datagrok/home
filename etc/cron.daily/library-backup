@@ -1,7 +1,13 @@
 #!/bin/sh
 
-rootkey=/home/mike/mnt/home-private/id_rsa_rsync
+rootkey=/home/mike/mnt/home-private/id_ed25519_rsync
 logfile=/home/mike/var/log/library-backup.log
+lockfile=/home/mike/var/log/library-backup.pid
+
+exec 9>>"${lockfile}"
+flock -n 9 || exit 1
+echo $$ >&9
+trap "rm -f ${lockfile}; exit" INT TERM EXIT
 
 set -e
 [ -x "/usr/bin/sendmail" ] || {
@@ -32,8 +38,14 @@ grep -q /mnt/backup /etc/mtab || mount /mnt/backup || {
 	exit 1
 }
 
+# I'd like to use --checksum but I get "rsync error: protocol incompatibility
+# (code 2) at flist.c(769) [receiver=3.1.1]"
 nice -15 rsync \
 	-e "ssh -i $rootkey" \
-	-a --del -v seiko:/mnt/Shared/ /mnt/backup/
+	--archive \
+	--del \
+	--stats \
+	-v \
+	seiko:/mnt/Shared/ /mnt/backup/
 umount /mnt/backup
 fsck -a /mnt/backup
