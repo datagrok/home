@@ -1,65 +1,64 @@
 #!/bin/sh
-echo "Executing ~/.xsession"
+echo "Executing ~/.xsession" 2>&1
 
 if [ "$WINDOW_MANAGER" ]; then
 	echo Warning: ~/.xsession overriding previous WINDOW_MANAGER="$WINDOW_MANAGER"
 else
-	WINDOW_MANAGER=xmonad
+	export WINDOW_MANAGER=xmonad
 fi
+
+gnome-settings-daemon &
+xsetroot -cursor_name left_ptr
+# gnome doesn't have its shit together with multiple-resolution displays
+gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
+# gnome is recently screwing up my keyboard settings
+setxkbmap -model pc104 -layout us -option ctrl:nocaps
+# gnome is doing an awesome new thing where it hides my cursor
+dconf write /org/gnome/settings-daemon/plugins/cursor/active false
+
 
 case "`hostname`" in
 	# only bash sets $HOSTNAME
-	io)
-		# I don't run gnome-panel on my netbook, so launch a bunch of the
-		# conveniences it normally provides.
-
-		#xmobar &
-		#urxvtd -q -o -f &
-		#xscreensaver &
-		xsetroot -cursor_name left_ptr
-		gnome-settings-daemon &
-		nm-applet &
-		ssh-add &
-		(sleep 3; trayer --widthtype request --height 16 --edge bottom --align center --transparent true --alpha 255 --SetPartialStrut true) &
-		pidgin &
-		[ -x /usr/bin/gsynaptics-init ] && gsynaptics-init &
-		;;
 	kino)
 		xrandr -s 1680x1050
-		;;
-	mio)
-		stalonetray &
-		nm-applet &
-		xsetroot -cursor_name left_ptr
-		gnome-settings-daemon &
-		gnome-power-manager &
-		ssh-add &
-		xchat-gnome &
-		google-chrome &
-		pidgin &
-		evolution &
 		;;
 	yuki)
 		# I don't know why, but key repeat is disabled by default for some keys
 		# on my Fujitsu u904 laptop.
 		xset r 113 r on
 		xset r 116 r on
-		xsetroot -cursor_name left_ptr
-		gnome-settings-daemon &
+		# Lately in debian testing Gnome can't do display settings. Wat. Try to
+		# set them up in a sane way.
+		if 
+			xrandr --query --current | grep -q "HDMI1 connected"
+		then
+			xrandr \
+				--output HDMI2 --off \
+				--output HDMI1 --mode 1680x1050 --pos 0x0 --rotate normal \
+				--output DP1 --off \
+				--output eDP1 --mode 1920x1080 --pos 0x1050 --rotate normal
+		else
+			xrandr \
+				--output HDMI2 --off \
+				--output HDMI1 --off \
+				--output DP1 --off \
+				--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
+		fi
 		stalonetray &
+		volumeicon &
 		nm-applet &
 		ssh-add &
 		google-chrome &
-		# ssh -fn -L8888:localhost:8888 -L6994:localhost:6994 home.datagrok.org "sleep 10"
 		xchat &
-		volumeicon &
 		;;
 esac
 
-if [ -z "$WINDOW_MANAGER" ]; then
+(zenity --question --text "Tunnel to seiko?" && ssh -L9091:localhost:9091 -L6994:localhost:6994 -M seiko sleep 300) &
+(zenity --question --text "Tunnel to tilde.town?" && ssh -L9119:localhost:119 tilde.town sleep 300) &
+
+if [ "$WINDOW_MANAGER" ]; then
+	exec "$WINDOW_MANAGER"
+else
 	xmessage -timeout 5 "Window manager specified in .xsession not found." &
 	exec xterm
-else
-	exec "$WINDOW_MANAGER"
-	#exec gnome-session
 fi
