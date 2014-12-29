@@ -9,11 +9,29 @@ fi
 
 gnome-settings-daemon &
 xsetroot -cursor_name left_ptr
-# gnome doesn't have its shit together with multiple-resolution displays
+# Lately in debian testing Gnome can't fucking do display settings. Wat. Try to
+# set them up in a sane way.
+if 
+	xrandr --query --current | grep -q "HDMI1 connected"
+then
+	xrandr \
+		--output HDMI2 --off \
+		--output HDMI1 --mode 1680x1050 --pos 0x0 --rotate normal \
+		--output DP1 --off \
+		--output eDP1 --mode 1920x1080 --pos 0x1050 --rotate normal
+else
+	xrandr \
+		--output HDMI2 --off \
+		--output HDMI1 --off \
+		--output DP1 --off \
+		--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
+fi
+# gnome doesn't have its fucking shit together with multiple-resolution
+# displays
 gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
-# gnome is recently screwing up my keyboard settings
+# gnome is recently fucking up my keyboard settings
 setxkbmap -model pc104 -layout us -option ctrl:nocaps
-# gnome is doing an awesome new thing where it hides my cursor
+# gnome is doing an awesome new thing where it hides my fucking cursor
 dconf write /org/gnome/settings-daemon/plugins/cursor/active false
 
 
@@ -27,25 +45,8 @@ case "`hostname`" in
 		# on my Fujitsu u904 laptop.
 		xset r 113 r on
 		xset r 116 r on
-		# Lately in debian testing Gnome can't do display settings. Wat. Try to
-		# set them up in a sane way.
-		if 
-			xrandr --query --current | grep -q "HDMI1 connected"
-		then
-			xrandr \
-				--output HDMI2 --off \
-				--output HDMI1 --mode 1680x1050 --pos 0x0 --rotate normal \
-				--output DP1 --off \
-				--output eDP1 --mode 1920x1080 --pos 0x1050 --rotate normal
-		else
-			xrandr \
-				--output HDMI2 --off \
-				--output HDMI1 --off \
-				--output DP1 --off \
-				--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
-		fi
 		stalonetray &
-		volumeicon &
+		pasystray &
 		nm-applet &
 		ssh-add &
 		google-chrome &
