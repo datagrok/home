@@ -9,16 +9,16 @@ fi
 
 gnome-settings-daemon &
 xsetroot -cursor_name left_ptr
-# Lately in debian testing Gnome can't fucking do display settings. Wat. Try to
-# set them up in a sane way.
+# Gnome 3 can't fucking do display settings anymore. Wat. Try to set them up in
+# a sane way.
 if 
 	xrandr --query --current | grep -q "HDMI1 connected"
 then
 	xrandr \
 		--output HDMI2 --off \
-		--output HDMI1 --mode 1680x1050 --pos 0x0 --rotate normal \
+		--output HDMI1 --mode 1920x1080 --pos 0x0 --rotate normal \
 		--output DP1 --off \
-		--output eDP1 --mode 1920x1080 --pos 0x1050 --rotate normal
+		--output eDP1 --mode 1360x768 --pos 1920x312 --rotate normal
 else
 	xrandr \
 		--output HDMI2 --off \
@@ -26,8 +26,9 @@ else
 		--output DP1 --off \
 		--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
 fi
+
 # gnome doesn't have its fucking shit together with multiple-resolution
-# displays
+# displays. This command must always come after the xrandr command.
 gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
 # gnome is recently fucking up my keyboard settings
 setxkbmap -model pc104 -layout us -option ctrl:nocaps
@@ -38,7 +39,6 @@ dconf write /org/gnome/settings-daemon/plugins/cursor/active false
 case "`hostname`" in
 	# only bash sets $HOSTNAME
 	kino)
-		xrandr -s 1680x1050
 		;;
 	yuki)
 		# I don't know why, but key repeat is disabled by default for some keys
@@ -48,14 +48,28 @@ case "`hostname`" in
 		stalonetray &
 		pasystray &
 		nm-applet &
-		ssh-add &
 		google-chrome &
-		xchat &
+		(ssh-add && xchat) &
 		;;
 esac
 
-(zenity --question --text "Tunnel to seiko?" && ssh -L9091:localhost:9091 -L6994:localhost:6994 -M seiko sleep 300) &
-(zenity --question --text "Tunnel to tilde.town?" && ssh -L9119:localhost:119 tilde.town sleep 300) &
+# A notification daemon, at least until I find something better. Good to get
+# this up after xchat to avoid the blast of notifications. Need a utility for
+# viewing past notifications.
+for f in notification-daemon notify-osd
+do
+	if [ -x /usr/lib/"$f"/"$f" ]; then
+		/usr/lib/"$f"/"$f" &
+		break
+	fi
+done
+
+if which feh && [ -e $HOME/.wallpaper ]; then
+	feh --bg-scale $HOME/.wallpaper &
+fi
+
+# (zenity --question --text "Tunnel to seiko?" && ssh -L9091:localhost:9091 -L6994:localhost:6994 -M seiko sleep 300) &
+# (zenity --question --text "Tunnel to tilde.town?" && ssh -L9119:localhost:119 tilde.town sleep 300) &
 
 if [ "$WINDOW_MANAGER" ]; then
 	exec "$WINDOW_MANAGER"
