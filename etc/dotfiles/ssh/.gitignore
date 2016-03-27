@@ -1,10 +1,8 @@
 authorized_keys
 id_dsa
 id_dsa.keystore
-id_dsa.pub
 id_rsa
 id_rsa.keystore
-id_rsa.pub
 known_hosts
 id_ecdsa
-id_ecdsa.pub
+id_ed25519
