@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+# xzify
+#
+# usage: xzify [ARCHIVE]
+#
+# Converts a single .bz2, .gz, or .tgz to .xz (or .tar.xz) in the same
+# directory, using maximum (-9e) compression.
+
+def main():
+    import sys
+    import re
+    import subprocess
+    import os
+    infile = sys.argv[1]
+    outfile = re.sub(r'\.tgz$',r'.tar.gz',infile)
+    outfile = re.sub(r'\.(gz|bz2)$',r'.xz',outfile)
+    print("converting {} to {}".format(infile, outfile))
+    if re.match(r'.*gz$', infile):
+        subprocess.check_call("zcat '%s' | xz -vv -9e > '%s'" % (infile, outfile), shell=True)
+    elif re.match(r'.*bz2$', infile):
+        subprocess.check_call("bzcat '%s' | xz -vv -9e > '%s'" % (infile, outfile), shell=True)
+    else:
+        print("Don't know how to handle that type")
+        return
+    os.remove(infile)
+
+if __name__=='__main__':
+    main()
