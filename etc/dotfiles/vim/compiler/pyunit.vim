@@ -9,11 +9,11 @@ endif
 let current_compiler = "pyunit"
 
 if filereadable("alltests.py")
-	setlocal makeprg=python\ alltests.py
+	setlocal makeprg=python3\ alltests.py
 elseif filereadable("Makefile")
 	setlocal makeprg=make
 else
-	setlocal makeprg=python\ %
+	setlocal makeprg=python3\ %
 endif
 
 " This doesn't quite work
