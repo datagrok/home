@@ -15,10 +15,7 @@
 	insteadOf = ssh://datagrok.org/
 [url "ssh://home.datagrok.org/~mike/var/git/"]
 	insteadOf = ssh://seiko/
-[url "ssh://home.datagrok.org/~mike/var/git/"]
 	insteadOf = ssh://home.datagrok.org/
-[url "ssh://git@clug.cei.cox.com/~/"]
-	insteadOf = ssh://clug/
 [merge]
 	tool = mygvimdiff
 [core]
