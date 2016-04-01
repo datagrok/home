@@ -9,7 +9,7 @@
 # TODO: add nice colors to svn status, maybe from
 # http://snipplr.com/view/28748/colorcoded-svn-status-v3/
 
-if nm-tool 2>/dev/null | grep -q '^State: connected'; then
+if nm-online; then
     # Unset this to avoid connecting to upstream servers.
     online=1
     echo "Online; will fetch updates."
