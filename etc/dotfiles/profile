@@ -13,7 +13,7 @@ export _PROFILE_APPLIED=1
 umask 002
 
 # prepend private bin(s) and man(s) if they exist to PATH
-for P in ~/usr ~; do
+for P in ~/usr ~/.cabal ~; do
 	if [ -d "${P}/bin" ]; then
 		PATH="${P}/bin:${PATH}"
 	fi
@@ -143,6 +143,9 @@ export DJANGO_COLORS=light
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 export GIT_PS1_SHOWUPSTREAM=1
+
+# Elm
+export ELM_HOME=$HOME/usr/lib/node_modules/elm/share
 
 # In zsh, report on all commands that take longer that 5 sec.
 export REPORTTIME=5
