@@ -6,3 +6,5 @@ Thumbs.db
 *.swp
 .svn
 *.class
+.sass-cache
+node_modules
