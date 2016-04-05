@@ -108,7 +108,7 @@ export HISTCONTROL=ignoredups:ignorespace
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 
-export TZ=America/New_York
+export TZ=America/Los_Angeles
 
 # This is no good with new gnome's im-switch...
 #export GTK_IM_MODULE="scim"
