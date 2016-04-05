@@ -39,16 +39,6 @@ for d in ~/{Desktop,Documents,Music,Videos,Pictures,Public,Templates,Webcam}; do
 	[ -d "$d" ] && rmdir --ignore-fail-on-non-empty "$d"
 done
 
-# Manage ~/tmp. If this is the only login,
-if [ "$(who | grep ^$USER | wc -l)" = "1" ]; then
-	echo "Flushing ~/tmp"
-	rm -rf "$HOME/.old-tmp"
-	mv "$HOME/tmp" "$HOME/.old-tmp"
-	mkdir "$HOME/tmp"
-else
-	echo "Already logged in; not flushing ~/tmp"
-fi
-
 if [ -d "$HOME/tmp" ]; then
 	# TMPDIR is the canonical standard
 	export TMPDIR=$HOME/tmp
