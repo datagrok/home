@@ -13,15 +13,18 @@ export _PROFILE_APPLIED=1
 umask 002
 
 # prepend private bin(s) and man(s) if they exist to PATH
-for P in ~/usr ~/.cabal ~; do
+for P in $HOME/usr $HOME/.cabal $HOME/.guix-profile $HOME; do
 	if [ -d "${P}/bin" ]; then
-		PATH="${P}/bin:${PATH}"
+		PATH="${P}/bin${PATH:+:}${PATH}"
 	fi
 	if [ -d "${P}/man" ]; then
-		MANPATH="${P}/man:${MANPATH}"
+		MANPATH="${P}/man${MANPATH:-:/usr/share/man}"
 	fi
 	if [ -d "${P}/share/man" ]; then
-		MANPATH="${P}/share/man:${MANPATH}"
+		MANPATH="${P}/share/man${MANPATH:-:/usr/share/man}"
+	fi
+	if [ -d "${P}/share/info" ]; then
+		INFOPATH="${P}/share/info${INFOPATH:-:/usr/share/info}"
 	fi
 done
 
@@ -81,6 +84,9 @@ fi
 if [ "$MANPATH" ]; then
 	export MANPATH
 fi
+if [ "$INFOPATH" ]; then
+	export INFOPATH
+fi
 export SCREEN_CK
 export SCREEN_CKR
 export SCREEN_CL
@@ -136,6 +142,9 @@ export GIT_PS1_SHOWUPSTREAM=1
 
 # Elm
 export ELM_HOME=$HOME/usr/lib/node_modules/elm/share
+
+# Guix
+export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 # In zsh, report on all commands that take longer that 5 sec.
 export REPORTTIME=5
