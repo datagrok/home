@@ -17,6 +17,9 @@ for P in $HOME/usr $HOME/.cabal $HOME/.guix-profile $HOME; do
 	if [ -d "${P}/bin" ]; then
 		PATH="${P}/bin${PATH:+:}${PATH}"
 	fi
+	if [ -d "${P}/sbin" ]; then
+		PATH="${P}/sbin:${PATH:+:}${PATH}"
+	fi
 	if [ -d "${P}/man" ]; then
 		MANPATH="${P}/man${MANPATH:-:/usr/share/man}"
 	fi
@@ -145,6 +148,8 @@ export ELM_HOME=$HOME/usr/lib/node_modules/elm/share
 
 # Guix
 export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+export GUILE_LOAD_PATH="$HOME/.guix-profile/share/guile/site/2.0"
+export GUILE_LOAD_COMPILED_PATH="$HOME/.guix-profile/share/guile/site/2.0"
 
 # In zsh, report on all commands that take longer that 5 sec.
 export REPORTTIME=5
