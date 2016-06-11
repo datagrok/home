@@ -36,6 +36,7 @@ set wildmenu
 set visualbell		" Kill that damn bell
 "set hidden		" Let me jump around to other files without saving mine
 set diffopt+=iwhite	" Ignore whitespace in 'vimdiff'
+set relativenumber	" Show relative numberlines
 "
 if hostname() == 'io'	" Laptop-only settings
     " Less safe but good for saving laptop power
