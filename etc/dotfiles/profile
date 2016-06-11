@@ -13,7 +13,7 @@ export _PROFILE_APPLIED=1
 umask 002
 
 # prepend private bin(s) and man(s) if they exist to PATH
-for P in $HOME/usr $HOME/.cabal $HOME/.guix-profile $HOME; do
+for P in $HOME/usr/lib/Elm-Platform/*/.cabal-sandbox $HOME/usr $HOME/.cabal $HOME/.guix-profile $HOME; do
 	if [ -d "${P}/bin" ]; then
 		PATH="${P}/bin${PATH:+:}${PATH}"
 	fi
