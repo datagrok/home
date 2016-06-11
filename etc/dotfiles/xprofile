@@ -16,6 +16,12 @@ for b in chromium google-chrome-unstable google-chrome epiphany iceweasel firefo
 	fi
 done
 
+# aparretnly 'dbus-update-activation-environment' also does this?
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export QT_IM_MODULE=ibus
+export IBUS_COMPONENT_PATH=$HOME/.config/ibus/component:/usr/share/ibus/component
+
 export BROWSER
 export EDITOR="gvim -f"
 # export AWT_TOOLKIT=MToolkit # this is needed until java 7
