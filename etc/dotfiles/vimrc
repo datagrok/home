@@ -38,6 +38,11 @@ set visualbell		" Kill that damn bell
 set diffopt+=iwhite	" Ignore whitespace in 'vimdiff'
 set relativenumber	" Show relative numberlines
 "
+
+" Useful with inotifywait; both required:
+"set nobackup
+"set nowritebackup
+
 if hostname() == 'io'	" Laptop-only settings
     " Less safe but good for saving laptop power
     set nofsync		" Don't constantly spin up my disk
@@ -162,6 +167,9 @@ nnoremap <C-S-Down> :silent! let &guifont = substitute(
  \ '')<CR>
 
 ab <leader>-> →
+ab <leader><- ←
+ab <leader>^ ↑
+ab <leader>v ↓
 inoremap <leader>airplane ✈
 ab <leader>8< ✂
 ab <leader>./ ✓
