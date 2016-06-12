@@ -7,23 +7,71 @@
 # Converts a single .bz2, .gz, or .tgz to .xz (or .tar.xz) in the same
 # directory, using maximum (-9e) compression.
 
+import functools
+import os
+import re
+import subprocess
+import sys
+
+
+class UserError(Exception):
+    exit_status = 1
+    message = "An unspecified problem occurred. {self.args}"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def __str__(self):
+        return self.message.format(self=self)
+
+    @classmethod
+    def guard(cls, f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except cls as exc:
+                import sys
+                print('ERROR: {}'.format(exc), file=sys.stderr)
+                raise SystemExit(exc.exit_status)
+        return wrapper
+
+class UnknownFormatError(UserError):
+    exit_status = 2
+    message = "Don't know how to handle this type of file: {self.args[0]}"
+
+
+@UserError.guard
 def main():
-    import sys
-    import re
-    import subprocess
-    import os
     infile = sys.argv[1]
     outfile = re.sub(r'\.tgz$',r'.tar.gz',infile)
     outfile = re.sub(r'\.(gz|bz2)$',r'.xz',outfile)
     print("converting {} to {}".format(infile, outfile))
+
     if re.match(r'.*gz$', infile):
-        subprocess.check_call("zcat '%s' | xz -vv -9e > '%s'" % (infile, outfile), shell=True)
+        zcat = 'zcat'
     elif re.match(r'.*bz2$', infile):
-        subprocess.check_call("bzcat '%s' | xz -vv -9e > '%s'" % (infile, outfile), shell=True)
+        zcat = 'bzcat'
     else:
-        print("Don't know how to handle that type")
-        return
+        raise UnknownFormatError(infile)
+
+    # This is basically doing 'set -o pipefail; zcat $in | xz > $out'.
+    # Why do it the hard python way instead of shell? Because in shell
+    # the filename stuff we did above is painful and error prone.
+    #
+    # I wish subprocess had a convenient facility for building pipes.
+    with open(outfile, 'wb') as fh:
+        decompressor = subprocess.Popen([zcat, infile], stdout=subprocess.PIPE)
+        compressor = subprocess.Popen(["xz", "-vv", "-9e"], stdin=decompressor.stdout, stdout=fh)
+        check_wait(compressor)
+        check_wait(decompressor)
+
     os.remove(infile)
+
+
+def check_wait(process):
+    status = process.wait()
+    if status != 0:
+        raise subprocess.CalledProcessError(status, process.args[0])
+
 
 if __name__=='__main__':
     main()
