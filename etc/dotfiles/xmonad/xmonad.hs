@@ -16,49 +16,33 @@
 
 module Main (main) where
 
--- I wish Haskell imports were explicit, so I could tell which symbols are
--- imported from which libraries. Am I even using all these imports?
+-- With explicit import lists I finally know where these things are coming
+-- from. But might there be a way to simplify? Move some of this stuff to its
+-- own module to reduce the number of imports per module?
 
-import Data.Map hiding (keys)
-import Data.Monoid
-
+import Data.Map(Map,union,(\\),mapEither,fromList)
+import Data.Monoid(All(All),(<>))
+import System.Exit(exitSuccess)
+import System.IO(hPutStrLn, stderr)
 import XMonad
-import XMonad.Operations
-import qualified XMonad.StackSet as W
-
-import XMonad.Actions.DwmPromote
-import XMonad.Actions.UpdatePointer
-import XMonad.Config.Desktop
-import XMonad.Config.Gnome
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageHelpers
-import XMonad.Hooks.SetWMName
-import XMonad.Layout.Combo
-import XMonad.Layout.Decoration
-import XMonad.Layout.DwmStyle
-import XMonad.Layout.IM
--- import XMonad.Layout.Fullscreen
-import XMonad.Layout.LayoutHints
-import XMonad.Layout.LayoutCombinators hiding ((|||))
-import XMonad.Layout.LayoutHints
-import XMonad.Layout.PerWorkspace
-import XMonad.Layout.ResizableTile
-import XMonad.Layout.ShowWName
-import XMonad.Layout.Simplest
-import XMonad.Layout.Spiral
-import XMonad.Layout.TabBarDecoration
-import XMonad.Layout.Tabbed
-import XMonad.Layout.ThreeColumns
-import XMonad.Layout.TwoPane
+import XMonad.Actions.DwmPromote(dwmpromote)
+import XMonad.Actions.UpdatePointer(updatePointer)
+import XMonad.Config.Desktop(desktopLayoutModifiers)
+import XMonad.Config.Gnome(gnomeConfig)
+import XMonad.Hooks.EwmhDesktops(fullscreenEventHook)
+import XMonad.Hooks.SetWMName(setWMName)
+import XMonad.Layout.Decoration(inactiveBorderColor,activeBorderColor,Theme,inactiveColor,inactiveTextColor,activeTextColor,activeColor,inactiveBorderColor,decoHeight)
+import XMonad.Layout.DwmStyle(dwmStyle)
+import XMonad.Layout.ResizableTile(ResizableTall(ResizableTall),MirrorResize(MirrorShrink,MirrorExpand))
+import XMonad.Layout.ShowWName(showWName', swn_font)
+import XMonad.Layout.Spiral(spiral)
+import XMonad.Layout.TabBarDecoration(shrinkText)
+import XMonad.Layout.ThreeColumns(ThreeCol(ThreeCol))
 import XMonad.Prompt
-import XMonad.Prompt.Shell
-import XMonad.Prompt.Theme
-import XMonad.Util.Themes
-
-import Control.Monad
-import Graphics.X11.Xlib
-import System.IO (hPutStrLn, stderr)
-import System.Exit
+import XMonad.Prompt.Shell(shellPrompt)
+import XMonad.Prompt.Theme(themePrompt)
+import XMonad.StackSet(greedyView,shift,view)
+import XMonad.Util.Themes(theme,listOfThemes)
 
 -- Does the use of 'where' make any difference here?
 --      main = x y z
@@ -76,7 +60,7 @@ main :: IO ()
 main = xmonad $ gnomeConfig
         { layoutHook         = desktopLayoutModifiers
             -- $ ModifiedLayout MyResizeScreen 
-            $ showWName' defaultSWNConfig { swn_font = bigfont }
+            $ showWName' def { swn_font = bigfont }
             -- $ layoutHints
             -- Stalonetray just can't decide how much of my screen it wants.
             -- For some reason I never could get 'onWorkspace' to work well.
@@ -86,7 +70,7 @@ main = xmonad $ gnomeConfig
             $ ThreeCol 1 (3/100) (594/2560) ||| spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
         , keys               = keys'
         , manageHook         = manageHook' <> manageHook gnomeConfig
-        , logHook            = updatePointer (Relative 0.5 0.5) <> logHook gnomeConfig
+        , logHook            = updatePointer (0.5, 0.5) (0, 0) <> logHook gnomeConfig
         , terminal           = "x-terminal-emulator"
         , borderWidth        = 0
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
@@ -97,7 +81,7 @@ main = xmonad $ gnomeConfig
         }
 
 
--- Configuration settings used to override the defaultConfig, above.
+-- Configuration settings used to override the default, above.
 myTheme       = theme $ listOfThemes!!2     -- I like the second theme in the list.
 floatClasses  = ["display", "Xwud", "fontforge", "oclock", "Clock"] -- These windows always float by default
 ignoreClasses = ["Audacious"]
@@ -137,7 +121,7 @@ decorateWindows = dwmStyle shrinkText myTheme
 keys' :: XConfig Layout -> Map (KeyMask, KeySym) (X ())
 keys' x = union addkeys $ origkeys \\ delkeys
     where
-        origkeys = keys defaultConfig x
+        origkeys = keys def x
         (delkeys, addkeys) = mapEither partitioner $ mykeys $ modMask x
 
 -- Used by keys' to take apart the Just/Nothing dichotomy.
@@ -163,13 +147,13 @@ mykeys mod = fromList $
             -- send.
             [ (m, key, windows $ f sc)
                 | (key, sc) <- zip ["1", "2", "3", "q", "w", "e", "a", "s", "d"] workspaces'
-                , (f  , m ) <- [(W.greedyView, noMask), (W.shift, shiftMask)]
+                , (f  , m ) <- [(greedyView, noMask), (shift, shiftMask)]
             ]
             ++
             -- Assign screens to keys z/x/c: use mod to view, mod+shift to send
             [ (m, key, screenWorkspace sc >>= flip whenJust (windows . f))
                 | (key, sc) <- zip ["z", "x", "c"] [0..]
-                , (f  , m ) <- [(W.view, noMask), (W.shift, shiftMask)]
+                , (f  , m ) <- [(view, noMask), (shift, shiftMask)]
             ]
             ++
             -- Misc. other bindings
@@ -197,7 +181,7 @@ mykeys mod = fromList $
 -- Unfortunately, changing the theme 'live' with themePrompt affects only the
 -- window decorations, not the prompts. Don't know how that works yet. TODO
 themedXPConfig :: Theme -> XPConfig
-themedXPConfig t = defaultXPConfig 
+themedXPConfig t = def 
         { font              = "xft:Ubuntu-10" -- fontName t
         , bgColor           = inactiveColor t
         , fgColor           = inactiveTextColor t
@@ -247,6 +231,8 @@ eventHook' e = do
 dummyEventHook _ = return (All True)
 
 
+{- TODO: improve this
+
 -- Assuming borders of width 1, this causes windows to expand in size by 1
 -- pixel all around. This makes borders fall off the edge of the screen, which
 -- I want. (Why waste a pixel to indicate a window border at the edge of the
@@ -257,5 +243,6 @@ data MyResizeScreen a = MyResizeScreen deriving (Read, Show)
 
 instance LayoutModifier MyResizeScreen a where
     modifyLayout _ ws r@(Rectangle x y w h) = runLayout ws $ Rectangle (x-1) (y-1) (w+3) (h+3)
+-}
 
 -- vim: set et:
