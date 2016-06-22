@@ -31,18 +31,18 @@ import XMonad.Config.Desktop(desktopLayoutModifiers)
 import XMonad.Config.Gnome(gnomeConfig)
 import XMonad.Hooks.EwmhDesktops(fullscreenEventHook)
 import XMonad.Hooks.SetWMName(setWMName)
-import XMonad.Layout.Decoration(inactiveBorderColor,activeBorderColor,Theme,inactiveColor,inactiveTextColor,activeTextColor,activeColor,inactiveBorderColor,decoHeight)
 import XMonad.Layout.DwmStyle(dwmStyle)
+import XMonad.Layout.Decoration(inactiveBorderColor,activeBorderColor)
 import XMonad.Layout.ResizableTile(ResizableTall(ResizableTall),MirrorResize(MirrorShrink,MirrorExpand))
 import XMonad.Layout.ShowWName(showWName', swn_font)
 import XMonad.Layout.Spiral(spiral)
 import XMonad.Layout.TabBarDecoration(shrinkText)
 import XMonad.Layout.ThreeColumns(ThreeCol(ThreeCol))
-import XMonad.Prompt
 import XMonad.Prompt.Shell(shellPrompt)
 import XMonad.Prompt.Theme(themePrompt)
 import XMonad.StackSet(greedyView,shift,view)
-import XMonad.Util.Themes(theme,listOfThemes)
+
+import MyTheme(myTheme, myXPConfig)
 
 -- Does the use of 'where' make any difference here?
 --      main = x y z
@@ -82,7 +82,6 @@ main = xmonad $ gnomeConfig
 
 
 -- Configuration settings used to override the default, above.
-myTheme       = theme $ listOfThemes!!2     -- I like the second theme in the list.
 floatClasses  = ["display", "Xwud", "fontforge", "oclock", "Clock"] -- These windows always float by default
 ignoreClasses = ["Audacious"]
 tiled         = Tall nmaster delta ratio
@@ -158,10 +157,10 @@ mykeys mod = fromList $
             ++
             -- Misc. other bindings
             [ (noMask      , "b"      , spawn "sensible-browser") -- "browser"
-            , (noMask      , "r"      , shellPrompt (themedXPConfig myTheme)) -- "run"
+            , (noMask      , "r"      , shellPrompt myXPConfig) -- "run"
             , (noMask      , "Return" , dwmpromote)
             , (controlMask , "Return" , spawn "x-terminal-emulator -e screen")
-            , (controlMask , "t"      , themePrompt (themedXPConfig myTheme))
+            , (controlMask , "t"      , themePrompt myXPConfig)
             , (shiftMask   , "F10"    , io exitSuccess) -- %! Quit xmonad
             , (noMask      , "F10"    , restart "xmonad" True) -- %! Restart xmonad
             , (controlMask , "k"      , kill)
@@ -174,27 +173,6 @@ mykeys mod = fromList $
         -- meaning "no *additional* mask besides 'mod', which is used for
         -- everything."
         noMask = 0
-
-
--- I want a single point of configuration for theme-related things. This
--- creates an XPConfig (a configuration for xprompt) from a theme.
--- Unfortunately, changing the theme 'live' with themePrompt affects only the
--- window decorations, not the prompts. Don't know how that works yet. TODO
-themedXPConfig :: Theme -> XPConfig
-themedXPConfig t = def 
-        { font              = "xft:Ubuntu-10" -- fontName t
-        , bgColor           = inactiveColor t
-        , fgColor           = inactiveTextColor t
-        , fgHLight          = activeTextColor t
-        , bgHLight          = activeColor t
-        , borderColor       = inactiveBorderColor t
-        , height            = decoHeight t
-        , promptBorderWidth = 1
-        , position          = Bottom
-        , historySize       = 256
-        , defaultText       = []
-        , autoComplete      = Nothing
-}
 
 
 -- TODO: I wish I could configure events to occur while the modifier key is
