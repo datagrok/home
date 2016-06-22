@@ -1,1 +1,7 @@
-*
+*.o
+*.hi
+xmonad-*
+xmonad.errors
+tags
+history
+xmonad
