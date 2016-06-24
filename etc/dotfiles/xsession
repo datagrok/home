@@ -9,23 +9,39 @@ fi
 
 gnome-settings-daemon &
 xsetroot -cursor_name left_ptr
-# Gnome 3 can't fucking do display settings anymore. Wat. Try to set them up in
-# a sane way.
-if 
-	xrandr --query --current | grep -q "HDMI1 connected"
-then
-	xrandr \
-		--output HDMI2 --off \
-		--output HDMI1 --mode 1920x1080 --pos 0x0 --rotate normal \
-		--output DP1 --off \
-		--output eDP1 --mode 1360x768 --pos 1920x312 --rotate normal
-else
-	xrandr \
-		--output HDMI2 --off \
-		--output HDMI1 --off \
-		--output DP1 --off \
-		--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
-fi
+# Lately in debian testing Gnome can't fucking do display settings. Wat. Try to
+# set them up in a sane way.
+case "`hostname`" in
+	kino)
+		# FIXME I'd like the left screen to be centered, but then my toolbars
+		# are missing, on top of the virtual screen.
+		xrandr \
+			--output DP-4    --mode 1920x1080 --pos 0x0 --rotate normal --primary \
+			--output HDMI-0  --mode 1680x1050 --rotate left --pos 1920x0
+		;;
+	yuki)
+		# FIXME this really belongs in a script that reacts to dbus events.
+		#
+		# If the laptop is plugged into an external monitor, use a resolution
+		# that will sortof-match its dpi, since X11 is stupid about multi-dpi
+		# setups. Otherwise, use a slightly higher resolution.
+		if
+			xrandr --query --current | grep -q "HDMI1 connected"
+		then
+			xrandr \
+				--output HDMI2 --off \
+				--output HDMI1 --mode 1920x1080 --pos 0x0 --rotate normal \
+				--output DP1 --off \
+				--output eDP1 --mode 1360x768 --pos 1920x312 --rotate normal
+		else
+			xrandr \
+				--output HDMI2 --off \
+				--output HDMI1 --off \
+				--output DP1 --off \
+				--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
+		fi
+		;;
+esac
 
 # gnome doesn't have its fucking shit together with multiple-resolution
 # displays. This command must always come after the xrandr command.
@@ -34,7 +50,6 @@ gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
 setxkbmap -model pc104 -layout us -option ctrl:nocaps
 # gnome is doing an awesome new thing where it hides my fucking cursor
 dconf write /org/gnome/settings-daemon/plugins/cursor/active false
-
 
 case "`hostname`" in
 	# only bash sets $HOSTNAME
@@ -45,13 +60,12 @@ case "`hostname`" in
 		# on my Fujitsu u904 laptop.
 		xset r 113 r on
 		xset r 116 r on
-		stalonetray &
-		pasystray &
-		nm-applet &
-		google-chrome &
-		(ssh-add && xchat) &
 		;;
 esac
+stalonetray &
+pasystray &
+nm-applet &
+$BROWSER &
 
 # A notification daemon, at least until I find something better. Good to get
 # this up after xchat to avoid the blast of notifications. Need a utility for
@@ -68,8 +82,7 @@ if which feh && [ -e $HOME/.wallpaper ]; then
 	feh --bg-scale $HOME/.wallpaper &
 fi
 
-# (zenity --question --text "Tunnel to seiko?" && ssh -L9091:localhost:9091 -L6994:localhost:6994 -M seiko sleep 300) &
-# (zenity --question --text "Tunnel to tilde.town?" && ssh -L9119:localhost:119 tilde.town sleep 300) &
+seikotunnel sleep 300 &
 
 if [ "$WINDOW_MANAGER" ]; then
 	exec "$WINDOW_MANAGER"
