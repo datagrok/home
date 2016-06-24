@@ -15,7 +15,7 @@ if nm-online; then
     echo "Online; will fetch updates."
 fi
 
-find ~/var/local/ ~/mnt/ -name '*.git' | while read dir
+find ~/var/local/ ~/mnt/ -name '*.git' -type d | while read dir
 do (
     dir_vis=$(
         tput setaf 5
