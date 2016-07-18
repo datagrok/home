@@ -2,17 +2,30 @@
 
 # activate
 #
-# usage: activate [COMMAND [ARGS]]
+# usage: activate [OPTIONS] [COMMAND [ARGS]]
 #
 # For use with Ian Bicking's virtualenv tool. Attempts to find the root of a
 # virtual environment. Then, executes COMMAND with ARGS in the context of the
 # activated environment. If no COMMAND is given, activate defaults to a
 # subshell.
+#
+# options:
+#    -C DIRECTORY    begin searching for a virtual environment at DIRECTORY
+#    -n NAME         search for a virtual environment named NAME in some common
+#                    places like $WORKON_HOME
 
 # FIXME: this should not change PWD to do its work. employ 'readlink -f ..'
 # instead.
 
 orig_pwd="$PWD"
+
+if [ "$1" = "-C" ]; then
+	cd "$2"
+	shift 2
+elif [ "$1" = "-n" ]; then
+	cd "$WORKON_HOME/$2"
+	shift 2
+fi
 
 # First, locate the virtualenv
 while [ "$PWD" != "/" ]; do
