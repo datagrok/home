@@ -168,6 +168,13 @@ mykeys mod = fromList $
             , (shiftMask   , "l"      , sendMessage MirrorExpand)
             ]
         ]
+        ++
+        -- These keybindings don't use the default modifier
+        [ ((noMask, stringToKeysym key), Just action) | (key, action) <-
+            [ ("XF86AudioRaiseVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%")
+            , ("XF86AudioLowerVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%")
+            ]
+        ]
     where
         -- Actually all the places this I use 'noMask' above actually ends up
         -- meaning "no *additional* mask besides 'mod', which is used for
