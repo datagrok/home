@@ -41,9 +41,18 @@ if [ -d /usr/lib/j2sdk*/bin ] ; then
 fi
 
 # Who keeps creating these stupid empty directories? Nautilus, I think.
-for d in ~/{Desktop,Documents,Music,Videos,Pictures,Public,Templates,Webcam}; do
+for d in $HOME/{Desktop,Documents,Music,Videos,Pictures,Public,Templates,Webcam}; do
 	[ -d "$d" ] && rmdir --ignore-fail-on-non-empty "$d"
 done
+
+if [ -x "/usr/bin/vboxmanage" -a ! -d "$HOME/var/virtualboxes" ]; then
+	if [ -d "$HOME/VirtualBox VMs" ]; then
+		mv "$HOME/VirtualBox VMs" "$HOME/var/virtualboxes"
+	else
+		mkdir "$HOME/var/virtualboxes"
+	fi
+	vboxmanage setproperty machinefolder "$HOME/var/virtualboxes"
+fi
 
 if [ -d "$HOME/tmp" ]; then
 	# TMPDIR is the canonical standard
