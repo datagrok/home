@@ -36,8 +36,12 @@ function ps1_context {
 }
 
 function ps1_curdir {
-		p="${PWD/$VIRTUAL_ENV/♬}"
-		echo "${p/$HOME/~}"
+		if [ "$VIRTUAL_ENV" ]; then
+			p="${PWD/$VIRTUAL_ENV/♬}"
+		else
+			p="${PWD}"
+		fi
+		echo "${p/$HOME/\~}"
 }
 
 # set variable identifying the chroot you work in (used in the prompt below)
