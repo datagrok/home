@@ -1,0 +1,63 @@
+#!/usr/bin/python3
+"""
+Usage: git mux REPO [REPO ...] -- ARGS
+
+For each REPO, calls "git -C REPO ARGS".
+
+Example:
+
+    # Get the status of every repo in the current directory.
+    git mux * status
+
+"""
+import functools
+import subprocess
+
+# Fixme: my UserError superclass should be abstracted to a library
+class UserError(Exception):
+    exit_status = 1
+    message = "An unspecified problem occurred. {self.args}"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def __str__(self):
+        return self.message.format(self=self)
+
+    @classmethod
+    def guard(cls, f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except cls as exc:
+                import sys
+                print('Error: {}'.format(exc), file=sys.stderr)
+                print(__doc__)
+                raise SystemExit(exc.exit_status)
+        return wrapper
+
+class SplitterNotFoundError(UserError):
+    message = "Arguments must contain '--'"
+
+@UserError.guard
+def main(argv0, *args):
+    try:
+        split_index = args.index('--')
+    except ValueError:
+        raise SplitterNotFoundError()
+    repos = args[:split_index]
+    args = args[split_index+1:]
+    error_repos = []
+    for repo in repos:
+        print("git mux running: git -C '\033[1m{}\033[m' {}".format(repo, " ".join(args)))
+        ret = subprocess.call(['/usr/bin/git', '-C', repo, *args])
+        if ret != 0:
+            print('\033[1;31mCommand exited with error status {:d}\033[m'.format(ret))
+            error_repos.append(repo)
+        print()
+    if error_repos:
+        print("\033[1;31mWarning: command failed for some repos:\033[m {}".format(" ".join(error_repos)))
+        return 1
+
+if __name__ == "__main__":
+    import sys
+    raise SystemExit(main(*sys.argv))
