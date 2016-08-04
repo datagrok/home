@@ -7,7 +7,7 @@ For each REPO, calls "git -C REPO ARGS".
 Example:
 
     # Get the status of every repo in the current directory.
-    git mux * status
+    git mux * -- status
 
 """
 import functools
