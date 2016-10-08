@@ -66,6 +66,9 @@ stalonetray &
 pasystray &
 nm-applet &
 $BROWSER &
+if [ -f "$HOME/.vagrant.d/insecure_private_key" ]; then
+	ssh-add $HOME/.vagrant.d/insecure_private_key
+fi
 
 # A notification daemon, at least until I find something better. Good to get
 # this up after xchat to avoid the blast of notifications. Need a utility for
