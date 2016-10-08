@@ -4,7 +4,7 @@
 # argument. If no arguments are given, pop a zenity countdown box so I know
 # when to expect the tunnel to close if I fail to stick something in it.
 
->/dev/null ssh-add -l || ssh-add </dev/null
+>/dev/null ssh-add -l | grep "$USER@" || ssh-add </dev/null
 SSHCMD="ssh -nM seiko \
 			-L 6994:localhost:6994 \
 			-L 9091:localhost:9091"
