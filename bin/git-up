@@ -1,0 +1,86 @@
+#!/bin/sh
+
+# git up: nondestructively update this git repo, with an abbreviated status
+# output. I expect to be able to run this safely, at any time, for any repo.
+# 
+# We clean up after an upstream "merge and delete feature branch". Any local
+# branches in the history of same-named remote-tracking branches that get
+# merged to another branch and deleted may also be deleted. If HEAD points to
+# one of these branches and is clean, checkout the branch that was merged into.
+
+# What we do:
+# - fetch
+# - prune remote tracking branches that are no longer upstream
+# - prune local branches named for pruned remote tracking branches, unless
+#   - it is HEAD
+#   - its commits would become unreachable by any other branch
+# - git pull (update current branch to match its remote-tracking branch, unless
+#   - it wouldn't be a fast-forward update
+#   - it would require 
+
+echo $0 not done yet
+exit 1
+if nm-online; then
+    # Unset this to avoid connecting to upstream servers.
+    online=1
+    echo "Online; will fetch updates."
+fi
+
+find ~/var/local/ ~/mnt/ -name '*.git' -type d | while read dir
+do (
+    dir_vis=$(
+        tput setaf 5
+        tput bold
+        dir_name="$(dirname "$dir")"
+        echo -n "~${dir_name#$HOME}"
+        tput sgr0
+        )
+
+	cd "$dir"
+	cd ..
+	echo -n ". $dir_vis"
+    tput cr
+	if [ "$online" -a -e .git/refs/remotes/origin ]; then
+        git fetch -q --all
+		curr_branch=$(git symbolic-ref -q --short HEAD)
+		upstream=$(git config "branch.$curr_branch.merge")
+		remote=$(git config "branch.$curr_branch.remote")
+		if [ "$upstream" -a "$remote" ]; then
+			if git merge -q --ff-only '@{u}'; then
+                tput bold
+                tput setaf 2
+                echo "Y $dir_vis: In sync."
+            else
+                tput bold
+                tput setaf 1
+                echo "N $dir_vis: Needs update; can't automatically."
+            fi
+		else
+            tput bold
+            tput setaf 3
+            echo "? $dir_vis: No tracking branch."
+            echo "try: (cd $dir_vis; git branch --set-upstream-to=`git remote | head -1`/$curr_branch)"
+		fi
+	else
+        tput bold
+        tput setaf 3
+        echo "X $dir_vis: No repo to update from."
+	fi
+
+	git status -s
+	)
+done
+
+for dir in ~/var/local/*
+do [ -d "$dir/.svn" ] || continue
+	(
+	cd "$dir"
+	echo "\033[1m`pwd`\033[m"
+	if [ "$online" ]; then
+		svn status -u
+	else
+		svn status
+	fi
+	echo
+	)
+done
