@@ -22,7 +22,7 @@
 	excludesfile = ~/etc/gitignore-global
 [alias]
 	lol = log --graph --decorate --oneline --color=always --boundary
-	lola = log --graph --decorate --oneline --color=always --boundary --all
+	lola = log --graph --decorate --oneline --color=always --boundary --branches --remotes
 	lolm = log --graph --decorate --oneline --color=always --boundary origin/master..
 	lolt = log --graph --decorate --oneline --color=always --boundary @{upstream}..
 	serve = daemon --verbose --export-all --base-path=.git --informative-errors --reuseaddr --strict-paths .git/
