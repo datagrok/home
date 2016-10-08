@@ -103,8 +103,6 @@ export SCREEN_CK
 export SCREEN_CKR
 export SCREEN_CL
 export PS1_HOSTCOLOR
-# I want color output from git. I'll decide when I need a pipe to a pager.
-export GIT_PAGER=
 # Tell various languages where to find my handy libraries
 export TEXINPUTS=./:$HOME/lib/latex2e/:
 export PYTHONPATH=lib:$HOME/lib/python
@@ -114,7 +112,7 @@ export CLASSPATH=.:$HOME/lib/java
 
 export EDITOR=vim
 export PAGER=less
-export LESS=-Ra
+export LESS=-FRSXa
 
 # Bash settings
 
