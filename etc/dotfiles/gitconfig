@@ -28,14 +28,10 @@
 	serve = daemon --verbose --export-all --base-path=.git --informative-errors --reuseaddr --strict-paths .git/
 [push]
 	default = current
-[branch]
-	autosetuprebase = remote
 [mergetool "mygvimdiff"]
 	cmd = LOCAL="$LOCAL" BASE="$BASE" REMOTE="$REMOTE" MERGED="$MERGED" vimdiffgitmergewrapper
 [remote "origin"]
 	#tagopt = --no-tags
-[pull]
-	rebase = true
 [credential]
 	helper = cache
 [rerere]
