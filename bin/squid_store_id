@@ -1,0 +1,7 @@
+#!/bin/sed -uf
+
+s/^\(.*\)s3.amazonaws.com\(\/.*\)?.*$/OK store-id=\1s3.squid.internal\2/
+
+t
+
+s/^.*$/ERR/g
