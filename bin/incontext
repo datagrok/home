@@ -1,0 +1,101 @@
+#!/bin/sh
+
+usage(){ cat <<- USAGE >&2
+	Usage: $0 [--init|[-C DIRECTORY] FILENAME]
+
+	Look for .context in the current or given DIRECTORY and all of its
+	ancestors until found. Execute it with our arguments. If not found, just
+	execute our arguments.
+
+	Options:
+
+		--init			Create an example .context script in the current directory.
+		-C DIRECTORY	Begin search in DIRECTORY, not current directory.
+		
+	Example:
+
+	    Run 'make' from deep within your source heiarchy, like 'ant -find':
+	        make -f \`acquire Makefile\`
+	USAGE
+}
+
+if [ "$1" = "--init" ]; then
+	if [ -e ".context" ]; then
+		echo >&2 "$0: Error: A .context file already exists in this directory."
+		exit 1
+	fi
+	echo >&2 "$0: Creating .context file in current directory."
+	cat <<- EOF > .context
+		#!/bin/sh
+		
+		# This script was created by 'incontext --init'. It is executed
+		# whenever you run 'incontext COMMAND ARGS'. It sets up various
+		# environment variables, then executes its argument.
+		#
+		# Feel free to modify this script to suit your needs. You may also
+		# replace it completely with a script in any other language or any
+		# executable, as long as that program arranges to execute its arguments
+		# after setting up the environment.
+
+		export CONTEXT="\${0%/*}"
+
+	EOF
+
+	# Detect virtualenvs, and if found, activate it by default in the generated
+	# .context file. If not found, leave a commented-out example of how to
+	# activate one.
+
+	if [ "$VIRTUAL_ENV" ]; then
+		echo >&2 "$0: There is an active virtualenv at $VIRTUAL_ENV. I'll activate it in the .context."
+		venv="$VIRTUAL_ENV"
+		filter='cat'
+	elif [ -x bin/python -a -e lib/python*/site.py ]; then
+		echo >&2 "$0: This seems to be the root of a virtualenv. I'll activate it in the .context."
+		venv="\$CONTEXT"
+		filter='cat'
+	else
+		venv='/path/to/venv'
+		filter="sed /^#\|^$/!s/^/#/"
+	fi
+	cat <<- EOF | $filter >> .context
+		# Activate a virtualenv at $venv
+		export VIRTUAL_ENV="$venv"
+		export PATH="\$VIRTUAL_ENV/bin:\$PATH"
+		unset PYTHON_HOME
+		# or, to use the 'activate' script:
+		# source "$venv/bin/activate"
+
+	EOF
+
+	# Finally, execute arguments.
+	cat <<- EOF >> .context
+		# Do not remove the following line.
+		exec "\$@"
+	EOF
+	chmod +x .context
+	exit 0
+fi
+
+context="$(acquire .context)"
+if [ "$CONTEXT" ]; then
+	if [ "$CONTEXT/.context" -ef "$context" ]; then
+		echo >&2 "$0: INFO: context already active; running in current environment."
+		exec "${@:-$SHELL}"
+	else
+		echo >&2 "$0: ERROR: the active context differs from current directory's context. Deactivate before switching contexts."
+		echo >&2 "$0: Active context:    $CONTEXT/.context"
+		echo >&2 "$0: Directory context: $context"
+		exit 1
+	fi
+fi
+if [ -x "$context" ]; then
+	exec "$context" "${@:-$SHELL}"
+fi
+
+if [ -e "$context" ]; then
+	echo >&2 "$0: Warning: found $context but it is not marked executable; it will not be used."
+else
+	echo >&2 "$0: Warning: no context was found; commands will run in current context."
+fi
+
+exec "${@:-$SHELL}"
