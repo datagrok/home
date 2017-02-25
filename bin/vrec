@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Quick command line voice recorder. Requires alsa-utils for arecord, speex for speexenc
+# Quick command line voice recorder.
 
 LOCATION="$HOME/doc/notes/recordings"
 MYDATE=`date "+%Y%m%d-%H%M%S"`
@@ -28,4 +28,9 @@ if [ ! -d "$LOCATION" ]; then
 	exit 1
 fi
 
-arecord -f S16_LE -c1 -r16000 -t raw | opusenc --raw --raw-rate 16000 --raw-bits 16 --raw-chan 1 --raw-endianness 0 --bitrate 16 - "$LOCATION/$FILENAME"
+sink=$(pactl load-module module-null-sink sink_name="Microphone_Audio_Mix" )
+loop1=$(pactl load-module module-loopback sink="Microphone_Audio_Mix" source=@DEFAULT_SOURCE@)
+loop2=$(pactl load-module module-loopback sink="Microphone_Audio_Mix" source=@DEFAULT_MONITOR@)
+trap "pactl unload-module $sink; pactl unload-module $loop1; pactl unload-module $loop2; echo unloaded modules" INT EXIT
+
+parec --format s16le --channels=1 --rate=16000 -d Microphone_Audio_Mix.monitor | opusenc --raw --raw-rate 16000 --raw-bits 16 --raw-chan 1 --raw-endianness 0 --bitrate 16 - "$LOCATION/$FILENAME"
