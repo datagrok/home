@@ -1,23 +1,34 @@
 #!/bin/sh
 
-usage(){ cat <<- USAGE >&2
-	Usage: $0 [--init|[-C DIRECTORY] FILENAME]
 
-	Look for .context in the current or given DIRECTORY and all of its
-	ancestors until found. Execute it with our arguments. If not found, just
-	execute our arguments.
+
+usage(){ cat <<- USAGE >&2
+	Usage:
+		$0 --init
+		$0 [COMMAND [ARG...]]
+
+	Executes COMMAND with ARGs in an environment modified by a .context file in
+	this or an ancestor directory.
+	
+	.context is expected to be an executable that does the work of modifying
+	the environment and executing its arguments.
+	
+	If no COMMAND is specified, launch a shell with the modified environment
+	instead.
 
 	Options:
 
 		--init			Create an example .context script in the current directory.
-		-C DIRECTORY	Begin search in DIRECTORY, not current directory.
 		
-	Example:
-
-	    Run 'make' from deep within your source heiarchy, like 'ant -find':
-	        make -f \`acquire Makefile\`
+	See the documentation for examples of configuration and use.
+			
 	USAGE
 }
+
+# TO DO
+#
+# -C option for starting context search at different directory
+# -n option for searching set of default paths for a context directory
 
 if [ "$1" = "--init" ]; then
 	if [ -e ".context" ]; then
@@ -36,8 +47,29 @@ if [ "$1" = "--init" ]; then
 		# replace it completely with a script in any other language or any
 		# executable, as long as that program arranges to execute its arguments
 		# after setting up the environment.
+	
+		context="\${0%/*}"
 
-		export CONTEXT="\${0%/*}"
+		# This optional block adds a "-e PARAMETER" argument to "incontext".
+		#
+		# I use it, for example, to set a target deployment environment.
+		#
+		# Uncomment the line below to set a default.
+		# context_param="development"
+		if [ "\$1" = "-e" ]; then
+		    context_param="\$2"
+		    shift 2
+		fi
+
+		# If you run 'incontext' when already within this context, you don't
+		# need to do all the setup again.
+		if [ "\$CONTEXT" -a "\$CONTEXT" -ef "\$context" -a "\$CONTEXT_PARAM" = "\$context_param" ]; then
+		    echo >&2 "\$0: INFO: context\${context_param:+/}\${context_param} already active; running in current environment."
+		    exec "\${@:-\$SHELL}"
+		fi
+
+		export CONTEXT="\$context"
+		export CONTEXT_PARAM="\$context_param"
 
 	EOF
 
@@ -66,36 +98,48 @@ if [ "$1" = "--init" ]; then
 		# source "$venv/bin/activate"
 
 	EOF
+	
+	# If the context itself is a virtualenv, its bin/ is already added to the
+	# path. If not, add it.
+	if [ ! -e lib/python*/site.py ]; then
+		cat <<- EOF >> .context
+			# If you create a bin/ directory in your context, this will prepend it to the \$PATH.
+			if [ -d "\$CONTEXT/bin" ]; then
+			    export PATH="\${CONTEXT}/bin\${PATH:+:}\${PATH}"
+			fi
+
+		EOF
+	fi
 
 	# Finally, execute arguments.
 	cat <<- EOF >> .context
+		#
+		# Add your own settings and setup here.
+		#
+
 		# Do not remove the following line.
-		exec "\$@"
+		exec "\${@:-\$SHELL}"
+		# Nothing after the 'exec' line above will be executed.
 	EOF
 	chmod +x .context
 	exit 0
 fi
 
 context="$(acquire .context)"
-if [ "$CONTEXT" ]; then
-	if [ "$CONTEXT/.context" -ef "$context" ]; then
-		echo >&2 "$0: INFO: context already active; running in current environment."
-		exec "${@:-$SHELL}"
-	else
-		echo >&2 "$0: ERROR: the active context differs from current directory's context. Deactivate before switching contexts."
-		echo >&2 "$0: Active context:    $CONTEXT/.context"
-		echo >&2 "$0: Directory context: $context"
-		exit 1
-	fi
-fi
-if [ -x "$context" ]; then
-	exec "$context" "${@:-$SHELL}"
+if [ "$CONTEXT" -a ! "$CONTEXT/.context" -ef "$context" ]; then
+	echo >&2 "$0: Warning: active context differs directory context."
+	echo >&2 "$0: Directory context will be applied but non-overridden"
+	echo >&2 "$0: settings from active context will remain present."
+	echo >&2 "$0: Active context:    $CONTEXT/.context"
+	echo >&2 "$0: Directory context: $context"
 fi
 
-if [ -e "$context" ]; then
-	echo >&2 "$0: Warning: found $context but it is not marked executable; it will not be used."
+if [ -x "$context" ]; then
+	exec "$context" "${@:-$SHELL}"
+elif [ -e "$context" ]; then
+	echo >&2 "$0: Warning: found $context but it is not marked executable; running with current environment."
 else
-	echo >&2 "$0: Warning: no context was found; commands will run in current context."
+	echo >&2 "$0: Warning: no context was found; running with current environment."
 fi
 
 exec "${@:-$SHELL}"
