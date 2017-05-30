@@ -54,7 +54,7 @@ def main(argv0, *args):
             print()
             continue
         print("git mux running: git -C '\033[1m{}\033[m' {}".format(repo, " ".join(args)))
-        ret = subprocess.call(['/usr/bin/git', '-C', repo, *args])
+        ret = subprocess.call(('/usr/bin/git', '-C', repo) + args)
         if ret != 0:
             print('\033[1;31mCommand exited with error status {:d}\033[m'.format(ret))
             error_repos.append(repo)
