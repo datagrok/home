@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# 
+
+[ "$1" ] || {
+    echo "Specify a brightness level, 0-100"
+    exit 1
+}
+
+device=/sys/class/backlight/intel_backlight
+maxbr=$(cat "$device"/max_brightness)
+echo $(($1 * $maxbr / 100)) | sudo tee "$device"/brightness
