@@ -39,5 +39,10 @@ then
 	xinput set-prop $touchpad_id "Synaptics Tap Action" 0, 0, 0, 0, 1, 3, 2
 	xinput set-prop $touchpad_id "Synaptics Two-Finger Scrolling" 1, 1
 fi
+if touchpad_id=$(xinput list --id-only "DLL075B:01 06CB:76AF Touchpad")
+then
+	xinput set-prop $touchpad_id "libinput Tapping Enabled" 1
+fi
+
 
 # vim: set ft=sh :
