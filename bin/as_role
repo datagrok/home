@@ -1,0 +1,77 @@
+#!/bin/env python
+"""Somewhat of a "portray" work-alike. Assumes the given aws role and runs the
+provided command with a modified environment.
+
+If no command is provided, launches a subshell.
+
+USAGE: as_role ROLE_ARN COMMAND [ARGS]
+
+Examples:
+
+- Authenticate to the role default AWS and enter a subshell (like "portray auth"):
+
+    as_role arn:aws:iam::158326739461:user/datagrok
+
+- Authenticate to the role default AWS, then assume another role (like "portray
+  auth" followed by "portray swtich -p dev")
+
+    as_role arn:aws:iam::158326739461:user/datagrok \
+        as_role dev
+
+  This pattern may be chained as many times as needed.
+
+- Run a command as a given role which must be assumed from a user's account
+
+    as_role arn:aws:iam::158326739461:user/datagrok \
+        as_role dev \
+            aws s3 list_bucket s3://my_bucket
+
+- Instead of launching a subcommands or subshells, set environment variables in
+  the current bourne-type shell. (Like ssh-agent can)
+
+    #!/bin/bash
+    eval $(as_role arn:aws:iam::158326739461:user/datagrok \
+               as_role dev \
+                   as_role -s)
+    aws s3 list_bucket s3://my_bucket
+    aws foo bar
+    ...
+
+"""
+# (Intentional) differences from portray:
+#
+# - acts as a wrapper, using Bernstein chaining. This makes it easier to use in
+#   automated scripts.
+#
+# TODO
+# - support mfa prompt
+# - parse aws configuration
+# - manage auth duration
+# - manage re-auth when duration expires
+
+import boto3
+import sys
+import os
+import time
+
+ROLENAME = "as_role-{username}-{timestamp}".format(
+    os.environ.get('USER'), int(time.time()))
+
+
+def main(argv0, role_arn, *subcommand):
+    if not subcommand:
+        subcommand = [os.environ.get('SHELL', 'sh')]
+    response = boto3.client('sts').assume_role(
+        RoleArn=role_arn, RoleSessionName=ROLENAME)
+    credentials = response['Credentials']
+    os.environ.update({
+        'AWS_ACCESS_KEY_ID': credentials['AccessKeyId'],
+        'AWS_SECRET_ACCESS_KEY': credentials['SecretAccessKey'],
+        'AWS_SESSION_TOKEN': credentials['SessionToken'],
+        'AWS_SECURITY_TOKEN': credentials['SessionToken'],
+    })
+    os.execvp(subcommand[0], subcommand)
+
+
+if __name__ == '__main__':
+    main(*sys.argv)
