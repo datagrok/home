@@ -12,8 +12,30 @@ export _PROFILE_APPLIED=1
 # the default umask is set in /etc/login.defs
 umask 002
 
+# golang's GOPATH
+if [ -d $HOME/var/go ]; then
+	export GOPATH="$HOME/var/go"
+	export GOBIN="$GOPATH/bin"
+fi
+
+# make 'npm install -g' install to my homedir
+if [ -x /usr/bin/npm ]; then
+    export NPM_CONFIG_PREFIX="$HOME/var/node_modules_global"
+    [ -d "$NPM_CONFIG_PREFIX" ] || mkdir -p "$NPM_CONFIG_PREFIX"
+fi
+
 # prepend private bin(s) and man(s) if they exist to PATH
-for P in $HOME/usr/lib/Elm-Platform/*/.cabal-sandbox $HOME/usr $HOME/.cabal $HOME/.guix-profile $HOME; do
+for P in \
+        $(python -m site --user-base | tr ':' ' ') \
+        $HOME/usr/lib/Elm-Platform/*/.cabal-sandbox \
+        $HOME/usr \
+        $HOME/.cabal \
+        $HOME/.guix-profile \
+        $HOME/.gem/ruby/2.5.0 \
+        $GOPATH \
+        $NPM_CONFIG_PREFIX \
+        $HOME
+do
 	if [ -d "${P}/bin" ]; then
 		PATH="${P}/bin${PATH:+:}${PATH}"
 	fi
@@ -168,6 +190,13 @@ export REPORTTIME=5
 if [ -x /usr/bin/virtualenv -a ! -d "$WORKON_HOME" ]; then
 	mkdir "$WORKON_HOME"
 fi
+
+# Perl cpan
+PATH="/home/mlamb/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/mlamb/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/mlamb/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/mlamb/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/mlamb/perl5"; export PERL_MM_OPT;
 
 # if this is bash, include .bashrc if it exists.
 if [ "$BASH_VERSION" -a -f ~/.bashrc ]; then
