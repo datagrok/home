@@ -66,6 +66,10 @@ stalonetray &
 pasystray &
 nm-applet &
 $BROWSER &
+# if i'm at work, throw away half my ram
+if [ "$USER" = "mlamb" ]; then
+    slack &
+fi
 if [ -f "$HOME/.vagrant.d/insecure_private_key" ]; then
 	ssh-add $HOME/.vagrant.d/insecure_private_key
 fi
