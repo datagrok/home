@@ -14,13 +14,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# vi = gvim when a graphical non-remote display is available
 if [ "$DISPLAY" -a ! "$SSH_CONNECTION" ]; then
-	alias vi=gvim
-	alias v=gvim
+	alias vi='emacsclient -c -a ""'
 else
-	alias vi=vim
-	alias v=vim
+  alias vi='emacsclient -nw -c -a ""'
 fi
 
 alias nautilus="nautilus --no-desktop --browser"
