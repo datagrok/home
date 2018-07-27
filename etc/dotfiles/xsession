@@ -82,7 +82,7 @@ do
 done
 
 if which feh && [ -e $HOME/.wallpaper ]; then
-	feh --bg-scale $HOME/.wallpaper &
+	feh --bg-fill $HOME/.wallpaper &
 fi
 
 seikotunnel sleep 300 &
