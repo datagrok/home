@@ -26,6 +26,7 @@ _BASHRC_APPLIED=1
 function ps1_context {
 	# For any of these bits of context that exist, display them and append a
 	# space.
+  es=$?
 	virtualenv=`basename "$VIRTUAL_ENV"`
 	for v in "$debian_chroot" "$virtualenv" "$PS1_CONTEXT"; do
 		echo -n "${v:+$v }"
@@ -33,6 +34,7 @@ function ps1_context {
 	# Take advantage of the fricken awesome tools from
 	# /etc/bash_completion.d/git
 	__git_ps1 "±%s "
+  echo "$es?"
 }
 
 function ps1_curdir {
@@ -49,6 +51,8 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+# "A time-proven ZSH prompt"
+# http://chneukirchen.org/blog/archive/2017/02/a-time-proven-zsh-prompt.html
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
@@ -58,9 +62,9 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	else
 		p=
 	fi
-	PS1='\[\033[;1;31m\]$(ps1_context)\[\033[;1;3'${PS1_HOSTCOLOR:-7}'m\]\u@\h\[\033[m\]:\[\033[1;34m\]$(ps1_curdir)\[\033[m\]\$ '
+	PS1='\[\033[;1;3'${PS1_HOSTCOLOR:-7}'m\]\h\[\033[m\] \j& $(ps1_context)  \[\033[1;34m\]$(ps1_curdir)\[\033[m\]\$ '
 else
-	PS1="$(ps1_context)"'\u@\h:$(ps1_curdir)\$ '
+	PS1="\h $(ps1_context)"'$(ps1_curdir)\$ '
 fi
 
 if [ -f ~/.bash_aliases ]; then
