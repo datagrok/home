@@ -9,11 +9,11 @@ if [ ! "$_PROFILE_APPLIED" ]; then
 fi
 
 # Browsers in order of preference; launch with sensible-browser
-for b in firefox chromium google-chrome-unstable google-chrome epiphany dillo; do
-    BROWSER=`which $b`
-    if [ "$BROWSER" ]; then
-        break
-    fi
+for b in firefox-nightly firefox chromium google-chrome-unstable google-chrome epiphany dillo; do
+	BROWSER=`which $b`
+	if [ "$BROWSER" ]; then
+		break
+	fi
 done
 
 # aparretnly 'dbus-update-activation-environment' also does this?
