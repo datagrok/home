@@ -20,10 +20,6 @@ else
   alias vi='emacsclient -nw -c -a ""'
 fi
 
-alias nautilus="nautilus --no-desktop --browser"
-# Can also be achieved with:
-# 	gconftool --set /apps/nautilus/preferences/show_desktop false --type boolean
-# 	gconftool --set /apps/nautilus/preferences/always_use_browser true --type boolean
 alias smbclient="smbclient -A .smb/auth"
 alias svngvimdiff="svn diff --diff-cmd gvimdiff-svn-wrapper"
 alias gitgvimdiff="GIT_EXTERNAL_DIFF=gvimdiff-git-diff-wrapper git diff"
@@ -33,9 +29,6 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 
-alias dad='django-admin.py'
-
-alias django-admin.py='med d'
 [ -x /usr/bin/lbzip2 ] && alias bzip2='lbzip2'
 
 alias gpg='gpg2'
