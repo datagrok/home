@@ -30,6 +30,7 @@ import XMonad.Actions.UpdatePointer(updatePointer)
 import XMonad.Config.Desktop(desktopLayoutModifiers)
 import XMonad.Config.Gnome(gnomeConfig)
 import XMonad.Hooks.EwmhDesktops(fullscreenEventHook)
+import XMonad.Hooks.ManageDocks(ToggleStruts(ToggleStruts))
 import XMonad.Hooks.SetWMName(setWMName)
 import XMonad.Layout.DwmStyle(dwmStyle)
 import XMonad.Layout.Decoration(inactiveBorderColor,activeBorderColor)
@@ -166,6 +167,7 @@ mykeys mod = fromList $
             , (controlMask , "k"      , kill)
             , (shiftMask   , "h"      , sendMessage MirrorShrink)
             , (shiftMask   , "l"      , sendMessage MirrorExpand)
+            , (shiftMask   , "b"      , sendMessage ToggleStruts)
             ]
         ]
         ++
