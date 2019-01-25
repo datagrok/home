@@ -16,18 +16,35 @@
 # :set nowritebackup inotifywait sees: MODIFY OPEN MODIFY CLOSE_WRITE,CLOSE
 # ATTRIB OPEN CLOSE_NOWRITE,CLOSE OPEN CLOSE_NOWRITE,CLOSE)
 
+if [ "$1" = "--bulk" ]; then
+    shift
+    bulk=true
+fi
+
 TARGETDIR="$1"
 COMMAND="$2"
 shift 2
 
-inotifywait \
-	--exclude '\.sw..\?$' \
-	--exclude '\.git/' \
-	--exclude '\.svn/' \
-	-rme close_write "$TARGETDIR" \
-	| while read dir event filename
-	do
-		[ -e "$dir$filename" ] || continue
-		[ "$DEBUG" ] && echo "$0": "$COMMAND" "$@" "$dir$filename" >&2
-		"$COMMAND" "$@" "$dir$filename"
-	done
+if [ "$bulk" ]; then
+    while inotifywait \
+              --exclude '\.sw..\?$' \
+              --exclude '\.git/' \
+              --exclude '\.svn/' \
+              -re close_write "$TARGETDIR"
+    do
+        [ "$DEBUG" ] && echo "$0": "$COMMAND" "$@"  >&2
+        "$COMMAND" "$@"
+    done
+else
+    inotifywait \
+        --exclude '\.sw..\?$' \
+        --exclude '\.git/' \
+        --exclude '\.svn/' \
+        -rme close_write "$TARGETDIR" \
+        | while read dir event filename
+    do
+        [ -e "$dir$filename" ] || continue
+        [ "$DEBUG" ] && echo "$0": "$COMMAND" "$@" "$dir$filename" >&2
+        "$COMMAND" "$@" "$dir$filename"
+    done
+fi
