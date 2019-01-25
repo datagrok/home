@@ -20,26 +20,7 @@ case "`hostname`" in
 			--output HDMI-0  --mode 1680x1050 --rotate left --pos 1920x0
 		;;
 	yuki)
-		# FIXME this really belongs in a script that reacts to dbus events.
-		#
-		# If the laptop is plugged into an external monitor, use a resolution
-		# that will sortof-match its dpi, since X11 is stupid about multi-dpi
-		# setups. Otherwise, use a slightly higher resolution.
-		if
-			xrandr --query --current | grep -q "HDMI1 connected"
-		then
-			xrandr \
-				--output HDMI2 --off \
-				--output HDMI1 --mode 1920x1080 --pos 0x0 --rotate normal \
-				--output DP1 --off \
-				--output eDP1 --mode 1360x768 --pos 1920x312 --rotate normal
-		else
-			xrandr \
-				--output HDMI2 --off \
-				--output HDMI1 --off \
-				--output DP1 --off \
-				--output eDP1 --mode 1920x1080 --pos 0x0 --rotate normal
-		fi
+    randr.py
 		;;
 esac
 
