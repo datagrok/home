@@ -1,1 +1,10 @@
-/etc/dotfiles/config/google-chrome-beta
+Cache/
+etc/dotfiles/config/Beaker Browser/Dat/Archives/
+etc/dotfiles/config/hexchat/logs/
+etc/dotfiles/config/hexchat/scrollback/
+etc/dotfiles/xchat2/xchatlogs/
+etc/dotfiles/xchat2/scrollback/
+etc/dotfiles/mozilla/firefox/*/storage/
+etc/dotfiles/mozilla/firefox/*/datareporting/
+etc/dotfiles/mozilla/firefox/Crash Reports/
+
