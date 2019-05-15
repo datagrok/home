@@ -34,6 +34,7 @@ for P in \
         $HOME/.gem/ruby/2.5.0 \
         $GOPATH \
         $NPM_CONFIG_PREFIX \
+        $HOME/.local \
         $HOME
 do
 	if [ -d "${P}/bin" ]; then
