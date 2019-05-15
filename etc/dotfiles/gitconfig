@@ -9,8 +9,6 @@
 	status = auto
 	branch = auto
 	ui = auto
-[url "git+ssh://vcs.ddtc.cmgdigital.com/git-repos/"]
-	insteadOf = ssh://vcs/
 [url "ssh://datagrok.org/~datagrok/var/git/"]
 	insteadOf = ssh://datagrok.org/
 [url "ssh://home.datagrok.org/~mike/var/git/"]
