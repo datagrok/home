@@ -147,7 +147,7 @@ mykeys mod = fromList $
             -- send.
             [ (m, key, windows $ f sc)
                 | (key, sc) <- zip ["1", "2", "3", "q", "w", "e", "a", "s", "d"] workspaces'
-                , (f  , m ) <- [(greedyView, noMask), (shift, shiftMask)]
+                , (f  , m ) <- [(view, noMask), (shift, shiftMask)]
             ]
             ++
             -- Assign screens to keys z/x/c: use mod to view, mod+shift to send
