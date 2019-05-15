@@ -79,6 +79,7 @@ main = xmonad $ gnomeConfig
         , workspaces         = workspaces'
         , handleEventHook    = eventHook'
         , startupHook        = startupHook gnomeConfig >> setWMName "LG3D"
+	, modMask	     = mod4Mask
         }
 
 
