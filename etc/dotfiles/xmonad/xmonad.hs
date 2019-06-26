@@ -71,7 +71,10 @@ main = xmonad $ gnomeConfig
             $ ThreeCol 1 (3/100) (594/2560) ||| spiral (1050/1680) ||| tiled ||| Mirror tiled ||| Full ||| projector
         , keys               = keys'
         , manageHook         = manageHook' <> manageHook gnomeConfig
-        , logHook            = updatePointer (0.5, 0.5) (0, 0) <> logHook gnomeConfig
+        -- if updatePointer is 0.5 0.5 sometimes it appears on top of the
+        -- showWName label which causes it to fail to register that we've
+        -- switched screens
+        , logHook            = updatePointer (0.25, 0.25) (0, 0) <> logHook gnomeConfig
         , terminal           = "x-terminal-emulator"
         , borderWidth        = 0
         , normalBorderColor  = inactiveBorderColor myTheme --"#666666"
