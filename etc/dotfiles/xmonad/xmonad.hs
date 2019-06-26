@@ -23,7 +23,7 @@ module Main (main) where
 import Data.Map(Map,union,(\\),mapEither,fromList)
 import Data.Monoid(All(All),(<>))
 import System.Exit(exitSuccess)
-import System.IO(hPutStrLn, stderr)
+import System.IO(hPutStrLn, stderr, stdout)
 import XMonad
 import XMonad.Actions.DwmPromote(dwmpromote)
 import XMonad.Actions.UpdatePointer(updatePointer)
