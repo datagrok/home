@@ -213,16 +213,19 @@ mykeys mod = fromList $
 -- eventHook' _ = return (All True)
 
 eventHook' e = do
+    -- dummyEventHook e
     fullscreenEventHook e
     handleEventHook gnomeConfig e
-    dummyEventHook e
 
---dummyEventHook :: Event -> X All
---dummyEventHook KeyEvent {ev_event_type = t, ev_state = m, ev_keycode = code}
---  | t == keyRelease = withDisplay $ \dpy -> do
---      s  <- io $ keycodeToKeysym dpy code 0
---      io $ hPutStrLn stderr . show $ code
---      return (All True)
+dummyEventHook :: Event -> X All
+dummyEventHook KeyEvent {ev_event_type = t, ev_state = m, ev_keycode = code}
+  | t == keyPress = withDisplay $ \dpy -> do
+      s  <- io $ keycodeToKeysym dpy code 0
+      if s == (stringToKeysym "z")
+        then io $ hPutStrLn stderr . show $ code
+      else
+        return ()
+      return (All True)
 
 dummyEventHook _ = return (All True)
 
