@@ -184,6 +184,7 @@ mykeys mod = fromList $
         [ ((noMask, stringToKeysym key), Just action) | (key, action) <-
             [ ("XF86AudioRaiseVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%")
             , ("XF86AudioLowerVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%")
+            , ("Super_R", spawn "pactl set-source-mute @DEFAULT_SOURCE@ 0")
             ]
         ]
     where
@@ -193,41 +194,21 @@ mykeys mod = fromList $
         noMask = 0
 
 
--- TODO: I wish I could configure events to occur while the modifier key is
--- pressed, and be undone (or have other events occur) when released. Goal:
--- hide all decorations until mod is pressed. While pressed, a clock, window
--- names, current desktop name, window list, and graphical desktop summary and
--- system tray appear. When released the information disappears.
---
--- Thus-far failing (so commented and stubbed) experiments to build my own
--- low-level eventHook that will react to press and release follow.
-
--- eventHook' (KeyEvent {ev_event_type = t, ev_state = m, ev_keycode = code})
---     | t == keyRelease = withDisplay $ \dpy -> do
---         s  <- io $ keycodeToKeysym dpy code 0
---         mClean <- cleanMask m
---         ks <- asks keyActions
---         userCodeDef True ( io ( hPutStrLn stderr . show ( s ))) --return ()
-        -- userCodeDef () $ whenJust (Data.Map.lookup (mClean, s) ks) id
--- eventHook' e = io $ hPutStrLn stderr . show $ e --return ()
--- eventHook' _ = return (All True)
-
 eventHook' e = do
-    -- dummyEventHook e
+    keyReleaseEventHook e
     fullscreenEventHook e
     handleEventHook gnomeConfig e
 
-dummyEventHook :: Event -> X All
-dummyEventHook KeyEvent {ev_event_type = t, ev_state = m, ev_keycode = code}
-  | t == keyPress = withDisplay $ \dpy -> do
-      s  <- io $ keycodeToKeysym dpy code 0
-      if s == (stringToKeysym "z")
-        then io $ hPutStrLn stderr . show $ code
-      else
-        return ()
-      return (All True)
 
-dummyEventHook _ = return (All True)
+keyReleaseEventHook :: Event -> X All
+keyReleaseEventHook KeyEvent {ev_event_type = t, ev_state = _, ev_keycode = code}
+  | t == keyRelease = withDisplay $ \dpy -> do
+      s <- io $ keycodeToKeysym dpy code 0
+      case s of
+        xK_Super_R -> spawn "pactl set-source-mute @DEFAULT_SOURCE@ 1"
+        _ -> return ()
+      return (All True)
+keyReleaseEventHook _ = return (All True)
 
 
 {- TODO: improve this
