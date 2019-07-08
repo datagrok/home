@@ -8,6 +8,8 @@ by the EDID, and runs xrandr to apply the layout correctly.
 
 import re
 import subprocess
+import time
+import os
 
 # map from arbitrary descriptions of my monitors to their serial numbers, as
 # reported by the last 16 hexadecimal characters in the first line of their
@@ -49,3 +51,8 @@ if __name__ == '__main__':
             '''
     print(xrandrcmd)
     subprocess.check_call(xrandrcmd.split())
+
+    time.sleep(2)
+    # if which feh && [ -e $HOME/.wallpaper ]; then
+    filename = f"{os.environ['HOME']}/.wallpaper"
+    subprocess.check_call(["feh", "--bg-fill", "--no-xinerama", filename])
