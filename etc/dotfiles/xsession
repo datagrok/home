@@ -67,7 +67,7 @@ do
 done
 
 if which feh && [ -e $HOME/.wallpaper ]; then
-	feh --bg-fill $HOME/.wallpaper &
+	feh --bg-fill --no-xinerama $HOME/.wallpaper &
 fi
 
 seikotunnel sleep 300 &
