@@ -88,7 +88,7 @@ main = xmonad $ gnomeConfig
 
 -- Configuration settings used to override the default, above.
 floatClasses  = ["display", "Xwud", "fontforge", "oclock", "Clock"] -- These windows always float by default
-ignoreClasses = ["Audacious"]
+ignoreClasses = ["Audacious", "Peek"]
 tiled         = Tall nmaster delta ratio
  -- Make one of the 2 master windows 800x600 in the upper left corner of my 1440x900 display.
 projector     = ResizableTall 2 (20/1440) (800/1440) [600/(900/2)]
