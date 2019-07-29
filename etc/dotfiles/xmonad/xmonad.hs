@@ -185,6 +185,7 @@ mykeys mod = fromList $
         [ ((noMask, stringToKeysym key), Just action) | (key, action) <-
             [ ("XF86AudioRaiseVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%")
             , ("XF86AudioLowerVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%")
+            , ("XF86AudioMute", spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
             , ("Super_R", spawn "pactl set-source-mute @DEFAULT_SOURCE@ 0")
             ]
         ]
