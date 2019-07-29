@@ -95,7 +95,7 @@ projector     = ResizableTall 2 (20/1440) (800/1440) [600/(900/2)]
 nmaster       = 1
 delta         = 64/1680              -- adjust 64 pixels at a time on my 1680px wide monitor
 ratio         = (1680-640)/1680      -- main takes all but 640 pixels on my 1680px wide monitor
-bigfont       = "xft:Ubuntu-10"
+bigfont       = "-*-lucidatypewriter-*-r-*-*-*-240-*-*-*-*-*-*"
 
 -- TODO I wish I could lock sets of workspaces to screens. So picking workspace
 -- 1-6 would always switch to screen 1 before changing, and 7-9 would switch to
