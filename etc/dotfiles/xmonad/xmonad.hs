@@ -171,6 +171,7 @@ mykeys mod = fromList $
             , (noMask      , "Return" , dwmpromote)
             , (controlMask , "Return" , spawn "x-terminal-emulator -e screen")
             , (controlMask , "t"      , themePrompt myXPConfig)
+            , (shiftMask , "t"      , spawn "if [ ! -e /tmp/emacs1001/server ]; then xmessage -timeout 3 -default okay starting daemon & emacs --daemon; sleep 1; fi; emacsclient -c -n")
             , (shiftMask   , "F10"    , io exitSuccess) -- %! Quit xmonad
             , (noMask      , "F10"    , restart "xmonad" True) -- %! Restart xmonad
             , (controlMask , "k"      , kill)
