@@ -6,7 +6,8 @@ URxvt.termName: rxvt
 URxvt.font: \
 	xft:Bitstream Vera Sans Mono:pixelsize=11.5,\
 	xft:Monospace
-URxvt.preeditType:Root
+*.preeditType:Root
+*international: True
 URxvt.reverseVideo:False
 !*.vt100.scrollBar: true
 *fading: 40

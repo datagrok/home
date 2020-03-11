@@ -1,6 +1,0 @@
-deb http://www.gtlib.gatech.edu/pub/ubuntu/ edgy main restricted universe multiverse
-deb http://www.gtlib.gatech.edu/pub/ubuntu/ edgy-updates main restricted universe multiverse
-#deb http://www.gtlib.gatech.edu/pub/ubuntu/ edgy-proposed main restricted universe multiverse
-deb http://www.gtlib.gatech.edu/pub/ubuntu/ edgy-backports main restricted universe multiverse
-deb http://www.gtlib.gatech.edu/pub/ubuntu/ edgy-security universe
-

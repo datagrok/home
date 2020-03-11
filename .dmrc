@@ -2,3 +2,4 @@
 [Desktop]
 Layout=us
 Language=en_US.utf8
+Session=lightdm-xsession
