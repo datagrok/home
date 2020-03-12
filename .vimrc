@@ -71,7 +71,7 @@ if &term =~ "xterm"
     set t_Co=256
 endif
 
-set guifont=Ubuntu\ Mono\ 9
+set guifont=Monospace\ 11
 set guioptions=agire
 set foldmethod=indent
 set foldminlines=0
