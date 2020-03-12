@@ -1,6 +1,6 @@
 [gui]
-	fontui = -family \"Bitstream Vera Sans\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
-	fontdiff = -family \"Bitstream Vera Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
+	fontui = -family sans -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 [user]
 	name = Michael F. Lamb
 	email = mike@datagrok.org
