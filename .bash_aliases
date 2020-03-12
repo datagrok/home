@@ -15,9 +15,9 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 if [ "$DISPLAY" -a ! "$SSH_CONNECTION" ]; then
-	alias e='emacsclient -nw -c -a ""'
+    alias e='emacsclient -n -c -a ""'
 else
-  alias e='emacsclient -nw -c -a ""'
+    alias e='emacsclient -nw -c -a ""'
 fi
 
 alias smbclient="smbclient -A .smb/auth"
