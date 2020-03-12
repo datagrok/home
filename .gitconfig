@@ -14,8 +14,6 @@
 [url "ssh://home.datagrok.org/~mike/var/git/"]
 	insteadOf = ssh://seiko/
 	insteadOf = ssh://home.datagrok.org/
-[merge]
-	tool = mygvimdiff
 [core]
 	excludesfile = ~/etc/gitignore-global
 [alias]
@@ -26,6 +24,8 @@
 	serve = daemon --verbose --export-all --base-path=.git --informative-errors --reuseaddr --strict-paths .git/
 [push]
 	default = current
+[merge]
+	tool = mygvimdiff
 [mergetool "mygvimdiff"]
 	cmd = LOCAL="$LOCAL" BASE="$BASE" REMOTE="$REMOTE" MERGED="$MERGED" vimdiffgitmergewrapper
 [remote "origin"]
