@@ -4,17 +4,22 @@ I keep several things in my home directory under version control.
 Dotfiles, little scripts, little libraries, etc.
 
 I used to do this with CVS,
-then with Subversion and a complicated bespoke symlink-management tool,
+then with Subversion and a complicated [bespoke symlink-management tool](https://github.com/datagrok/home/blob/66d9758bc9745c3c69130c198ab868a7df5419f6/bin/update-dotfiles-svn),
 then with git and an improved complicated bespoke symlink-management tool,
 now with git, some clever configuration, and no symlinks.
 
 ## Mechanism
 
 1. `$HOME` is the root of a git work tree.
-2. To avoid accidentally committing most files, place `/*` in `.gitignore`.
+2. To avoid accidentally committing most files, place [`/*` in `.gitignore`](https://github.com/datagrok/home/blob/master/.gitignore#L10). 
 3. To avoid having every git invocation discover a root at `$HOME`, relocate the git directory by explicitly specifying `$GIT_DIR`.
-4. To avoid using a bash alias that inserts --git-dir as an argument, create a custom git subcommand that sets `$GIT_DIR`.
-5. To avoid specifying --work-dir as an argument or environment variable, set it into the repository configuration.
+4. To avoid using a bash alias that inserts `--git-dir` as an argument, create [a custom git subcommand](https://github.com/datagrok/home/blob/master/bin/git-home) that explicitly sets `$GIT_DIR`.
+5. To avoid specifying `--work-dir` as an argument or environment variable, set it into the repository configuration.
+   `git home config core.worktree $HOME`
+
+Downsides:
+
+- bash completion doesn't work with `git home ...`.
 
 I was inspired by techniques demonstrated in:
 
