@@ -43,6 +43,6 @@ multiuser on
 acladd yu
 
 # make failed commands not auto-close, and provide an option to re-run
-zombie kl onerror
+zombie kl
 
 # vim: set nowrap :
