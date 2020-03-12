@@ -1,1 +1,0 @@
-/home/mike/mnt/vim-pathogen/autoload/pathogen.vim
