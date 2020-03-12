@@ -187,6 +187,7 @@ mykeys mod = fromList $
             , ("XF86AudioLowerVolume", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%")
             , ("XF86AudioMute", spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
             , ("Super_R", spawn "pactl set-source-mute @DEFAULT_SOURCE@ 0")
+            , ("Insert", spawn "pactl set-source-mute @DEFAULT_SOURCE@ 0")
             ]
         ]
     where
@@ -208,6 +209,7 @@ keyReleaseEventHook KeyEvent {ev_event_type = t, ev_state = _, ev_keycode = code
       s <- io $ keycodeToKeysym dpy code 0
       case s of
         xK_Super_R -> spawn "pactl set-source-mute @DEFAULT_SOURCE@ 1"
+        xK_Insert -> spawn "pactl set-source-mute @DEFAULT_SOURCE@ 1"
         _ -> return ()
       return (All True)
 keyReleaseEventHook _ = return (All True)

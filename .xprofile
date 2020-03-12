@@ -28,6 +28,7 @@ export EDITOR="gvim -f"
 export OOO_FORCE_DESKTOP=gnome
 xsetroot -fg "#111111" -bg "black" -mod 16 16
 xset b 2 1900 # quieter nicer bell
+xset -r 118 # don't auto-repeat insert key; i use it for push-to-talk.
 
 # Sometimes when logging out/in, a pulseaudio process hangs around that screws
 # up gnome-panel, everything goes sluggish. Until I figure out a real fix, just
