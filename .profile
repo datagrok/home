@@ -19,8 +19,9 @@ if [ -d $HOME/var/go ]; then
 fi
 
 # make 'npm install -g' install to my homedir
-if [ -x /usr/bin/npm ]; then
-    export NPM_CONFIG_PREFIX="$HOME/var/node_modules_global"
+NPM_CONFIG_PREFIX="$HOME/var/node_modules_global"
+if [ -x /usr/bin/npm ] || [ -x "$NPM_CONFIG_PREFIX/bin/npm" ]; then
+    export NPM_CONFIG_PREFIX
     [ -d "$NPM_CONFIG_PREFIX" ] || mkdir -p "$NPM_CONFIG_PREFIX"
 fi
 
